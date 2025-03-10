@@ -44,7 +44,7 @@ const UserDetails = () => {
 
                         <div className="flex items-center justify-between">
                             <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
-                            <button onClick={makeAdmin} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm Decline</button>
+                            <button onClick={makeAdmin} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm</button>
                         </div>
 
                     </div>

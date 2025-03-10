@@ -189,7 +189,7 @@ const ProductsPage = () => {
                             }
                             <Link to={`/products/${item.id}/${item.slug}`} onClick={MoveToTop}>
                               <img
-                                src={`${imageurl}/products/${item?.image}`}
+                                src={item?.image}
                                 alt='product image'
                                 className="w-full h-48 rounded-t-[4px] object-cover object-center"
                               />

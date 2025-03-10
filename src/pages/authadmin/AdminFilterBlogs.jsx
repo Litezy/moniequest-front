@@ -34,7 +34,7 @@ const AdminFilterBlogs = () => {
         <div className="mt-10 text-base md:text-xl font-bold">Below are blogs that have comments</div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {blogs.length > 0 && blogs.map((blog, i) => (
+          {blogs.length > 0 ? blogs.map((blog, i) => (
             <div key={i} className="w-full p-3 border border-ash rounded-md mt-5">
               <div className="flex w-full items-baseline justify-between">
                 <div className="">
@@ -49,7 +49,7 @@ const AdminFilterBlogs = () => {
                   </div>
               </div>
             </div>
-          ))}
+          )) : <div className="text-center text-lg font-bold">No blogs with comments found!</div>}
           {dataLoading &&
             <ModalLayout setModal={setDataLoading}>
               <Loader title='loading blogs' />

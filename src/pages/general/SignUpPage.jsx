@@ -76,39 +76,8 @@ const SignUpPage = () => {
     }
   }
 
-  // const handleGoogleSignInSuccess = async (tokenResponse) => {
-  //   const idToken = tokenResponse.credential;
-  //   const decoded = jwtDecode(idToken);
 
-  //   const formbody = {
-  //     email: decoded.email,
-  //     first_name: decoded.given_name,
-  //     surname: decoded.family_name,
-  //     image: decoded.picture,
-  //   };
-
-  //   setGoogleLoading(true);
-  //   try {
-  //     const res = await PostApi(Apis.user.continue_with_google, formbody);
-  //     if (res.status !== 201 && res.status !== 200) return ErrorAlert(res.msg);
-  //     const token = res.token;
-  //     Cookies.set(CookieName, token);
-  //     const decodedToken = decodeToken(token);
-  //     const findRole = UserRoles.find(item => item.role === decodedToken.role);
-  //     if (findRole) return navigate(`${findRole.url}`);
-  //     await new Promise((resolve) => setTimeout(resolve, 2000));
-  //   } catch (error) {
-  //     console.log(`Failed to sign up with google: ${error.message}`);
-  //     ErrorAlert(`Failed to sign up with google: ${error.message}`);
-  //   } finally {
-  //     setGoogleLoading(false);
-  //   }
-  // };
-
-  // const handleGoogleSignInFailure = (error) => {
-  //   ErrorAlert(`Google Sign-In failed: ${error.error}`);
-  // };
-
+ 
   const handleSuccess = async (user) => {
     const formbody = {
       email: user.email,
