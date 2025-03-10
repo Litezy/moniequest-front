@@ -7,7 +7,6 @@ const GoogleSignInButton = ({ onSuccess, onFailure }) => {
     <div className="w-full">
       <GoogleLogin
         onSuccess={(response) => {
-        //   console.log("Google Response:", response);
           if (response.credential) {
             onSuccess({ credential: response.credential });
           } else {
@@ -15,6 +14,7 @@ const GoogleSignInButton = ({ onSuccess, onFailure }) => {
           }
         }}
         onError={onFailure}
+        useOneTap
       />
     </div>
   );

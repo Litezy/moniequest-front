@@ -107,7 +107,7 @@ const LoginPage = () => {
               <FormButton title='Sign in' className={`!py-1.5`} />
             </form>
             <div className="text-center text-sm text-white my-1 ">OR</div>
-            <div className="mt-1 w-full flex items-center justify-center">
+            <div className="mt-1 w-full flex  items-center justify-center">
               <GoogleSignInButton
                 onSuccess={handleGoogleSignInSuccess}
                 onFailure={handleGoogleSignInFailure}
