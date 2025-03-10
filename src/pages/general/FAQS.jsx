@@ -6,15 +6,15 @@ const FAQS = () => {
     return (
         <PageLayout>
             <div className="bg-dark text-zinc-300 ">
-                <div className="pageBg">
-                    <div className="w-full h-full bg-[#212134cc] py-10">
+                <div className="">
+                    <div className="w-full h-full pt-5 pb-8">
                         <div className="md:text-4xl text-3xl font-bold text-white text-center capitalize">
                             FAQs
                         </div>
                     </div>
                 </div>
                 <div className="w-11/12 mx-auto text-lg">
-                    <div className="flex items-start gap-16 py-10 flex-col">
+                    <div className="flex items-start gap-16 pb-10 flex-col">
                         <div className="flex items-start gap-4 flex-col">
                             <div className="md:text-3xl text-2xl font-bold text-lightgreen">General Questions</div>
                             <div className='flex flex-col gap-4'>

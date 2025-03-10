@@ -55,7 +55,7 @@ const ContactPage = () => {
   return (
     <PageLayout>
       <div className='bg-dark text-gray-200'>
-        <div className='w-11/12 mx-auto py-16'>
+        <div className='w-11/12 mx-auto py-10'>
           <div className='grid lg:grid-cols-2 grid-cols-1 gap-10'>
             <div className='flex flex-col gap-6'>
               <div className='flex flex-col gap-8'>

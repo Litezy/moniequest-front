@@ -16,14 +16,10 @@ const Hiring = () => {
     return (
         <PageLayout>
             <div className='pb-20 bg-dark w-full text-gray-200'>
-                <div className='pageBg'>
-                    <div className='w-full h-full bg-[#212134cc] py-10'>
-                        <div className='md:text-4xl text-3xl capitalize font-bold text-white text-center'>we are hiring</div>
-                    </div>
-                </div>
-                <div className="w-11/12 mx-auto mt-10">
+            
+                <div className="w-11/12 mx-auto mt-20">
                     <div className='flex flex-col gap-4 items-center justify-center'>
-                        <div className='text-4xl font-bold capitalize text-center'>work at monieQuest.com</div>
+                        <div className='text-2xl md:text-4xl font-bold capitalize text-center'>work at monieQuest.com</div>
                         <div onClick={() => MoveToSection(`jobs`, 100)}>
                             <button className='outline-none w-fit h-fit bg-ash px-6 py-2 capitalize rounded-md'>view jobs</button>
                         </div>

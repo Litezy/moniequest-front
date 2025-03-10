@@ -138,14 +138,14 @@ const ProductsPage = () => {
           <Link to={`/login`} className="w-fit px-4 py-2 bg-ash text-white rounded-md">Submit your product</Link>
         </div>}
       <div className="pb-20 bg-dark">
-        <div className="pageBg">
-          <div className="w-full h-full bg-[#212134cc] py-10">
+        <div className="">
+          {/* <div className="w-full h-full  py-10">
             <div className="md:text-4xl text-3xl font-bold text-white text-center capitalize">
               products
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className="w-11/12 mx-auto text-gray-200 mt-16">
+        <div className="w-11/12 mx-auto text-gray-200 mt-20">
           <CartComponent cartItems={cartItems} setCartItems={setCartItems} dataLoading={dataLoading} />
           <div className="flex flex-col gap-2 items-center mt-20" id="section">
             <div className="md:text-3xl text-2xl font-bold text-center">Say Goodbye to Stress, Simplify your Hustle, Maximize your Wealth!

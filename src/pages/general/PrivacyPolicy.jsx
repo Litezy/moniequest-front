@@ -6,9 +6,9 @@ const PrivacyPolicy = () => {
   return (
     <PageLayout>
       <div className='bg-dark w-full'>
-        <div className="pageBg">
-          <div className="w-full h-full bg-[#212134cc] py-10">
-            <div className="md:text-4xl text-3xl font-bold text-white text-center capitalize">
+        <div className="">
+          <div className="w-full h-full  py-5">
+            <div className="md:text-4xl text-2xl font-bold text-white text-center capitalize">
               our Privacy Policy
             </div>
           </div>

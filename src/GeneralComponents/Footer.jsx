@@ -26,7 +26,6 @@ const Socials = [
 ]
 
 const pageLinks = [
-  { path: 'about us', url: '/about' },
   { path: 'contact us', url: '/contact' },
   { path: 'FAQS', url: '/faqs' },
   { path: 'terms & conditions', url: '/terms_of_service' },

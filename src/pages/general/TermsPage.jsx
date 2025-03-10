@@ -8,9 +8,9 @@ const TermsPage = () => {
   return (
     <PageLayout>
       <div className='bg-dark w-full'>
-        <div className='pageBg'>
-          <div className='w-full h-full bg-[#212134cc] py-10'>
-            <div className='md:text-4xl text-3xl font-bold text-white text-center'>Our Terms of service</div>
+        <div className=''>
+          <div className='w-full h-full py-5'>
+            <div className='md:text-4xl capitalize text-2xl font-bold text-white text-center'>Our Terms of service</div>
           </div>
         </div>
         <div className='w-11/12 mx-auto text-lg pt-5 pb-10'>
