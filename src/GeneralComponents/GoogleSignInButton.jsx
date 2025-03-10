@@ -25,7 +25,7 @@ const GoogleSignButton = ({ onSuccess, onError,text }) => {
       <img
         src={googleimg}
         alt="Google Logo"
-        className="w-5 h-5 mr-1"
+        className="w-5 h-5 mr-2"
       />
         {text}
     </button>
