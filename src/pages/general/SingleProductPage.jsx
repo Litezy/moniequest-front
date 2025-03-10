@@ -171,7 +171,7 @@ const SingleProductPage = () => {
                             </div>
                             <div className='grid lg:grid-cols-2 grid-cols-1 gap-6'>
                                 <div className='w-full md:h-96 h-60'>
-                                    <img src={`${imageurl}/products/${singleProduct?.image}`} alt='product image' className='w-full h-full object-cover' />
+                                    <img src={singleProduct?.image} alt='product image' className='w-full h-full object-cover' />
                                 </div>
                                 <div>
                                     <div className='bg-primary border border-ash w-full h-fit p-5 flex flex-col gap-4'>
