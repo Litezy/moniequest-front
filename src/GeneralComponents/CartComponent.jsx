@@ -112,7 +112,7 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
                                     return (
                                         <div className='w-full h-fit bg-primary flex md:p-0 p-3 rounded-[3px] overflow-hidden' key={i}>
                                             <div className='md:w-[25%] w-[40%]'>
-                                                <img src={`${imageurl}/products/${item?.image}`} alt={item?.image} className='w-full md:h-28 h-[5.5rem] object-cover md:rounded-l-[3px] md:rounded-r-none rounded-[3px]'></img>
+                                                <img src={item?.image} alt={item?.image} className='w-full md:h-28 h-[5.5rem] object-cover md:rounded-l-[3px] md:rounded-r-none rounded-[3px]'></img>
                                             </div>
                                             <div className='md:w-[75%] w-[60%] px-4 md:py-3 flex flex-col'>
                                                 <div className='flex md:flex-row flex-col md:justify-between gap-1'>
