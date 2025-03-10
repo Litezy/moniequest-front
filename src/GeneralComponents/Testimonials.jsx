@@ -89,33 +89,34 @@ export default function Testimonials(props) {
     };
     return (
         <div className="embla">
-            <div className="embla__viewport" ref={emblaRef}>
-                <div className="embla__container">
-                    {data.map((item, index) => (
-                        <div className="embla__slide border border-[grey] px-5 pt-5 lg:p-10 text-zinc-300" key={index}>
-                            <div className="">
-                                <img src={optimizeImageUrl(item.image)}
-                                    alt={`${item.firstname} image`} className="size-28 object-cover border-4 border-white shadow-2xl rounded-full" />
-                            </div>
-                            <div className="font-bold text-xl  lg:text-2xl pt-10">{item.firstname} {item.lastname}</div>
-                            <div className="pt-5 pb-10 lg:text-lg text-sm md:w-full w-3/4">{item.content}</div>
-                        </div>
-                    ))}
+        <div className="embla__viewport" ref={emblaRef}>
+          <div className="embla__container">
+            {data.map((item, index) => (
+              <div
+                className="embla__slide border border-gray-600 px-6 py-8 lg:p-12 text-zinc-300"
+                key={index}
+              >
+                <div className="mb-6">
+                  <img
+                    src={optimizeImageUrl(item.image)}
+                    alt={`${item.firstname} image`}
+                    className="w-24 h-24 lg:w-32 lg:h-32 object-cover border-4 border-white shadow-2xl rounded-full"
+                  />
                 </div>
-            </div>
-
-            <div className="embla__controls text-white">
-                <div className="embla__buttons">
-                    <PrevButton
-                        onClick={() => onButtonAutoplayClick(onPrevButtonClick)}
-                        disabled={prevBtnDisabled}
-                    />
-                    <NextButton
-                        onClick={() => onButtonAutoplayClick(onNextButtonClick)}
-                        disabled={nextBtnDisabled}
-                    />
-                </div>
-            </div>
+                <div className="font-bold text-xl lg:text-2xl">{item.firstname} {item.lastname}</div>
+                <div className="mt-4 border-t pt-4 lg:text-lg text-sm w-full">{item.content}</div>
+              </div>
+            ))}
+          </div>
         </div>
+      
+        <div className="embla__controls text-white">
+          <div className="embla__buttons">
+            <PrevButton onClick={() => onButtonAutoplayClick(onPrevButtonClick)} disabled={prevBtnDisabled} />
+            <NextButton onClick={() => onButtonAutoplayClick(onNextButtonClick)} disabled={nextBtnDisabled} />
+          </div>
+        </div>
+      </div>
+      
     )
 }

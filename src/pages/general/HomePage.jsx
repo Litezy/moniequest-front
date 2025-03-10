@@ -45,7 +45,7 @@ const HomePage = () => {
     <PageLayout>
       <div className="pb-20 w-full bg-dark">
         {/* Hero Section */}
-        <div className="pageBg h-96 md:h-[25rem] overflow-hidden  md:w-full">
+        <div className="pageBg min-h-96 md:h-[25rem] overflow-hidden  md:w-full">
           <div className="w-full h-full  bg-dark/70 md:bg-dark/10  ">
             <div className="w-full h-full md:pt-16 pb-10 pt-12 px-4">
               <div className="w-11/12 mx-auto text-center md:mr-10">
