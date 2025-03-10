@@ -49,7 +49,7 @@ const AdminFilterBlogs = () => {
                   </div>
               </div>
             </div>
-          )) : <div className="text-center text-lg font-bold">No blogs with comments found!</div>}
+          )) : <div className="text-center mt-20 text-sm ">No blogs with comments found!</div>}
           {dataLoading &&
             <ModalLayout setModal={setDataLoading}>
               <Loader title='loading blogs' />
