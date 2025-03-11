@@ -70,6 +70,7 @@ import AdminUtils from "../pages/authadmin/AdminUtils";
 import AdminUpdateCryptos from "../pages/authadmin/AdminUpdateCryptos";
 import AdminFilterBlogs from "../pages/authadmin/AdminFilterBlogs";
 import AdminFilterComments from "../pages/authadmin/AdminFilterComments";
+import AdminAddTools from "../pages/authadmin/AdminAddTools";
 
 export const GeneralPagesLinks = [
     { path: '*', component: Notfound },
@@ -150,4 +151,5 @@ export const AdminPagesLinks = [
     { path: '/admin/utilities/update_cryptos', component: AdminUpdateCryptos},
     { path: '/admin/utilities/filter_blogs', component: AdminFilterBlogs},
     { path: '/admin/utilities/filter_blogs/:id', component: AdminFilterComments},
+    { path: '/admin/utilities/create_tools', component: AdminAddTools},
 ]

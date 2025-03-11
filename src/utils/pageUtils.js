@@ -95,7 +95,7 @@ export const aboututils = [
         desc: ` Securely buy, sell, and trade cryptocurrencies or redeem gift cards`,
     },
     {
-        title: 'Profit Tools:',
+        title: 'Productive Tools:',
         desc: ` Access a library of eBooks, AI tools, and more to enhance your skills and productivity.`
     }
 
@@ -151,7 +151,7 @@ export const generalfaqs = [
     },
     {
         title: 'Q2: How do I get started with MonieQuest?',
-        desc: `MonieQuest is publicly accessible to everyone without the need for registration. Simply visit our homepage to explore available airdrops and projects. You can start earning immediately by participating in these opportunities. However, for other features like the Exchange and Profit Tools, you'll need to create an account.`
+        desc: `MonieQuest is publicly accessible to everyone without the need for registration. Simply visit our homepage to explore available airdrops and projects. You can start earning immediately by participating in these opportunities. However, for other features like the Exchange and Productive Tools, you'll need to create an account.`
     },
     {
         title: 'Q3: Is MonieQuest free to use?',
@@ -275,7 +275,7 @@ export const exchangefaqs = [
 `
     },
     {
-        title: `Q6: Why do you need my BVN?`,
+        title: `Q6: Why do you need my NIN?`,
         desc: `In compliance with Nigerian financial regulations, your BVN helps us verify your identity and protect your account from unauthorized access or fraud. By confirming that each user is who they claim to be, we uphold a safer platform and maintain a trusted environment for all our customers.`
     },
     {
@@ -286,20 +286,20 @@ export const exchangefaqs = [
 
 export const profitfaqs = [
     {
-        title: `Q1: What are Profit Tools?`,
+        title: `Q1: What are Productive Tools?`,
         desc: `Profit Tools is a collection of eBooks, graphic and AI tools, and resources designed to enhance productivity and skill-building for our users.`
     },
     {
-        title: `Q2: How can I access Profit Tools?`,
+        title: `Q2: How can I access Productive Tools?`,
         desc: `Profit Tools are available to all registered users. Simply log in to your account and navigate to the 'Profit Tools' section to explore the available resources.`
     },
     {
-        title: `Q3: Can I contribute my own tools to Profit Tools?`,
+        title: `Q3: Can I contribute my own tools to Productive Tools?`,
         desc: `Yes, we welcome user submissions. If you have a tool or resource you'd like to share, submit it for review. Upon approval, it will be featured on our platform, and you'll receive a monetary reward.`
     },
     {
-        title: `Q4: Are the resources in Profit Tools free?`,
-        desc: `No, all resources in Profit Tools are premium and require a purchase to access. Each resource is clearly labeled with its access requirements.`
+        title: `Q4: Are the resources in Productive Tools free?`,
+        desc: `No, all resources in Productive Tools are premium and require a purchase to access. Each resource is clearly labeled with its access requirements.`
     },
     {
         title: `Q5: How do I know if a submitted tool is approved?`,
@@ -330,3 +330,23 @@ export const examplefaqs = [
     }
 ]
 
+
+export const tools = [
+    {
+        title:'AI Tools',
+        desc:[
+            'text to speech',
+            'speech to text',
+            'code generators',
+            'Ai Assistants (e.g Chatbots, Writing Tools)'
+        ]
+    },
+    {
+        title:'Productivity Tools',
+        desc:[
+            'Workflow optimizers',
+            'task and time management tools',
+            'collaboration platfroms',
+        ]
+    },
+]

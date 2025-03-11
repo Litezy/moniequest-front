@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.2.1",
     "@react-oauth/google": "^0.12.1",
+    "animejs": "^3.2.2",
     "aos": "^2.3.4",
     "axios": "^1.7.9",
     "embla-carousel": "^8.5.1",

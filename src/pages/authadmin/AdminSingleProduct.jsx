@@ -221,14 +221,14 @@ const AdminSingleProduct = () => {
                                         {form.category.length > 0 &&
                                             <>
                                                 {form.category.map((item, i) => (
-                                                    <div key={i} className='w-fit h-fit p-3 bg-gray-300 text-black rounded-xl text-sm'>
+                                                    <div key={i} className='w-fit h-fit p-2 bg-ash text-white rounded-xl text-sm'>
                                                         {item}
                                                     </div>
                                                 ))}
                                             </>
                                         }
                                     </div>
-                                    <div className='flex flex-wrap gap-4 mt-2'>
+                                    {/* <div className='flex flex-wrap gap-4 mt-2'>
                                         {allCategories.map((item, i) => (
                                             <div className='flex gap-2' key={i}>
                                                 <div className='w-5 h-5 border border-gray-200 rounded-full flex justify-center items-center cursor-pointer' onClick={() => addRemoveCategory(item)}>
@@ -237,6 +237,17 @@ const AdminSingleProduct = () => {
                                                 <div className='text-sm'>{item}</div>
                                             </div>
                                         ))}
+                                    </div> */}
+                                </div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='text-lightgreen capitalize font-medium'>Other tools specified by user:</div>
+                                    <div className='flex flex-wrap gap-2'>
+                                        {form.other ?
+                                            <div className='w-fit h-fit p-3 bg-gray-300 text-black rounded-xl text-sm'>form.other</div>:
+                                            <div className="">n/a</div>
+                                        }
+
+
                                     </div>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import { CookieName } from '../utils/pageUtils'
 
 
-export let URL = import.meta.env.VITE_LIVE_API_URL;
+export let URL = import.meta.env.VITE_API_URL;
 export let imageurl =import.meta.env.VITE_API_URL;
 
 // if (import.meta.env.VITE_ENV === 'production') {
@@ -116,7 +116,10 @@ const admin_urls = {
     get_cryptos: admin + "get_cryptos",
     make_admin: admin + 'make_admin',
     blogs_with_comments:admin + 'blogs_with_comments',
-    delete_comment: admin + 'delete_comment'
+    delete_comment: admin + 'delete_comment',
+    create_tool: admin +'create_tool',
+    get_tools: admin +'get_tools',
+    delete_tool: admin +'delete_tool'
 }
 
 const products = 'api/product/'

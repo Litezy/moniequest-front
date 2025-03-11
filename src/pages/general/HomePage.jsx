@@ -22,7 +22,7 @@ const HomePage = () => {
           setAirdrops(response.msg);
         }
       } catch (error) {
-        // 
+        console.log(error)
       } finally {
         setDataLoading(false);
       }

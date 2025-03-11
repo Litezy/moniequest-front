@@ -7,6 +7,7 @@ const AdminUtils = () => {
         { path: 'Update Cryptocurrencies', url: '/admin/utilities/update_cryptos' },
         { path: 'Testimonials', url: '/admin/utilities/testimonials' },
         { path: 'Filter Comments', url: '/admin/utilities/filter_blogs' },
+        { path: 'Create Tools', url: '/admin/utilities/create_tools' },
     ]
 
     return (
