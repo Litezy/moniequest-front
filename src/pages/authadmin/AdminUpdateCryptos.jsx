@@ -79,7 +79,6 @@ const AdminUpdateCryptos = () => {
     }
 
     const crudCrypto = async (tag) => {
-        console.log(selected?.id)
         if (tag === 'create') {
             const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max]
             if (reqFields.some((value) => value === '')) return ErrorAlert(`Please fill out all fields`)
