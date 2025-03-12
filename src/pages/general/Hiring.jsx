@@ -15,16 +15,15 @@ const Hire = [
 const Hiring = () => {
     return (
         <PageLayout>
-            <div className='pb-20 bg-dark w-full text-gray-200'>
-            
-                <div className="w-11/12 mx-auto mt-20">
+            <div className='pb-20 pt-5 bg-dark w-full text-gray-200'>
+                <div className="w-11/12 mx-auto">
                     <div className='flex flex-col gap-4 items-center justify-center'>
                         <div className='text-2xl md:text-4xl font-bold capitalize text-center'>work at monieQuest.com</div>
                         <div onClick={() => MoveToSection(`jobs`, 100)}>
                             <button className='outline-none w-fit h-fit bg-ash px-6 py-2 capitalize rounded-md'>view jobs</button>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-10 mt-16'>
+                    <div className='flex flex-col gap-10 mt-14'>
                         <div className='grid md:grid-cols-6 grid-cols-1 gap-12 items-center'>
                             <div className='md:col-span-4 col-span-1 border-2 border-[#2f2f47] p-4 rounded-3xl'>
                                 <div className='flex flex-col gap-2'>

@@ -141,7 +141,7 @@ const SignUpPage = () => {
                   <span>I agree to MonieQuest <Link to='/terms_of_service' onClick={MoveToTop} className='text-lightgreen'>Terms and Conditions</Link> and <Link to='/privacy_policy' onClick={MoveToTop} className='text-lightgreen'>Privacy Policy</Link></span>
                 </div>
                 <FormButton title='Sign up' className='!py-3' />
-                <div className="text-center text-sm text-white my-1 ">OR</div>
+                <div className="text-center text-sm text-white">OR</div>
                 <div className=" w-full flex items-center justify-center">
                   <GoogleSignInButton text='Continue with Google'
                     onSuccess={handleSuccess}

@@ -91,7 +91,7 @@ const LoginPage = () => {
   return (
     <div className="w-full bg-dark flex items-center justify-center overflow-y-auto relative h-screen">
       {loading && <Loader title={`logging in`} />}
-      <div className='w-11/12 mx-auto py-5'>
+      <div className='w-11/12 mx-auto py-10'>
         <div className='flex items-center justify-center max-w-md mx-auto rounded-md  relative'>
           <div className='w-full h-full flex flex-col text-white'>
             <div className="flex items-center justify-center w-full">
@@ -105,14 +105,14 @@ const LoginPage = () => {
               <Link to='/forgot-password' onClick={MoveToTop} className='text-lightgreen text-sm cursor-pointer ml-auto'>Forgot password?</Link>
               <FormButton title='Sign in' className={`!py-3`} />
             </form>
-            <div className="text-center text-sm text-white my-1 ">OR</div>
+            <div className="text-center text-sm text-white my-3">OR</div>
             <div className="mt-1 w-full flex  items-center justify-center">
               <GoogleSignInButton text={`Sign in with Google`}
                 onSuccess={handleSuccess}
                 onFailure={handleFailure}
               />
             </div>
-            <Link className='text-sm text-center mt-2 text-lightgreen underline' to={'/'}>Go Back Home</Link>
+            <Link className='text-sm text-center mt-5 text-lightgreen underline' to={'/'}>Go Back Home</Link>
 
           </div>
 

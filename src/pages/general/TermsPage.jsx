@@ -1,10 +1,9 @@
 import React from 'react'
 import PageLayout from '../../GeneralComponents/PageLayout'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { services } from '../../utils/pageUtils'
 
 const TermsPage = () => {
-  const navigate = useNavigate()
   return (
     <PageLayout>
       <div className='bg-dark w-full'>
@@ -20,7 +19,7 @@ const TermsPage = () => {
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 h-fit'>
                 <div className='border-2 border-[#2f2f47] flex items-start flex-col gap-2 p-4 rounded-3xl w-full'>
                   <div className="text-lightgreen">1. Acceptance of terms</div>
-                  <div className="text-base">By using MonieQuest, you agree to these <span className='text-lightgreen'>Terms and Conditions</span> and our <span onClick={() => navigate('/privacy_policy')} className='text-lightgreen cursor-pointer'>Privacy Policy</span>.</div>
+                  <div className="text-base">By using MonieQuest, you agree to these <span className='text-lightgreen'>Terms and Conditions</span> and our <Link to='/privacy_policy' className='text-lightgreen cursor-pointer'>Privacy Policy</Link>.</div>
                 </div>
                 <div className='border-2 border-[#2f2f47] flex items-start flex-col gap-2 p-4 rounded-3xl w-full'>
                   <div className="text-lightgreen">2. Account Registration</div>
