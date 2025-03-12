@@ -25,13 +25,17 @@ const BuyCrypto = () => {
     const navigate = useNavigate()
 
     const [forms, setForms] = useState({
+        crypto: '',
         amount: '',
         network: '',
         wallet_add: '',
-        isExpired: 'No'
+        isExpired: 'No',
+        minimum: '',
+        limit: ''
     })
     const rate = utils?.exchange_buy_rate
     const verified = user?.kyc_verified
+    const kyc_threshhold = utils?.kyc_threshold
 
     const handleChange = (e) => {
         setForms({
@@ -55,10 +59,6 @@ const BuyCrypto = () => {
         name: currencies[0].name,
         symbol: currencies[0].symbol
     })
-    const limit = utils?.buy_max
-    const nairaLimit = limit * rate
-    const minimum = utils?.buy_min
-    const kyc_threshhold = utils?.kyc_threshold
 
     const proceedFunc = () => {
         if (!forms.wallet_add) return ErrorAlert(`Please input your wallet address`)
@@ -67,21 +67,14 @@ const BuyCrypto = () => {
 
     const submit = (e) => {
         e.preventDefault()
+        const amt = forms.amount.replace(/,/g, '')
         if (!forms.crypto) return ErrorAlert('crypto currency is required')
         if (!forms.amount) return ErrorAlert('amount is required')
-        if (forms.amount < minimum) return ErrorAlert('amount is too small')
-        if (selectedCurr.name !== 'USD' && selectedCurr.symbol !== '$') {
-            const amt = forms.amount.replace(/,/g, '')
-            const newamt = amt * rate
-            console.log(`new Amout :${newamt},currency : ${selectedCurr}`)
-            if (newamt > nairaLimit) return ErrorAlert(`Sorry, you can't buy above ${currencies[1].symbol}${nairaLimit.toLocaleString()}`)
-        }
-        if (selectedCurr.name === 'USD' && selectedCurr.symbol === '$') {
-            const amt = forms.amount.replace(/,/g, '')
-            if (amt > kyc_threshhold) {
-                if (verified === 'false') {
-                    return ErrorAlert(`Please complete your kyc to be able to trade this amount!`)
-                }
+        if (amt < forms.minimum) return ErrorAlert(`Minimum ${forms.crypto} buy amount is $${forms.minimum}`)
+        if (amt > forms.limit) return ErrorAlert(`Sorry, you can't buy above $${forms.limit.toLocaleString()}`)
+        if (amt > kyc_threshhold) {
+            if (verified === 'false') {
+                return ErrorAlert(`Please complete your kyc to be able to trade this amount!`)
             }
         }
         setScreen(2)
@@ -126,11 +119,7 @@ const BuyCrypto = () => {
         setLoading(true);
         try {
             const response = await AuthPostApi(Apis.transaction.buy_crypto, formdata);
-            if (response.status !== 201) {
-                setLoading(false);
-                ErrorAlert(response.msg);
-                return;
-            }
+            if (response.status !== 201) return ErrorAlert(res.msg)
             fetchOrders();
             await new Promise((resolve) => setTimeout(resolve, 2000));
             SuccessAlert(response.msg);
@@ -159,7 +148,6 @@ const BuyCrypto = () => {
     }, []);
 
 
-
     const SelectCrypto = (e) => {
         const { value } = e.target;
         const crypto = cryptos.find((coin) => coin.name === String(value));
@@ -168,6 +156,9 @@ const BuyCrypto = () => {
                 ...prevForms,
                 crypto: crypto.name,
                 network: crypto.network,
+                symbol: crypto.symbol,
+                minimum: crypto.buy_min,
+                limit: crypto.buy_max
             }));
         } else {
             console.error("Selected crypto not found.");
@@ -213,7 +204,7 @@ const BuyCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    <div className="w- text-red-600 text-xs">Please Note: you can only buy a minimum of $5 and maximum of $5,000. verify your account to increase limit</div>
+                                    <div className="text-red-600 text-xs">Please Note: you can only buy a minimum of ${forms.minimum} and maximum of ${forms.limit.toLocaleString()}. verify your account to increase limit</div>
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>
@@ -227,7 +218,7 @@ const BuyCrypto = () => {
                                 </div>
                                 <div className="flex item-center justify-between w-full">
                                     <div className="text-sm">Amount in Naira</div>
-                                    <div className="flex items-center gap-1 cursor-pointer">
+                                    <div className="flex items-center gap-1">
                                         <div className="text-sm">{inNaira}</div>
                                         <TbSwitch2 className='text-lightgreen ' />
                                     </div>
@@ -270,7 +261,7 @@ const BuyCrypto = () => {
                                     </ModalLayout>
                                 }
                                 <div className="flex items-start gap-2 flex-col w-full">
-                                    <div className="text-center  w-full text-2xl">Buying <span className='text-lightgreen font-bold'>{currencies[0].symbol}{forms.amount}</span> worth of {forms.type} at <br /> <span className='text-lightgreen font-bold'>{currencies[1].symbol}{inNaira}</span></div>
+                                    <div className="text-center  w-full text-2xl">Buying <span className='text-lightgreen font-bold'>{currencies[0].symbol}{forms.amount}</span> worth of {forms.symbol} at <br /> <span className='text-lightgreen font-bold'>{currencies[1].symbol}{inNaira}</span></div>
                                 </div>
                                 <div className="text-sm text-center w-full">kindly provide your wallet address</div>
 

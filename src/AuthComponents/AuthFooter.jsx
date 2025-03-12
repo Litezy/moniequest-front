@@ -97,6 +97,7 @@ const AuthFooter = () => {
         Cookies.remove(CookieName)
         navigate('/login')
     }
+    
     return (
         <div className='w-full fixed bottom-1 z-30'>
             {logOutModal &&

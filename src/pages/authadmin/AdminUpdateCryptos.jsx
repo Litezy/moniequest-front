@@ -43,12 +43,16 @@ const AdminUpdateCryptos = () => {
             name: selected?.name,
             network: selected?.network,
             wallet_add: selected?.wallet_add,
-            symbol: selected?.symbol
+            symbol: selected?.symbol,
+            buy_min: selected?.buy_min,
+            buy_max: selected?.buy_max,
+            sell_min: selected?.sell_min,
+            sell_max: selected?.sell_max
         })
     }, [update])
 
     const addCrypto = () => {
-        setForms({ name: '', network: '', wallet_add: '', symbol: '' })
+        setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '' })
         setAdd(true)
     }
 
@@ -77,14 +81,18 @@ const AdminUpdateCryptos = () => {
     const crudCrypto = async (tag) => {
         console.log(selected?.id)
         if (tag === 'create') {
-            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol]
+            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max]
             if (reqFields.some((value) => value === '')) return ErrorAlert(`Please fill out all fields`)
             const formdata = {
                 tag: tag,
                 name: forms.name,
                 network: forms.network,
                 wallet_add: forms.wallet_add,
-                symbol: forms.symbol
+                symbol: forms.symbol,
+                buy_min: forms.buy_min,
+                buy_max: forms.buy_max,
+                sell_min: forms.sell_min,
+                sell_max: forms.sell_max
             }
             setAdd(false)
             setLoading({ status: true, val: tag })
@@ -95,7 +103,7 @@ const AdminUpdateCryptos = () => {
                 fetchCryptos()
                 SuccessAlert(res.msg)
                 setLoading({ status: false, val: '' })
-                setForms({ ...forms, name: '', network: '', wallet_add: '', symbol: '' })
+                setForms({ ...forms, name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '' })
             } catch (error) {
                 console.log(`Error in creating crypto wallet`, error)
             } finally {
@@ -110,7 +118,11 @@ const AdminUpdateCryptos = () => {
                 name: forms.name,
                 network: forms.network,
                 wallet_add: forms.wallet_add,
-                symbol: forms.symbol
+                symbol: forms.symbol,
+                buy_min: forms.buy_min,
+                buy_max: forms.buy_max,
+                sell_min: forms.sell_min,
+                sell_max: forms.sell_max
             }
             setUpdate(false)
             setLoading({ status: true, val: tag })
@@ -121,7 +133,7 @@ const AdminUpdateCryptos = () => {
                 fetchCryptos()
                 SuccessAlert(res.msg)
                 setLoading({ status: false, val: '' })
-                setForms({ ...forms, name: '', network: '', wallet_add: '', symbol: '' })
+                setForms({ ...forms, name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '' })
             } catch (error) {
                 console.log(`Error in updating crypto wallet`, error)
             } finally {
@@ -181,6 +193,10 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Crypto Network`} name={`network`} value={forms.network} onChange={handleChange} />
                                 <FormInput label={`Wallet Address`} name={`wallet_add`} value={forms.wallet_add} onChange={handleChange} />
                                 <FormInput label={`Symbol`} name={`symbol`} value={forms.symbol} onChange={handleChange} />
+                                <FormInput label={`Buy min (USD)`} name={`buy_min`} value={forms.buy_min} onChange={handleChange} />
+                                <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
+                                <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
+                                <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
                                 <FormButton type='button' onClick={() => crudCrypto('create')} title={`Add Crypto Wallet`} />
@@ -199,6 +215,10 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Crypto Network`} name={`network`} value={forms.network} onChange={handleChange} />
                                 <FormInput label={`Wallet Address`} name={`wallet_add`} value={forms.wallet_add} onChange={handleChange} />
                                 <FormInput label={`Symbol`} name={`symbol`} value={forms.symbol} onChange={handleChange} />
+                                <FormInput label={`Buy min (USD)`} name={`buy_min`} value={forms.buy_min} onChange={handleChange} />
+                                <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
+                                <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
+                                <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
                                 <FormButton type='button' onClick={() => crudCrypto('update')} title={`Update Crypto`} />

@@ -11,7 +11,7 @@ const AirdropDiv = ({ item, className }) => {
         <Link to={`/airdrops/${item.category}/${item.id}/${item.slug}`} onClick={MoveToTop} className={`h-fit w-72 bg-primary hover:bg-[#2f2f47] border hover:border-bg-green border-ash rounded-md p-4 text-white ${className}`}>
             <div className='flex flex-col gap-4'>
                 <div className='flex items-center gap-2'>
-                    <img alt='airdrop logo' src={`${imageurl}/airdrops/${item?.gen_id}/${item?.logo_image}`} className='w-14 h-14 rounded-full object-cover'></img>
+                    <img alt='airdrop logo' src={item.logo_image} className='w-14 h-14 rounded-full object-cover'></img>
                     <div className='flex flex-col gap-1'>
                         <div className='capitalize text-lg font-bold'>{item?.title}</div>
                         <div className='flex items-center gap-2'>

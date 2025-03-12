@@ -64,14 +64,8 @@ const TransComp = ({ trans }) => {
 
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">
 
-                    {/* {trans.crypto_currency && trans.type === 'buy'  &&<div
-                        className={`${ trans.type === 'buy' && trans?.status === 'failed' ? 'text-red-600':'text-lightgreen'} `}>{currencies[1].symbol}{naira}
-                    </div>}
-                    {trans.crypto_currency && trans.type === 'sell'  && <div
-                        className={`${ trans.type === 'sell' && trans?.status === 'failed' ? 'text-red-600':'text-red-600'} `}>{currencies[1].symbol}{naira}
-                    </div>} */}
                     {trans.bank_user && <div
-                        className={` text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
+                        className={`text-sm text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
                     </div>}
                     {!trans?.bank_user && <div
                         className={` text-white`}>{currencies[1].symbol}{naira}

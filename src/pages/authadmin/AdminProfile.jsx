@@ -44,10 +44,6 @@ const AdminProfile = () => {
         exchange_buy_rate: '',
         exchange_sell_rate: '',
         giftcard_rate: '',
-        buy_min: '',
-        buy_max: '',
-        sell_min: '',
-        sell_max: '',
         bank_min: '',
         kyc_threshold: '',
         leaderboard_reward: ''
@@ -99,10 +95,6 @@ const AdminProfile = () => {
             exchange_buy_rate: utils?.exchange_buy_rate || '',
             exchange_sell_rate: utils?.exchange_sell_rate || '',
             giftcard_rate: utils?.giftcard_rate || '',
-            buy_min: utils?.buy_min || '',
-            buy_max: utils?.buy_max || '',
-            sell_min: utils?.sell_min || '',
-            sell_max: utils?.sell_max || '',
             bank_min: utils?.bank_withdraw_min || '',
             kyc_threshold: utils?.kyc_threshold || '',
             leaderboard_reward: utils?.leaderboard_reward || '',
@@ -225,10 +217,6 @@ const AdminProfile = () => {
             kyc_threshold: parseFloat(form.kyc_threshold),
             bank_withdraw_min: parseFloat(form.bank_min),
             giftcard_rate: parseFloat(form.giftcard_rate),
-            buy_min: parseFloat(form.buy_min),
-            buy_max: parseFloat(form.buy_max),
-            sell_min: parseFloat(form.sell_min),
-            sell_max: parseFloat(form.sell_max),
             leaderboard_reward: parseFloat(form.leaderboard_reward),
         }
 
@@ -402,22 +390,6 @@ const AdminProfile = () => {
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Giftcard rate ($/₦)</div>
                                         <FormInput placeholder='Enter rate amount' name='giftcard_rate' value={form.giftcard_rate} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
-                                    </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>Buy min (USD)</div>
-                                        <FormInput placeholder='Enter mininimum buy amount' name='buy_min' value={form.buy_min} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
-                                    </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>Buy max (USD)</div>
-                                        <FormInput placeholder='Enter maximum buy amount' name='buy_max' value={form.buy_max} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
-                                    </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>Sell min (USD)</div>
-                                        <FormInput placeholder='Enter minimum sell amount' name='sell_min' value={form.sell_min} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
-                                    </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>Sell max (USD)</div>
-                                        <FormInput placeholder='Enter maximum sell amount' name='sell_max' value={form.sell_max} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Bank withdrawal min (NGN)</div>

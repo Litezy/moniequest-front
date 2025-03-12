@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { SlClock } from "react-icons/sl";
 import { FiUploadCloud } from 'react-icons/fi'
 import { Link } from 'react-router-dom';
-import { ErrorAlert, tools } from '../../utils/pageUtils';
+import { ErrorAlert } from '../../utils/pageUtils';
 import Loader from '../../GeneralComponents/Loader';
 import { FaEdit } from 'react-icons/fa';
 import FormInput from '../../utils/FormInput';
 import { useAtom } from 'jotai';
 import { BANK } from '../../services/store';
-import { Apis, AuthPostApi } from '../../services/API';
+import { Apis, AuthGetApi, AuthPostApi } from '../../services/API';
 import ProductsLayout from '../../AuthComponents/ProductsLayout';
 import ToolsDiv from '../../AuthComponents/ToolsDiv';
 
@@ -16,6 +16,7 @@ import ToolsDiv from '../../AuthComponents/ToolsDiv';
 
 const CreateProduct = () => {
   const [bank] = useAtom(BANK)
+  const [tools, setTools] = useState([])
   const [screen, setScreen] = useState(1)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -30,8 +31,11 @@ const CreateProduct = () => {
     account_name: '',
     video_link: '',
     contact_detail: '',
-    other:''
+    other: ''
   })
+
+ 
+
   const [productImage, setProductImage] = useState({
     img: null,
     image: null
@@ -53,6 +57,7 @@ const CreateProduct = () => {
   }
 
   const PrefillBank = () => {
+    if(!Object.entries(bank).key > 0 ) return ErrorAlert(`You haven't linked any bank to your account`)
     setForm({
       ...form,
       bank_name: bank.bank_name,
@@ -81,6 +86,7 @@ const CreateProduct = () => {
     if (isNaN(amt)) return ErrorAlert('Price amount must be a number')
     if (!productImage.image) return ErrorAlert('Upload profit tool image')
 
+      
     const formbody = new FormData()
     formbody.append('image', productImage.image)
     formbody.append('title', form.title)
@@ -115,7 +121,7 @@ const CreateProduct = () => {
 
   const addCategory = (val) => {
     setForm((prev) => {
-      const { category } = prev
+      const category = prev.category || [];
       if (category.includes(val)) {
         return {
           ...prev,
@@ -130,9 +136,22 @@ const CreateProduct = () => {
     })
 
   }
-  
-  
- 
+
+  const fetchTools = async () => {
+    try {
+      const res = await AuthGetApi(Apis.admin.get_tools)
+      if (res.status !== 200) return ErrorAlert(res.msg)
+      const data = res.data
+      setTools(data)
+    } catch (error) {
+      console.log(`Error in fetching tools data`, error)
+    }
+  }
+
+  useEffect(() => {
+  fetchTools()
+  }, [])
+
   return (
     <ProductsLayout>
       <div className='w-11/12 mx-auto'>
@@ -222,7 +241,7 @@ const CreateProduct = () => {
                     <div className="text-xs text-zinc-100">Specify Your Tool or eBook Category</div>
                   </div>
                   <div className="w-full md:w-1/2">
-                  <FormInput placeholder='Enter category' name='other' value={form.other} onChange={formHandler} className='!rounded-none' />
+                    <FormInput placeholder='Enter category' name='other' value={form.other} onChange={formHandler} className='!rounded-none' />
                   </div>
                 </div>
               </div>
@@ -251,13 +270,13 @@ const CreateProduct = () => {
                     <label className='cursor-pointer'>
                       {productImage.img ?
                         <div className='relative'>
-                          <img src={productImage.img} alt={productImage.img} className='h-56 w-full object-cover object-center'></img>
+                          <img src={productImage.img} alt={productImage.img} className='h-60 w-full object-cover object-center'></img>
                           <div className="absolute top-0 -right-3 main font-bold">
                             <FaEdit className='text-2xl text-lightgreen' />
                           </div>
                         </div>
                         :
-                        <div className='w-full h-56 border border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
+                        <div className='w-full h-60 border border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
                           <div className='bg-primary rounded-full p-4'><FiUploadCloud /></div>
                           <span>click to add image</span>
                         </div>

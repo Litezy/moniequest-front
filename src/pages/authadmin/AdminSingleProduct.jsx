@@ -37,6 +37,7 @@ const AdminSingleProduct = () => {
         feature1: '',
         feature2: '',
         status: '',
+        other:'',
         listing: '',
         discount_percentage: '',
         discount_duration: '',
@@ -71,6 +72,7 @@ const AdminSingleProduct = () => {
                     feature2: data.feature2 || '',
                     status: data.status || '',
                     listing: data.listing || '',
+                    other:data.other || '',
                     discount_percentage: data.discount_percentage || '',
                     discount_duration: data.discount_duration || '',
                     discount_duration_type: data.discount_duration_type || durationTypes[0]
@@ -228,22 +230,12 @@ const AdminSingleProduct = () => {
                                             </>
                                         }
                                     </div>
-                                    {/* <div className='flex flex-wrap gap-4 mt-2'>
-                                        {allCategories.map((item, i) => (
-                                            <div className='flex gap-2' key={i}>
-                                                <div className='w-5 h-5 border border-gray-200 rounded-full flex justify-center items-center cursor-pointer' onClick={() => addRemoveCategory(item)}>
-                                                    <div className={`w-3.5 h-3.5 rounded-full cursor-pointer ${form.category.includes(item) && 'bg-lightgreen'}`}></div>
-                                                </div>
-                                                <div className='text-sm'>{item}</div>
-                                            </div>
-                                        ))}
-                                    </div> */}
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <div className='text-lightgreen capitalize font-medium'>Other tools specified by user:</div>
                                     <div className='flex flex-wrap gap-2'>
                                         {form.other ?
-                                            <div className='w-fit h-fit p-3 bg-gray-300 text-black rounded-xl text-sm'>form.other</div>:
+                                            <div className='w-fit h-fit p-2 b text-white bg-gray-500 rounded-xl text-sm'>{form.other}</div>:
                                             <div className="">n/a</div>
                                         }
 

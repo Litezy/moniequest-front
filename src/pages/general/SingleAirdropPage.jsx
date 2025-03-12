@@ -108,7 +108,7 @@ const SingleAirdropPage = () => {
                 <div className='flex lg:flex-row lg:justify-between flex-col gap-4'>
                   <div className='flex items-center gap-2'>
                     <div>
-                      <img alt='airdrop logo image' src={`${imageurl}/airdrops/${singleAirdrop?.gen_id}/${singleAirdrop?.logo_image}`} className='size-14 rounded-full object-cover'></img>
+                      <img alt='airdrop logo image' src={singleAirdrop.logo_image} className='size-14 rounded-full object-cover'></img>
                     </div>
                     <div className='capitalize md:text-4xl text-3xl font-bold'>{singleAirdrop?.title}</div>
                   </div>
@@ -141,7 +141,7 @@ const SingleAirdropPage = () => {
                     <p>{singleAirdrop?.about}</p>
                   </div>
                   <div className='lg:col-span-2 col-span-1'>
-                    <img alt='airdrop banner image' src={`${imageurl}/airdrops/${singleAirdrop?.gen_id}/${singleAirdrop?.banner_image}`} className='w-full h-auto'></img>
+                    <img alt='airdrop banner image' src={singleAirdrop.banner_image} className='w-full h-auto'></img>
                   </div>
                 </div>
                 <div className='grid lg:grid-cols-6 grid-cols-1 gap-8'>

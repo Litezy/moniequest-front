@@ -10,6 +10,8 @@ import FormInput from '../../utils/FormInput'
 import { FaCopy } from 'react-icons/fa'
 import { BankAcc, currencies } from '../../AuthComponents/AuthUtils'
 import { TfiTimer } from 'react-icons/tfi'
+import { useAtom } from 'jotai'
+import { UTILS } from '../../services/store'
 
 const OrderPage = () => {
     const [loading, setLoading] = useState(false)
@@ -17,6 +19,7 @@ const OrderPage = () => {
     const [data, setData] = useState({})
     const { id, tag } = useParams()
     const [screen, setScreen] = useState(1)
+    const [utils] = useAtom(UTILS)
 
     const fetchSingleHistory = useCallback(async () => {
         setLoading(true)
@@ -40,11 +43,11 @@ const OrderPage = () => {
         }
     }, [])
 
-    const rate = 1750
     useEffect(() => {
         fetchSingleHistory()
     }, [])
 
+    const rate = tag === 'buy' ? utils?.exchange_buy_rate : utils?.exchange_sell_rate
     const naviagate = useNavigate()
     const [confirm, setConfirm] = useState(false)
     const [cancel, setCancel] = useState(false)

@@ -57,17 +57,18 @@ const AdminPageLayout = ({ children }) => {
         FetchBankAndUtils()
         fetchAllUsers()
     }, [])
+
     const optimizeImageUrl = (url) => {
         if (!url || !url.includes('cloudinary.com')) return url;
         const parts = url.split('/upload/');
         return `${parts[0]}/upload/q_auto,f_webp/${parts[1]}`;
     };
 
-
     const LogoutAdmin = () => {
         Cookies.remove(CookieName)
         navigate('/login')
     }
+
     return (
         <div className='w-full'>
             <div className="flex w-full bg-[#1d1e30] relative">

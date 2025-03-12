@@ -30,10 +30,13 @@ const SellCrypto = () => {
         symbol: '',
         crypto: "",
         network: '',
-        wallet_add: ''
+        wallet_add: '',
+        minimum: '',
+        limit: ''
     })
     const [active, setActive] = useState(tags[0])
     const [confirm, setConfirm] = useState(false)
+    const rate = utils?.exchange_sell_rate
 
     const handleAmount = (e) => {
         const rawValue = e.target.value.replace(/,/g, '');
@@ -56,26 +59,14 @@ const SellCrypto = () => {
         name: currencies[0].name,
         symbol: currencies[0].symbol
     })
-    const rate = utils?.exchange_sell_rate
-    const limit = utils?.sell_max
-    const nairaLimit = limit * rate
-    const minimum = utils?.sell_min
 
     const submit = (e) => {
         e.preventDefault()
+        const amt = forms.amount.replace(/,/g, '')
         if (!forms.amount) return ErrorAlert('amount is required')
-        if (forms.amount < minimum) return ErrorAlert('amount is too small')
+        if (amt < forms.minimum) return ErrorAlert(`Minimum ${forms.crypto} sell amount is $${forms.minimum}`)
         if (!forms.network) return ErrorAlert('coin network is required')
-        if (selectedCurr.name !== 'USD' && selectedCurr.symbol !== '$') {
-            const amt = forms.amount.replace(/,/g, '')
-            const newamt = amt * rate
-            if (newamt > nairaLimit) return ErrorAlert(`Sorry, you can't sell above ${currencies[1].symbol}${nairaLimit.toLocaleString()}`)
-        }
-        if (selectedCurr.name === 'USD' && selectedCurr.symbol === '$') {
-            const amt = forms.amount.replace(/,/g, '')
-            if (amt > limit) return ErrorAlert(`Sorry, you can't sell above ${currencies[0].symbol}${limit.toLocaleString()}`)
-        }
-
+        if (amt > forms.limit) return ErrorAlert(`Sorry, you can't sell above $${forms.limit.toLocaleString()}`)
         setModal(true)
     }
 
@@ -100,7 +91,7 @@ const SellCrypto = () => {
         setModal(false)
         setScreen(2)
     }
-    
+
     const confirmOrder = async () => {
         if (!forms.trans_hash) return ErrorAlert(`Please input your transaction hash as proof of transfer`)
         if (forms.trans_hash.length < 64) return ErrorAlert(`Please input a valid transaction hash.`)
@@ -118,13 +109,10 @@ const SellCrypto = () => {
         try {
             const res = await AuthPostApi(Apis.transaction.sell_crypto, formdata)
             if (res.status !== 201) return ErrorAlert(res.msg)
-            SuccessAlert(res.msg);
-            setForms({ amount: '', type: coinDetails[0], trans_hash: '' });
-            setScreen(1);
             await new Promise((resolve) => setTimeout(resolve, 2000));
+            SuccessAlert(res.msg);
+            setScreen(1);
             navigate('/user/exchange/orders');
-            setLoading(false);
-
         } catch (error) {
             ErrorAlert(error.message)
         } finally {
@@ -149,17 +137,6 @@ const SellCrypto = () => {
     }, []);
 
 
-    const handleCoins = (e) => {
-        const value = e.target.value
-        const findNetwork = coinDetails.find((trx) => trx.network === String(value))
-        if (findNetwork) {
-            setForms({ ...forms, network: findNetwork.network, wallet_add: findNetwork.address, crypto: findNetwork.name });
-        } else {
-            setForms({ ...forms, network: '', wallet_add: '' });
-        }
-
-    }
-
     const SelectCrypto = (e) => {
         const { value } = e.target;
         const crypto = cryptos.find((coin) => coin.name === String(value));
@@ -168,7 +145,10 @@ const SellCrypto = () => {
                 ...prevForms,
                 crypto: crypto.name,
                 network: crypto.network,
-                wallet_add: crypto.wallet_add
+                symbol: crypto.symbol,
+                wallet_add: crypto.wallet_add,
+                minimum: crypto.sell_min,
+                limit: crypto.sell_max
             }));
         } else {
             setForms({ ...forms, network: '', wallet_add: '' });
@@ -244,7 +224,6 @@ const SellCrypto = () => {
                     {screen === 1 && active === 'BUY' &&
                         <div className="w-full  lg:w-2/3 mx-auto flex items-center justify-center">
                             <div className="flex w-full  mx-auto mt-5 items-start gap-5 flex-col">
-                                {/* <div className="text-center font-bold text-red-500 w-full">Sell Crypto</div> */}
                                 <div className="flex items-start gap-2 flex-col w-full">
                                     <div className="font-bold text-lg">Crypto Currency:</div>
                                     <select onChange={SelectCrypto} className='bg-dark w-full text-white border border-gray-300 rounded-md py-2 px-4'>
@@ -258,7 +237,7 @@ const SellCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    <div className="w- text-red-600 text-xs">Please Note: you can only buy a minimum of $10 and maximum of $5,000. verify your account to increase limit</div>
+                                    <div className="w- text-red-600 text-xs">Please Note: you can only sell a minimum of ${forms.minimum} and maximum of ${forms.limit.toLocaleString()}. verify your account to increase limit</div>
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>
@@ -272,7 +251,7 @@ const SellCrypto = () => {
                                 </div>
                                 <div className="flex item-center justify-between w-full">
                                     <div className="text-sm">Amount in Naira</div>
-                                    <div className="flex items-center gap-1 cursor-pointer">
+                                    <div className="flex items-center gap-1">
                                         <div className="text-sm">{inNaira}</div>
                                         <TbSwitch2 className='text-lightgreen ' />
                                     </div>

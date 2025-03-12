@@ -176,7 +176,7 @@ const AdminAddTools = () => {
               tools.map((tool, i) => (
                 <div key={i} className='w-full border border-gray-500 rounded-md p-2 relative'>
                   <div className="flex cursor-pointer items-center gap-2 mb-1">
-                    <div className="">{tool.name}</div>
+                    <div className="capitalize">{tool.name}</div>
                   </div>
                   {Array.isArray(JSON.parse(tool.features)) ? (
                     JSON.parse(tool.features).map((item, k) => (
