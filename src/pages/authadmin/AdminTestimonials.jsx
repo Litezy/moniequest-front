@@ -36,7 +36,7 @@ const AdminTestimonials = () => {
                     <div className="flex items-center justify-between w-full">
                         <Link to={`/admin/utilities`} className='px-4 py-1.5 rounded-md bg-ash'>back to utilities</Link>
                         {data?.length <= 6 && <Link to={`/admin/utilities/testimonials/create`}
-                            className="px-3 py-1.5 text-sm rounded-xl bg-white text-dark w-fit">Create New Testimonial</Link>}
+                            className="px-4 py-2 rounded-md text-sm text-primary bg-white">Create New Testimonial</Link>}
                     </div>
 
                     <div className="mt-10 capitalize">below are current testimonials on monieQuest</div>

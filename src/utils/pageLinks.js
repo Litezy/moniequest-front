@@ -91,8 +91,8 @@ export const GeneralPagesLinks = [
     { path: '/faqs', component: FAQS },
     { path: '/privacy_policy', component: PrivacyPolicy },
     { path: '/we_are_hiring', component: Hiring },
-    { path: '/blogs/:feature/:id/', component: SingleBlog },
-    { path: '/blogs/:feature/:id/comments', component: BlogComments },
+    { path: '/blogs/:feature/:id/:slug', component: SingleBlog },
+    { path: '/blogs/:feature/:id/:slug/comments', component: BlogComments },
     { path: '/blogs/:feature', component: FeatureBlogs },
 ]
 

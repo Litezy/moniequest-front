@@ -64,11 +64,11 @@ const UserKYC = () => {
             })
             setfrontImg({
                 ...frontimg,
-                img: `${imageurl}/identities/${data.front_image}` || null
+                img: data.front_image || null
             })
             setbackImg({
                 ...backimg,
-                img: `${imageurl}/identities/${data.back_image}` || null
+                img: data.back_image || null
             })
         } catch (error) {
             //
@@ -159,7 +159,7 @@ const UserKYC = () => {
                                 {dataLoading ?
                                     <div className='w-24 h-2 rounded-full bg-slate-400 animate-pulse'></div>
                                     :
-                                    <div className={`italic ${kyc?.status === 'verified' ? 'text-green-400' : kyc?.status === 'processing' ? 'text-yellow-300' : 'text-red-500'}`}>{kyc?.status ? kyc.status : 'unverified'}</div>
+                                    <div className={`italic ${kyc?.status === 'verified' ? 'text-green-300' : kyc?.status === 'processing' ? 'text-yellow-300' : 'text-red-500'}`}>{kyc?.status ? kyc.status : 'unverified'}</div>
                                 }
                             </div>
                             <div className="grid md:grid-cols-2 grid-cols-1 md:items-baseline gap-5 mt-6 w-full">

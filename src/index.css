@@ -12,6 +12,22 @@
   -webkit-text-size-adjust: 100%;
 }
 
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('utils//fonts/Urbanist-VariableFont_wght.ttf') format('truetype'),
+       url('utils/fonts/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('utils/fonts/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
 html, body {
   overflow-x: hidden;
   box-sizing: border-box;
@@ -21,6 +37,9 @@ html, body {
   background-color: #141523;
 }
 
+.urban{
+  font-family: 'Urbanist',sans-serif;
+}
 .poppins {
   font-family: "Poppins", serif;
 }
@@ -336,3 +355,5 @@ input[type=number]:focus {
 .shadow_auth {
   box-shadow: 0px 1px 10px #121225;
 }
+
+

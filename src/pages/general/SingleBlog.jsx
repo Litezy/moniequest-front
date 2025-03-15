@@ -25,12 +25,21 @@ const SingleBlog = () => {
         phone: '',
         content: ''
     })
+
     const formHandler = (event) => {
         setForm({
             ...form,
             [event.target.name]: event.target.value
         })
     }
+
+    const handlePhoneNum = (e) => {
+        let value = e.target.value
+        const formatVal = value.replace(/\D/g, '')
+        const numLenght = formatVal.substring(0, 11)
+        setForm({ ...form, phone: numLenght })
+    }
+
 
     const FetchSingleBlog = useCallback(async () => {
         try {
@@ -223,7 +232,7 @@ const SingleBlog = () => {
                                     </div>
                                     <div className='flex flex-col gap-8'>
                                         <div className="flex items-start gap-2 flex-col" id='second'>
-                                            <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.second_paragraph_title}.</div>
+                                            <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.second_paragraph_title}</div>
                                             <div className="">{singleBlog?.second_paragraph_content}</div>
                                         </div>
                                         {singleBlog?.second_paragraph_image && <div className="flex items-center justify-center" id='second'>
@@ -257,7 +266,7 @@ const SingleBlog = () => {
                                         ))}
                                     </div>
                                     {singleBlog.blog_comments.length > 1 &&
-                                        <Link to={`/blogs/${singleBlog.feature}/${singleBlog.id}/comments`} onClick={MoveToTop}>
+                                        <Link to={`/blogs/${singleBlog.feature}/${singleBlog.id}/${singleBlog.slug}/comments`} onClick={MoveToTop}>
                                             <button className="w-fit px-4 py-1 rounded-md bg-ash text-white">see all comments</button>
                                         </Link>
                                     }
@@ -278,7 +287,7 @@ const SingleBlog = () => {
                                         <FormInput label={`Email Address`} type='email' name='email' placeholder='Email address' value={form.email} onChange={formHandler} />
                                     </div>
                                     <div className="w-full">
-                                        <FormInput label={`Phone number (Optional)`} name='phone' placeholder='Phone number' value={form.phone} onChange={formHandler} />
+                                        <FormInput label={`Phone number (Optional)`} name='phone' placeholder='Phone number' value={form.phone} onChange={handlePhoneNum} />
                                     </div>
                                 </div>
                                 <div className="w-full flex-col  flex items-start gap-2">

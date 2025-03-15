@@ -250,7 +250,7 @@ const AdminUpdateCryptos = () => {
                 <div className="mt-10 text-center text-base md:ttext-lg mb-5 capitalize font-bold">Lists of available cryptos and networks</div>
 
                 <div className="w-fit ml-auto">
-                    <button onClick={addCrypto} className='px-3 py-1.5 rounded-sm bg-white text-dark'>Add Crypto</button>
+                    <button onClick={addCrypto} className="px-4 py-2 rounded-md text-sm text-dark bg-white">Add Crypto</button>
                 </div>
                 {!loading.status && loading.val === '' &&
                     <div className="relative overflow-x-auto rounded-md mt-10">

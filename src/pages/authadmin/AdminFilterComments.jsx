@@ -82,7 +82,7 @@ const AdminFilterComments = () => {
                                             <h1 className="text-lg font-bold">{comment.username}</h1>
                                             <p className="text-sm">{comment.content}</p>
                                         </div>
-                                        <button onClick={() => setModal(true)} onMouseOver={() => setCommentId(comment?.id)} className='w-fit px-4 py-1.5 bg-red-600 text-white'>Delete</button>
+                                        <button onClick={() => setModal(true)} onMouseOver={() => setCommentId(comment?.id)} className='w-fit px-4 py-1.5 bg-red-600 text-white rounded-md'>Delete</button>
                                     </div>
                                 </div>
                             ))}

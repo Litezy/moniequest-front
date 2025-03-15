@@ -7,7 +7,7 @@ import avatar from '../assets/images/avatar.svg'
 import { CookieName, ErrorAlert, MoveToTop, SuccessAlert } from '../utils/pageUtils'
 import { Apis, AuthGetApi, AuthPostApi, imageurl } from '../services/API'
 import { useAtom } from 'jotai'
-import { BANK, CRYPTOS, PROFILE, UTILS, WALLET } from '../services/store'
+import { BANK, CRYPTOS, PROFILE, TOOLS, UTILS, WALLET } from '../services/store'
 import Cookies from 'js-cookie';
 import ModalLayout from '../utils/ModalLayout'
 
@@ -19,6 +19,7 @@ const AuthPageLayout = ({ children }) => {
   const [, setBank] = useAtom(BANK)
   const [, setUtils] = useAtom(UTILS)
   const [, setCryptos] = useAtom(CRYPTOS)
+  const [, setTools] = useAtom(TOOLS)
   const navigate = useNavigate()
   const location = useLocation()
   const pathName = location.pathname
@@ -49,6 +50,17 @@ const AuthPageLayout = ({ children }) => {
         console.log(`Sorry something went wrong in fetch cryptos data`, error)
       }
     }
+    const fetchTools = async () => {
+      try {
+        const res = await AuthGetApi(Apis.admin.get_tools)
+        if (res.status !== 200) return ErrorAlert(res.msg)
+        const data = res.data
+        setTools(data)
+      } catch (error) {
+        console.log(`Error in fetching tools data`, error)
+      }
+    }
+    fetchTools()
     fetchCryptos()
     FetchWalletBankAndUtils()
   }, [])

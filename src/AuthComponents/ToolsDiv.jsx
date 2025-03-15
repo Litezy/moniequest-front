@@ -9,10 +9,13 @@ const ToolsDiv = ({ item, handleCategory, array }) => {
         duration: 1000,
         easing: "easeInOutQuad",
     });
+
     return (
         <div className='w-full'>
             <div onClick={() => handleCategory(item.name)} className="flex cursor-pointer items-center gap-2 mb-1">
-                <div className={`w-3 h-3 rounded-full ${array.includes(item.name) ? 'bg-lightgreen' : 'bg-zinc-100'}  `}></div>
+                <div className='w-5 h-5 p-0.5 rounded-full border border-zinc-100'>
+                    {array.includes(item.name) && <div className='w-full h-full rounded-full bg-lightgreen'></div>}
+                </div>
                 <div className="capitalize">{item.name}</div>
             </div>
             <div className="flex flex-col gap-1">

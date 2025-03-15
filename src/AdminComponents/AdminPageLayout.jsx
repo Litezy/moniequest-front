@@ -8,7 +8,7 @@ import { pagelinks } from './AdminUtils'
 import { Apis, AuthGetApi, imageurl } from '../services/API'
 import { useAtom } from 'jotai'
 import Cookies from 'js-cookie'
-import { BANK, PROFILE, USER_SUB_KYCS, USER_VER_KYCS, USERBANKS, USERDETAILS, UTILS } from '../services/store'
+import { BANK, PROFILE, TOOLS, USER_SUB_KYCS, USER_VER_KYCS, USERBANKS, USERDETAILS, UTILS } from '../services/store'
 import ModalLayout from '../utils/ModalLayout'
 
 
@@ -20,6 +20,7 @@ const AdminPageLayout = ({ children }) => {
     const [, setUserSubmittedKycs] = useAtom(USER_SUB_KYCS)
     const [, setUserBanks] = useAtom(USERBANKS)
     const [, setUserVerifiedKycs] = useAtom(USER_VER_KYCS)
+    const [, setTools] = useAtom(TOOLS)
     const location = useLocation()
     const pathName = location.pathname
     const active = 'text-lightgreen rounded-sm bg-[#1e333c]'
@@ -53,7 +54,17 @@ const AdminPageLayout = ({ children }) => {
                 console.log(error)
             }
         }
-
+        const fetchTools = async () => {
+            try {
+                const res = await AuthGetApi(Apis.admin.get_tools)
+                if (res.status !== 200) return ErrorAlert(res.msg)
+                const data = res.data
+                setTools(data)
+            } catch (error) {
+                console.log(`Error in fetching tools data`, error)
+            }
+        }
+        fetchTools()
         FetchBankAndUtils()
         fetchAllUsers()
     }, [])

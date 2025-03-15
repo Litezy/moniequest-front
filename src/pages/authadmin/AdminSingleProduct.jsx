@@ -10,10 +10,9 @@ import FormButton from '../../utils/FormButton';
 import Loader from '../../GeneralComponents/Loader';
 import { FiUploadCloud } from 'react-icons/fi';
 import { Apis, AuthGetApi, AuthPutApi, imageurl } from '../../services/API';
+import { useAtom } from 'jotai';
+import { TOOLS } from '../../services/store';
 
-const allCategories = [
-    "AI Tool", "Creative Tool", "Productivity Tool", "Business Resource", "Learning and Skill Development", "Media Generator", "Automation and Utility Tool", "Tech and Software Solution", "eBooks and Written Guide"
-]
 const statuses = [
     "pending", "approved", "declined"
 ]
@@ -26,6 +25,7 @@ const listOptions = [
 
 const AdminSingleProduct = () => {
     const { id } = useParams()
+    const [tools] = useAtom(TOOLS)
     const [singleProduct, setSingleProduct] = useState({})
     const [dataLoading, setDataLoading] = useState(true)
     const [loading, setLoading] = useState(false)
@@ -37,7 +37,7 @@ const AdminSingleProduct = () => {
         feature1: '',
         feature2: '',
         status: '',
-        other:'',
+        other: '',
         listing: '',
         discount_percentage: '',
         discount_duration: '',
@@ -72,7 +72,7 @@ const AdminSingleProduct = () => {
                     feature2: data.feature2 || '',
                     status: data.status || '',
                     listing: data.listing || '',
-                    other:data.other || '',
+                    other: data.other || '',
                     discount_percentage: data.discount_percentage || '',
                     discount_duration: data.discount_duration || '',
                     discount_duration_type: data.discount_duration_type || durationTypes[0]
@@ -235,11 +235,24 @@ const AdminSingleProduct = () => {
                                     <div className='text-lightgreen capitalize font-medium'>Other tools specified by user:</div>
                                     <div className='flex flex-wrap gap-2'>
                                         {form.other ?
-                                            <div className='w-fit h-fit p-2 b text-white bg-gray-500 rounded-xl text-sm'>{form.other}</div>:
+                                            <div className='w-fit h-fit p-2 text-white bg-gray-500 rounded-xl text-sm'>{form.other}</div> :
                                             <div className="">n/a</div>
                                         }
-
-
+                                    </div>
+                                </div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='text-lightgreen capitalize font-medium'>all product tools:</div>
+                                    <div className='flex flex-wrap gap-2'>
+                                        {tools.length > 0 &&
+                                            <>
+                                                {tools.map((item, i) => (
+                                                    <div key={i} className='flex gap-2 items-center w-fit h-fit p-2 bg-ash text-white rounded-xl text-sm'>
+                                                        <div>{item.name}</div>
+                                                        <div className={`${form.category.includes(item.name) ? 'bg-lightgreen' : 'bg-white'} h-3.5 w-3.5 rounded-full cursor-pointer`} onClick={() => addRemoveCategory(item.name)}></div>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        }
                                     </div>
                                 </div>
                             </div>

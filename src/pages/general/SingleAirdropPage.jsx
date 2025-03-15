@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PageLayout from '../../GeneralComponents/PageLayout'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { FaXTwitter } from 'react-icons/fa6'
-import { SiTelegram } from 'react-icons/si'
-import { LuArrowRightLeft } from 'react-icons/lu'
+import { FaXTwitter, FaTelegram, FaGlobe } from 'react-icons/fa6'
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { RxExternalLink } from "react-icons/rx";
 import { Apis, GetApi, imageurl } from '../../services/API'
@@ -121,12 +119,12 @@ const SingleAirdropPage = () => {
                       }
                       {singleAirdrop.telegram_link &&
                         <a target="_blank" rel="noopener noreferrer" href={singleAirdrop.telegram_link} className='w-fit h-fit p-1.5 rounded-full border border-gray-600 text-sm hover:border-lightgreen hover:bg-lightgreen hover:text-black flex items-center justify-center'>
-                          <SiTelegram />
+                          <FaTelegram />
                         </a>
                       }
                       {singleAirdrop.website_link &&
                         <a target="_blank" rel="noopener noreferrer" href={singleAirdrop.website_link} className='w-fit h-fit p-1.5 rounded-full border border-gray-600 text-sm hover:border-lightgreen hover:bg-lightgreen hover:text-black flex items-center justify-center'>
-                          <LuArrowRightLeft />
+                          <FaGlobe />
                         </a>
                       }
                     </div>
@@ -176,7 +174,7 @@ const SingleAirdropPage = () => {
                       </div>
                     </div>
                     <div className='flex flex-col gap-4 mt-8'>
-                      <div className='text-xl font-bold'>Code/Website</div>
+                      <div className='text-xl font-bold'>Link to earn</div>
                       <a target="_blank" rel="noopener noreferrer" href={singleAirdrop?.referral_link} className='w-full bg-primary py-2 px-4 flex items-center justify-between'>
                         <div className='text-lightgreen underline'>{singleAirdrop?.referral_link}</div>
                         <RxExternalLink className='text-lg' />

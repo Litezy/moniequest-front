@@ -1,7 +1,5 @@
 import React from 'react'
-import { FaXTwitter } from 'react-icons/fa6'
-import { LuArrowRightLeft } from 'react-icons/lu'
-import { SiTelegram } from 'react-icons/si'
+import { FaXTwitter, FaTelegram, FaGlobe } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { MoveToTop } from '../utils/pageUtils'
 import { imageurl } from '../services/API'
@@ -19,10 +17,10 @@ const AirdropDiv = ({ item, className }) => {
                                 <FaXTwitter />
                             </div>}
                             {item.telegram_link && <div className='w-fit h-fit p-1.5 rounded-full border border-gray-600 text-xs flex items-center justify-center'>
-                                <SiTelegram />
+                                <FaTelegram />
                             </div>}
                             {item.website_link && <div className='w-fit h-fit p-1.5 rounded-full border border-gray-600 text-xs flex items-center justify-center'>
-                                <LuArrowRightLeft />
+                                <FaGlobe />
                             </div>}
                         </div>
                     </div>

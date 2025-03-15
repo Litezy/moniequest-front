@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { SlClock } from "react-icons/sl";
 import { FiUploadCloud } from 'react-icons/fi'
 import { Link } from 'react-router-dom';
@@ -7,8 +7,8 @@ import Loader from '../../GeneralComponents/Loader';
 import { FaEdit } from 'react-icons/fa';
 import FormInput from '../../utils/FormInput';
 import { useAtom } from 'jotai';
-import { BANK } from '../../services/store';
-import { Apis, AuthGetApi, AuthPostApi } from '../../services/API';
+import { BANK, TOOLS } from '../../services/store';
+import { Apis, AuthPostApi } from '../../services/API';
 import ProductsLayout from '../../AuthComponents/ProductsLayout';
 import ToolsDiv from '../../AuthComponents/ToolsDiv';
 
@@ -16,7 +16,7 @@ import ToolsDiv from '../../AuthComponents/ToolsDiv';
 
 const CreateProduct = () => {
   const [bank] = useAtom(BANK)
-  const [tools, setTools] = useState([])
+  const [tools] = useAtom(TOOLS)
   const [screen, setScreen] = useState(1)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -33,9 +33,6 @@ const CreateProduct = () => {
     contact_detail: '',
     other: ''
   })
-
- 
-
   const [productImage, setProductImage] = useState({
     img: null,
     image: null
@@ -57,7 +54,7 @@ const CreateProduct = () => {
   }
 
   const PrefillBank = () => {
-    if(!Object.entries(bank).key > 0 ) return ErrorAlert(`You haven't linked any bank to your account`)
+    if (Object.values(bank).length === 0) return ErrorAlert(`You haven't linked any bank to your account`)
     setForm({
       ...form,
       bank_name: bank.bank_name,
@@ -86,7 +83,7 @@ const CreateProduct = () => {
     if (isNaN(amt)) return ErrorAlert('Price amount must be a number')
     if (!productImage.image) return ErrorAlert('Upload profit tool image')
 
-      
+
     const formbody = new FormData()
     formbody.append('image', productImage.image)
     formbody.append('title', form.title)
@@ -137,20 +134,6 @@ const CreateProduct = () => {
 
   }
 
-  const fetchTools = async () => {
-    try {
-      const res = await AuthGetApi(Apis.admin.get_tools)
-      if (res.status !== 200) return ErrorAlert(res.msg)
-      const data = res.data
-      setTools(data)
-    } catch (error) {
-      console.log(`Error in fetching tools data`, error)
-    }
-  }
-
-  useEffect(() => {
-  fetchTools()
-  }, [])
 
   return (
     <ProductsLayout>

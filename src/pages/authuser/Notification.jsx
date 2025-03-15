@@ -99,7 +99,7 @@ const Notification = () => {
                     ))}
                   </div>
                   {visibleCount < notifications.length &&
-                    <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>See previous notifications</button>
+                    <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>show older notifications</button>
                   }
                 </div>
                 :
