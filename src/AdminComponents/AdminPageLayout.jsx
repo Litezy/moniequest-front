@@ -8,7 +8,7 @@ import { pagelinks } from './AdminUtils'
 import { Apis, AuthGetApi, imageurl } from '../services/API'
 import { useAtom } from 'jotai'
 import Cookies from 'js-cookie'
-import { BANK, PROFILE, TOOLS, USER_SUB_KYCS, USER_VER_KYCS, USERBANKS, USERDETAILS, UTILS } from '../services/store'
+import { BANK, PROFILE, SUBS, TOOLS, USER_SUB_KYCS, USER_VER_KYCS, USERBANKS, USERDETAILS, UTILS } from '../services/store'
 import ModalLayout from '../utils/ModalLayout'
 
 
@@ -21,6 +21,7 @@ const AdminPageLayout = ({ children }) => {
     const [, setUserBanks] = useAtom(USERBANKS)
     const [, setUserVerifiedKycs] = useAtom(USER_VER_KYCS)
     const [, setTools] = useAtom(TOOLS)
+    const [, setSubscribers] = useAtom(SUBS)
     const location = useLocation()
     const pathName = location.pathname
     const active = 'text-lightgreen rounded-sm bg-[#1e333c]'
@@ -39,6 +40,16 @@ const AdminPageLayout = ({ children }) => {
                 }
             } catch (error) {
                 console.log(error)
+            }
+        }
+        const fetchSubs = async ()=>{
+            try {
+                const res = await AuthGetApi(Apis.admin.get_subs)
+                if(res.status !== 200) return;
+                 const data = res.data
+                 setSubscribers(data)
+            } catch (error) {
+                console.log(`error in fetching subscribers`,error)
             }
         }
         const fetchAllUsers = async () => {
@@ -67,6 +78,7 @@ const AdminPageLayout = ({ children }) => {
         fetchTools()
         FetchBankAndUtils()
         fetchAllUsers()
+        fetchSubs()
     }, [])
 
     const optimizeImageUrl = (url) => {

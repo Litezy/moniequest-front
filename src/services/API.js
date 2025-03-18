@@ -118,7 +118,8 @@ const admin_urls = {
     delete_comment: admin + 'delete_comment',
     create_tool: admin + 'create_tool',
     get_tools: admin + 'get_tools',
-    delete_tool: admin + 'delete_tool'
+    delete_tool: admin + 'delete_tool',
+    get_subs: admin + 'get_subs'
 }
 
 const products = 'api/product/'

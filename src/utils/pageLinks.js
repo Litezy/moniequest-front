@@ -71,6 +71,7 @@ import AdminUpdateCryptos from "../pages/authadmin/AdminUpdateCryptos";
 import AdminFilterBlogs from "../pages/authadmin/AdminFilterBlogs";
 import AdminFilterComments from "../pages/authadmin/AdminFilterComments";
 import AdminAddTools from "../pages/authadmin/AdminAddTools";
+import AdminSubscribers from "../pages/authadmin/AdminSubscribers";
 
 export const GeneralPagesLinks = [
     { path: '*', component: Notfound },
@@ -121,6 +122,7 @@ export const AdminPagesLinks = [
     { path: '/admin/all_users/create_user', component: AdminCreateUsers },
     { path: '/admin/all_users/user_details', component: UserDetails },
     { path: '/admin/all_users/user_banks', component: UserBanks },
+    { path: '/admin/all_users/subscribers', component: AdminSubscribers },
     { path: '/admin/all_users/submitted_kycs', component: UserKycApplications },
     { path: '/admin/all_users/verified_kycs', component: VerifiedUsers },
     { path: '/admin/exchange/buy_orders/:id', component: SingleBuyOrder },

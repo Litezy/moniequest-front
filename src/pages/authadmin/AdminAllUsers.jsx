@@ -10,6 +10,7 @@ const AdminAllUsers = () => {
         { title: 'Users KYC Applications', id: 3, url: '/admin/all_users/submitted_kycs' },
         { title: 'Verified Users', id: 4, url: '/admin/all_users/verified_kycs' },
         { title: 'Create Users', id: 5, url: '/admin/all_users/create_user' },
+        { title: 'Subscribers', id: 6, url: '/admin/all_users/subscribers' },
     ]
 
 
