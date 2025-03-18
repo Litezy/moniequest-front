@@ -6,7 +6,7 @@ import { CookieName } from '../utils/pageUtils'
 export let URL;
 export let imageurl;
 
-if (import.meta.env.VITE_ENV === 'production') {
+if (window.location.origin.includes('moniequest')) {
     URL = import.meta.env.VITE_LIVE_API_URL
     imageurl = import.meta.env.VITE_LIVE_API_URL
 } else {
