@@ -30,7 +30,7 @@ const AdminUpdateCryptos = () => {
 
     const Topheaders = [`Name`, 'Network', 'Wallet Address', 'Symbol', 'Update', 'Delete']
     const [forms, setForms] = useState({
-        name: '', network: '', wallet_add: '', symbol: ''
+        name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: ''
     })
     const [add, setAdd] = useState(false)
     const [update, setUpdate] = useState(false)
@@ -47,12 +47,13 @@ const AdminUpdateCryptos = () => {
             buy_min: selected?.buy_min,
             buy_max: selected?.buy_max,
             sell_min: selected?.sell_min,
-            sell_max: selected?.sell_max
+            sell_max: selected?.sell_max,
+            gas_fee: selected?.gas_fee
         })
     }, [update, selected])
 
     const addCrypto = () => {
-        setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '' })
+        setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: '' })
         setAdd(true)
     }
 
@@ -80,7 +81,7 @@ const AdminUpdateCryptos = () => {
 
     const crudCrypto = async (tag) => {
         if (tag === 'create') {
-            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max]
+            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max, forms.gas_fee]
             if (reqFields.some((value) => value === '')) return ErrorAlert(`Please fill out all fields`)
             const formdata = {
                 tag: tag,
@@ -91,7 +92,8 @@ const AdminUpdateCryptos = () => {
                 buy_min: forms.buy_min,
                 buy_max: forms.buy_max,
                 sell_min: forms.sell_min,
-                sell_max: forms.sell_max
+                sell_max: forms.sell_max,
+                gas_fee: forms.gas_fee
             }
             setAdd(false)
             setLoading({ status: true, val: tag })
@@ -121,7 +123,8 @@ const AdminUpdateCryptos = () => {
                 buy_min: forms.buy_min,
                 buy_max: forms.buy_max,
                 sell_min: forms.sell_min,
-                sell_max: forms.sell_max
+                sell_max: forms.sell_max,
+                gas_fee: forms.gas_fee
             }
             setUpdate(false)
             setLoading({ status: true, val: tag })
@@ -196,6 +199,7 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
                                 <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
                                 <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
+                                <FormInput label={`Gas fee (USD)`} name={`gas_fee`} value={forms.gas_fee} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
                                 <FormButton type='button' onClick={() => crudCrypto('create')} title={`Add Crypto Wallet`} />
@@ -218,6 +222,7 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
                                 <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
                                 <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
+                                <FormInput label={`Gas fee (USD)`} name={`gas_fee`} value={forms.gas_fee} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
                                 <FormButton type='button' onClick={() => crudCrypto('update')} title={`Update Crypto`} />
@@ -287,7 +292,7 @@ const AdminUpdateCryptos = () => {
                                         </td>
                                         <td className="px-1 text-white relative">
                                             <button
-                                                onClick={() => {setDel(true); setSelected(item)}} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
+                                                onClick={() => { setDel(true); setSelected(item) }} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
                                         </td>
 
                                     </tr>

@@ -136,7 +136,7 @@ const SingleAirdropPage = () => {
                 </div>
                 <div className='grid lg:grid-cols-5 grid-cols-1 gap-8'>
                   <div className='lg:col-span-3 col-span-1'>
-                    <p>{singleAirdrop?.about}</p>
+                  <p className="whitespace-pre-line">{singleAirdrop?.about.replace(/\\n/g, '\n')}</p>
                   </div>
                   <div className='lg:col-span-2 col-span-1'>
                     <img alt='airdrop banner image' src={singleAirdrop.banner_image} className='w-full h-auto'></img>

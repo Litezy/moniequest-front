@@ -203,7 +203,7 @@ const AdminCreateAirdrops = () => {
                                         <FormInput placeholder='Airdrop level' name='level' value={form.level} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>*about:</div>
+                                        <div className='text-lightgreen capitalize font-medium'>*about <span className='lowercase'>(add \n for paragraph spacing)</span>:</div>
                                         <FormInput formtype='textarea' placeholder='About airdrop' name='about' value={form.about} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>

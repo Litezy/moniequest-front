@@ -173,7 +173,7 @@ const AdminCreateBlogs = () => {
                                         <FormInput placeholder='Main header title' name='main_header_title' value={form.main_header_title} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>*main header content:</div>
+                                        <div className='text-lightgreen capitalize font-medium'>*main header content <span className='lowercase'>(add \n for paragraph spacing)</span>:</div>
                                         <FormInput formtype='textarea' placeholder='Main header content' name='main_header_content' value={form.main_header_content} onChange={formHandler} />
                                     </div>
                                 </div>

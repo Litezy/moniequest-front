@@ -239,7 +239,7 @@ const OrderPage = () => {
                                         </div>
                                     </div>
                                     <div className="w-full">
-                                        <div className="text-sm">Amount paid in USD:</div>
+                                        <div className="text-sm">Amount to receive in USD:</div>
                                         <div className="w-full">
                                             <FormInput value={`${currencies[0].symbol}${data.amount}`} className={`${green}`} />
                                         </div>

@@ -20,7 +20,7 @@ const SellCrypto = () => {
     const [check, setCheck] = useState(false)
     const tags = ['BUY', 'SELL']
     const [modal, setModal] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
+    const [isPageLoading, setIsPageLoading] = useState(false) //!navigator.onLine
     const [loading, setLoading] = useState(false)
     const [utils] = useAtom(UTILS)
     const [cryptos] = useAtom(CRYPTOS)

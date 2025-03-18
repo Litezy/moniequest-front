@@ -189,20 +189,20 @@ const SingleProductPage = () => {
                                             }
                                             {singleProduct?.discount_endDate && <div className='text-sm italic text-lightgreen'>Discount ends {moment(new Date(singleProduct?.discount_endDate)).format('Do MMMM')}</div>}
                                         </div>
-                                        <p className='text-sm'>{singleProduct?.about}</p>
+                                        <p className='text-sm whitespace-pre-line'>{singleProduct?.about.replace(/\\n/g, '\n')}</p>
                                         <div className='flex flex-col gap-2'>
                                             <div className='uppercase font-bold'>key features:</div>
                                             <div className='flex gap-2 items-baseline'>
                                                 <div className='w-[3%]'>
                                                     <GiCheckMark className='text-lightgreen text-sm' />
                                                 </div>
-                                                <div className='w-[97%]'>{singleProduct?.feature1}</div>
+                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature1.replace(/\\n/g, '\n')}</div>
                                             </div>
                                             <div className='flex gap-2 items-baseline'>
                                                 <div className='w-[3%]'>
                                                     <GiCheckMark className='text-lightgreen text-sm' />
                                                 </div>
-                                                <div className='w-[97%]'>{singleProduct?.feature2}</div>
+                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature2.replace(/\\n/g, '\n')}</div>
                                             </div>
                                         </div>
                                         <div className='flex justify-end mt-4'>

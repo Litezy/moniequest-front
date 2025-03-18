@@ -17,7 +17,7 @@ const BuyCrypto = () => {
     const [screen, setScreen] = useState(1)
     const [check, setCheck] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine);
+    const [isPageLoading, setIsPageLoading] = useState(false); //!navigator.onLine
     const [modal, setModal] = useState(false)
     const [utils] = useAtom(UTILS)
     const [user] = useAtom(PROFILE)
