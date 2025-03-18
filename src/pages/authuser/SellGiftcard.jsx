@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FormInput from '../../utils/FormInput'
 import { currencies } from '../../AuthComponents/AuthUtils'
 import { currencySign, ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
@@ -11,6 +11,9 @@ import { Apis, AuthPostApi } from '../../services/API'
 import Giftcards from '../../AuthComponents/Giftcards'
 import { useAtom } from 'jotai'
 import { UTILS } from '../../services/store'
+import { countries } from '../../utils/countries'
+import handleOutsideClicks from '../../utils/handleOutsideClicks'
+
 
 
 const SellGiftcard = () => {
@@ -23,7 +26,8 @@ const SellGiftcard = () => {
         amount: '',
         code: '',
         pin: '',
-        has_pin: 'no'
+        has_pin: 'no',
+        country: ''
     })
     const [utils] = useAtom(UTILS)
     const rate = utils?.giftcard_rate
@@ -42,7 +46,12 @@ const SellGiftcard = () => {
     })
     const [loading, setLoading] = useState({ status: false, param: "" })
     const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
+    const [selectedCountry, setSelectedCountry] = useState({})
+    const [selectCountry, setSelectCountry] = useState(false)
 
+    //defining refs
+    const brandref = useRef(null)
+   
 
     //defining functions
 
@@ -70,6 +79,7 @@ const SellGiftcard = () => {
     }
 
     const checkCode = () => {
+        if (!cards.country) return ErrorAlert('please select country')
         if (!selectedCard || !selectedCard.brand) {
             return ErrorAlert("Please select a gift card brand ");
         }
@@ -130,6 +140,7 @@ const SellGiftcard = () => {
     }
     const sellCard = (e) => {
         e.preventDefault()
+        if (!cards.country) return ErrorAlert('country is required')
         if (!cards.brand) return ErrorAlert('giftcard brand is required')
         if (!cards.amount) return ErrorAlert('giftcard amount is required')
         if (!cards.code) return ErrorAlert('giftcard code is missing, try again')
@@ -170,7 +181,8 @@ const SellGiftcard = () => {
             amount: cards.amount,
             code: cards.code,
             pin: cards.pin,
-            rate:rate
+            rate: rate,
+            country: cards.country
         }
         // return console.log(formdata)
         try {
@@ -203,6 +215,16 @@ const SellGiftcard = () => {
         };
     }, []);
 
+    const chooseCountry = (val) => {
+        setCards({
+            ...cards,
+            country: val
+        })
+
+    }
+
+    handleOutsideClicks(brandref, () => setSelectBrand(false))
+  
 
     return (
         <Giftcards>
@@ -229,16 +251,42 @@ const SellGiftcard = () => {
                 {!isPageLoading && screen === 1 &&
                     <div className="w-full flex items-start flex-col gap-4">
                         <div className="flex items-start gap-2 flex-col w-full">
-                            <div className="font-bold">Gift-Card Brand</div>
+                            <div className="font-bold">Country</div>
+                            <div className="relative w-full">
+                                <select
+                                    onClick={() => setSelectCountry(!selectCountry)}
+                                    className="border border-gray-600 text-white rounded-md px-4 py-2 cursor-pointer bg-dark w-full"
+                                    value={cards.country}
+                                    onChange={(e) => chooseCountry(e.target.value)}
+                                >
+                                    <option value="">-- Select Country --</option>
+                                    {countries.map((item, i) => (
+                                        <option key={i} value={item.name}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </select>
 
+                            
+                            </div>
+
+
+                        </div>
+                        <div className="flex items-start gap-2 flex-col w-full">
+                            <div className="font-bold">Gift-Card Brand</div>
                             <div className='w-full relative bg-secondary  rounded-md cursor-pointer' id="">
                                 <input onClick={() => setSelectBrand(true)} className='outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 focus:border cursor-pointer  bg-transparent w-full h-fit py-3 text-lightgreen px-4 lg:text-sm text-base rounded-md'
                                     type="text" name="brand" value={cards.brand} onChange={handleChange} />
                                 {selectBrand &&
-                                    <div className="absolute h-96 w-full border rounded-md border-gray-600 px-10 top-1 overflow-y-auto scroll z-50 bg-dark">
+                                    <div 
+                                    ref={brandref}
+                                    className="absolute h-96 w-full border rounded-md border-gray-600 px-10 top-1 overflow-y-auto scroll z-50 bg-dark">
+                                        
                                         {CardsArray.map((gift, i) => {
                                             return (
-                                                <div onClick={() => selectABrand(gift.brand)} key={i} className="flex w-full py-2 border-b-gray-600 border-b  items-center justify-between ">
+                                                <div onClick={() => selectABrand(gift.brand)} key={i}
+                                                   
+                                                    className="flex w-full py-2 border-b-gray-600 border-b  items-center justify-between ">
                                                     <div className='w-2/3 text-base text-lightgreen' >{gift.brand}</div>
                                                     <div className="w-2/3 ">
                                                         <img src={gift.image} className='h-16 w-fit bg-cover ' alt={`${gift.brand} image`} />

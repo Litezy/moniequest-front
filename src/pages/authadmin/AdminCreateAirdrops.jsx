@@ -30,6 +30,8 @@ const AdminCreateAirdrops = () => {
         kyc: kyces[0],
         blockchain: blockchains[0],
         type: '',
+        format: '',
+        level: '',
         about: '',
         video_guide_link: '',
         referral_link: '',
@@ -82,7 +84,7 @@ const AdminCreateAirdrops = () => {
     const Submit = async (e) => {
         e.preventDefault()
 
-        if (!form.title || !form.category || !form.about || !form.blockchain || !form.type || !form.video_guide_link || !form.referral_link) return ErrorAlert('Enter all required fields')
+        if (!form.title || !form.category || !form.about || !form.blockchain || !form.type || !form.format || !form.level || !form.video_guide_link || !form.referral_link) return ErrorAlert('Enter all required fields')
         if (!logo.image || !banner.image) return ErrorAlert('Upload airdrop logo and banner images')
 
         const formbody = new FormData()
@@ -94,8 +96,10 @@ const AdminCreateAirdrops = () => {
         formbody.append('blockchain', form.blockchain)
         formbody.append('kyc', form.kyc)
         formbody.append('type', form.type)
-        formbody.append('video_guide_link', form.video_guide_link)
+        formbody.append('format', form.format)
+        formbody.append('level', form.level)
         formbody.append('referral_link', form.referral_link)
+        formbody.append('video_guide_link', form.video_guide_link)
         formbody.append('telegram_link', form.telegram_link)
         formbody.append('twitter_link', form.twitter_link)
         formbody.append('website_link', form.website_link)
@@ -191,19 +195,27 @@ const AdminCreateAirdrops = () => {
                                 </div>
                                 <div className='flex flex-col gap-6'>
                                     <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>*referral link:</div>
-                                        <FormInput placeholder='Referral link' name='referral_link' value={form.referral_link} onChange={formHandler} />
+                                        <div className='text-lightgreen capitalize font-medium'>*format <span className='lowercase'>(play to earn, refer to earn, e.t.c.):</span></div>
+                                        <FormInput placeholder='Airdrop format' name='format' value={form.format} onChange={formHandler} />
+                                    </div>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='text-lightgreen capitalize font-medium'>*level <span className='lowercase'>(basic, advanced, pro, e.t.c.):</span></div>
+                                        <FormInput placeholder='Airdrop level' name='level' value={form.level} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*about:</div>
                                         <FormInput formtype='textarea' placeholder='About airdrop' name='about' value={form.about} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>*video guide link:</div>
-                                        <FormInput placeholder='Video guide link' name='video_guide_link' value={form.video_guide_link} onChange={formHandler} />
+                                        <div className='text-lightgreen capitalize font-medium'>*referral link:</div>
+                                        <FormInput placeholder='Referral link' name='referral_link' value={form.referral_link} onChange={formHandler} />
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-6'>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='text-lightgreen capitalize font-medium'>*video guide link:</div>
+                                        <FormInput placeholder='Video guide link' name='video_guide_link' value={form.video_guide_link} onChange={formHandler} />
+                                    </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>twitter link:</div>
                                         <FormInput placeholder='Twitter link' name='twitter_link' value={form.twitter_link} onChange={formHandler} />

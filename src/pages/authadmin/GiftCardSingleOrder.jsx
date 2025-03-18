@@ -31,7 +31,7 @@ const GiftCardSingleOrder = () => {
     const green = `text-lightgreen`
     const statuses = [`Yes`, `No`]
     const navigate = useNavigate()
-    
+
 
     const fetchGiftCardOrder = async () => {
         try {
@@ -207,6 +207,10 @@ const GiftCardSingleOrder = () => {
                                             <div className="w-full">
                                                 <FormInput value={data?.brand} className={`${green}`} />
                                             </div>
+                                        </div>
+                                        <div className="w-full">
+                                            <div className="text-sm">Country:</div>
+                                            <FormInput value={data?.country} className={`${green}`} />
                                         </div>
                                         <div className="w-full">
                                             <div className="text-sm">Amount:</div>

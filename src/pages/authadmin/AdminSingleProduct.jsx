@@ -129,7 +129,6 @@ const AdminSingleProduct = () => {
     const Submit = async (e) => {
         e.preventDefault()
 
-        if (form.category.length < 1) return ErrorAlert('Choose a category')
         if (!form.title || !form.price || !form.about || !form.feature1 || !form.feature2) return ErrorAlert('Enter all required fields')
         if (isNaN(form.price) || isNaN(form.discount_percentage) || isNaN(form.discount_duration)) return ErrorAlert('Price, discount percentage and discount duration must be valid numbers')
 
@@ -220,7 +219,7 @@ const AdminSingleProduct = () => {
                                 <div className='flex flex-col gap-2'>
                                     <div className='text-lightgreen capitalize font-medium'>category:</div>
                                     <div className='flex flex-wrap gap-2'>
-                                        {form.category.length > 0 &&
+                                        {form.category.length > 0 ?
                                             <>
                                                 {form.category.map((item, i) => (
                                                     <div key={i} className='w-fit h-fit p-2 bg-ash text-white rounded-xl text-sm'>
@@ -228,6 +227,8 @@ const AdminSingleProduct = () => {
                                                     </div>
                                                 ))}
                                             </>
+                                            :
+                                            <div>n/a</div>
                                         }
                                     </div>
                                 </div>
@@ -235,8 +236,8 @@ const AdminSingleProduct = () => {
                                     <div className='text-lightgreen capitalize font-medium'>Other tools specified by user:</div>
                                     <div className='flex flex-wrap gap-2'>
                                         {form.other ?
-                                            <div className='w-fit h-fit p-2 text-white bg-gray-500 rounded-xl text-sm'>{form.other}</div> :
-                                            <div className="">n/a</div>
+                                            <div className='w-fit h-fit p-2 text-white bg-gray-600 rounded-xl text-sm'>{form.other}</div> :
+                                            <div>n/a</div>
                                         }
                                     </div>
                                 </div>
@@ -248,7 +249,7 @@ const AdminSingleProduct = () => {
                                                 {tools.map((item, i) => (
                                                     <div key={i} className='flex gap-2 items-center w-fit h-fit p-2 bg-ash text-white rounded-xl text-sm'>
                                                         <div>{item.name}</div>
-                                                        <div className={`${form.category.includes(item.name) ? 'bg-lightgreen' : 'bg-white'} h-3.5 w-3.5 rounded-full cursor-pointer`} onClick={() => addRemoveCategory(item.name)}></div>
+                                                        <div className={`${form.category.includes(item.name) ? 'bg-lightgreen' : 'bg-white'} h-4 w-4 rounded-full cursor-pointer`} onClick={() => addRemoveCategory(item.name)}></div>
                                                     </div>
                                                 ))}
                                             </>

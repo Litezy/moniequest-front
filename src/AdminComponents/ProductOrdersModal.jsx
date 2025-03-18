@@ -64,7 +64,7 @@ const ProductsOrdersModal = ({ selected }) => {
                             return (
                                 <div key={i} className='flex flex-col gap-2 border border-zinc-600 p-4 overflow-x-hidden'>
                                     <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between gap-4">
-                                        <div>Products ID</div>
+                                        <div>Product ID</div>
                                         <div>{item?.gen_id}</div>
                                     </div>
                                     <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between gap-4">

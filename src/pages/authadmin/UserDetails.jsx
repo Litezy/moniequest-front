@@ -16,14 +16,31 @@ const UserDetails = () => {
     const [loading, setLoading] = useState(false)
     const [selectedUser, setSelectedUser] = useState({})
     const [modal, setModal] = useState(false)
+    const [filteredata, setFilteredData] = useState(data)
 
+
+    const handleFilter = (e) => {
+        const { value } = e.target;
+        if (!value) {
+            setFilteredData(data); 
+            return;
+        }
+    
+        const filtered = data.filter(
+            (val) =>
+                val.first_name.toLowerCase().startsWith(value.toLowerCase()) ||
+                val.surname.toLowerCase().startsWith(value.toLowerCase())
+        );
+        setFilteredData(filtered);
+    };
+    
     const makeAdmin = async () => {
         if (!selectedUser?.id) return ErrorAlert(`User ID missing`);
         const data = { id: selectedUser?.id }
         setModal(false)
         setLoading(true)
         try {
-            const response = await AuthPostApi(Apis.admin.make_admin, data)
+            const response = await AuthPostApi(Apis.admin.assign_role, data)
             if (response.status !== 200) return ErrorAlert(response.msg)
             setData(response.data)
             await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -40,7 +57,7 @@ const UserDetails = () => {
             {modal &&
                 <ModalLayout setModal={setModal} clas={`lg:w-[50%] w-10/12 mx-auto`}>
                     <div className="p-5  bg-white text-dark shadow-xl rounded-md">
-                        <div className="text-base text-center mb-3">Are you sure you want to make {selectedUser?.first_name} {selectedUser?.surname} admin?</div>
+                        <div className="text-base text-center mb-3">Are you sure you want to change {selectedUser?.first_name} {selectedUser?.surname}'s role?</div>
 
                         <div className="flex items-center justify-between">
                             <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
@@ -61,6 +78,11 @@ const UserDetails = () => {
                     <div className="text-lg font-semibold">User Details</div>
                 </div>
                 <div className="my-5 text-xl font-bold text-center">Below are Users Details on MonieQuest</div>
+
+                <div className="py-2 w-full md:w-1/2 flex items-start md:items-center gap-2 flex-col md:flex-row">
+                    <div className="">Search Users</div>
+                    <input type="text" className='rounded-md bg-dark outline-none focus:outline-none  text-white w-3/4 border-gray-400 focus:border-none' onChange={(e) => handleFilter(e)} />
+                </div>
 
                 <div className="relative overflow-x-auto rounded-md mt-10">
                     <table className="w-full text-sm text-center">
@@ -89,13 +111,13 @@ const UserDetails = () => {
                                     Date Joined
                                 </th>
                                 <th scope="col" className="px-3 py-3 truncate">
-                                    Make Admin
+                                    Change Role
                                 </th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(data) ? data.map((item, i) => (
+                            {Array.isArray(filteredata) ? filteredata.map((item, i) => (
                                 <tr className=" border-b " key={i}>
                                     <th scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
                                         {item.id}

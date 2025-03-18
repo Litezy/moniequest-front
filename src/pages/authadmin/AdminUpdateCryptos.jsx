@@ -49,7 +49,7 @@ const AdminUpdateCryptos = () => {
             sell_min: selected?.sell_min,
             sell_max: selected?.sell_max
         })
-    }, [update])
+    }, [update, selected])
 
     const addCrypto = () => {
         setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '' })
@@ -279,15 +279,15 @@ const AdminUpdateCryptos = () => {
                                         <td className="px-3 py-3">
                                             {item?.symbol}
                                         </td>
-                                        <td onMouseOver={() => setSelected(item)}
-                                            onClick={() => setUpdate(true)}
+                                        <td
+                                            onClick={() => { setUpdate(true); setSelected(item) }}
                                             className="px-1 text-dark relative">
                                             <button
                                                 className="w-full h-fit bg-white rounded-md py-1.5">update</button>
                                         </td>
                                         <td className="px-1 text-white relative">
                                             <button
-                                                onClick={() => setDel(true)} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
+                                                onClick={() => {setDel(true); setSelected(item)}} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
                                         </td>
 
                                     </tr>

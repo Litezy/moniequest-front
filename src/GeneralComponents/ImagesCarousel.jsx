@@ -20,9 +20,9 @@ const ImagesCarousel = ({ array }) => {
     return (
         <div className="w-full h-full">
             {array.length > 0 ?
-                <Carousel theme={theme}>
+                <Carousel loop theme={theme}>
                     {array.map((item, i) => (
-                        <img key={i} src={optimizeImageUrl(item.image)} alt="carousel image" className='w-full h-full object-cover' />
+                        <img key={`${item.id}-${i}`} src={optimizeImageUrl(item.image)} alt="carousel image" className='w-full h-full object-cover' />
                     ))}
                 </Carousel>
                 :

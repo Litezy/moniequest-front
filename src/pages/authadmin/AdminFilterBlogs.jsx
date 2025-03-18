@@ -6,9 +6,9 @@ import ModalLayout from '../../utils/ModalLayout'
 import Loader from '../../GeneralComponents/Loader'
 
 const AdminFilterBlogs = () => {
-
   const [blogs, setBlogs] = useState([])
   const [dataLoading, setDataLoading] = useState(false)
+
   useEffect(() => {
     const FetchAllBlogs = async () => {
       setDataLoading(true)
@@ -26,12 +26,13 @@ const AdminFilterBlogs = () => {
     }
     FetchAllBlogs()
   }, [])
+
   return (
     <AdminPageLayout>
       <div className="w-11/12 mx-auto">
         <Link className='px-3 py-1.5 rounded-md bg-ash text-white'
           to={`/admin/utilities`}>back to utilities</Link>
-        <div className="mt-10 text-base md:text-xl font-bold">Below are blogs that have comments</div>
+        <div className="mt-10 text-base md:text-xl font-bold">Below are blogs with comments</div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {blogs.length > 0 ? blogs.map((blog, i) => (

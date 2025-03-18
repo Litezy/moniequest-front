@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout'
 import { Link, useParams } from 'react-router-dom'
 import { Apis, AuthPostApi, GetApi } from '../../services/API'
@@ -13,22 +13,23 @@ const AdminFilterComments = () => {
     const [modal, setModal] = useState(false)
     const [commentId, setCommentId] = useState('')
 
-    useEffect(() => {
-        const FetchBlogComments = async () => {
-            setDataLoading({ status: true, msg: 'loading comments' })
-            try {
-                const response = await GetApi(`${Apis.admin.blog_comments}/${id}`)
-                if (response.status === 200) {
-                    setComments(response.msg)
-                }
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setDataLoading(false)
+    const FetchBlogComments = useCallback(async () => {
+        setDataLoading({ status: true, msg: 'loading comments' })
+        try {
+            const response = await GetApi(`${Apis.admin.blog_comments}/${id}`)
+            if (response.status === 200) {
+                setComments(response.msg)
             }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setDataLoading({ status: false, msg: '' })
         }
-        FetchBlogComments()
     }, [])
+
+    useEffect(() => {
+        FetchBlogComments()
+    }, [FetchBlogComments])
 
 
     const deleteComment = async () => {
@@ -38,13 +39,13 @@ const AdminFilterComments = () => {
         try {
             const response = await AuthPostApi(Apis.admin.delete_comment, data)
             if (response.status !== 200) return ErrorAlert(response.msg)
-            setComments(comments.filter(comment => comment.id !== commentId))
-            await new Promise(resolve => setTimeout(resolve, 2000))
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            FetchBlogComments()
             SuccessAlert(response.msg)
         } catch (error) {
             console.log(error)
         } finally {
-            setDataLoading(false)
+            setDataLoading({ status: false, msg: '' })
         }
     }
     return (
@@ -77,12 +78,12 @@ const AdminFilterComments = () => {
                         <div className="mt-5">
                             {comments.map((comment, index) => (
                                 <div key={index} className="bg-white text-dark shadow-md rounded-md p-5 mt-3">
-                                    <div className="flex items-start flex-col md:flex-row justify-between">
+                                    <div className="flex items-start flex-col md:flex-row gap-2 justify-between">
                                         <div className="w-full md:w-5/6">
                                             <h1 className="text-lg font-bold">{comment.username}</h1>
                                             <p className="text-sm">{comment.content}</p>
                                         </div>
-                                        <button onClick={() => setModal(true)} onMouseOver={() => setCommentId(comment?.id)} className='w-fit px-4 py-1.5 bg-red-600 text-white rounded-md'>Delete</button>
+                                        <button onClick={() => { setModal(true); setCommentId(comment.id) }} className='w-fit px-4 py-1.5 bg-red-600 text-white rounded-md'>Delete</button>
                                     </div>
                                 </div>
                             ))}

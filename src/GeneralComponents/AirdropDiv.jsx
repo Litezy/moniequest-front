@@ -26,11 +26,11 @@ const AirdropDiv = ({ item, className }) => {
                     </div>
                 </div>
                 <div className='flex justify-between gap-4 pb-2'>
-                    <div className='flex flex-col gap-2 items-center capitalize text-[0.8rem]'>
-                        <div className='font-bold'>play to earn</div>
-                        <div className='text-xs'>$PRO airdrop</div>
+                    <div className='flex flex-col gap-2 capitalize text-[0.8rem]'>
+                        <div className='font-bold'>{item?.format}</div>
+                        <div className='text-xs'>${item?.level}</div>
                     </div>
-                    <div className='flex flex-col gap-2 items-center capitalize text-[0.8rem]'>
+                    <div className='flex flex-col gap-2 capitalize text-[0.8rem]'>
                         <div className='font-bold'>{item?.type}</div>
                         <div className='text-xs'>{item?.blockchain} blockchain</div>
                     </div>

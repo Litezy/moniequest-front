@@ -54,7 +54,7 @@ const AdminGiftCards = () => {
                                             {item?.code}
                                         </td>
                                         <td className="px-3 py-3">
-                                            {item?.pin}
+                                            {item?.pin ? item?.pin :'n/a'}
                                         </td>
 
                                         <td className="px-3 py-3">

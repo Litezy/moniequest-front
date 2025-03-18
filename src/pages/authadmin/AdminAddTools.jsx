@@ -9,6 +9,7 @@ import { IoMdClose } from "react-icons/io";
 import Loader from '../../GeneralComponents/Loader';
 import { ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
 
+
 const AdminAddTools = () => {
   const [tools, setTools] = useState([]);
   const [modal, setModal] = useState(false);
@@ -80,14 +81,13 @@ const AdminAddTools = () => {
   }
 
   const deleteTool = async () => {
-    if (!id) return ErrorAlert('ID missinf from request, try again!')
+    if (!id) return ErrorAlert('ID missing from request, try again!')
     setDel(false)
     setDataLoading({ status: true, val: 'delete' })
     try {
       const res = await AuthPostApi(`${Apis.admin.delete_tool}/${id}`)
       if (res.status !== 200) return ErrorAlert(res.msg)
       await new Promise((resolve, reject) => setTimeout(resolve, 2000))
-      tools.filter((tool) => tool.id !== id)
       FetchTools()
       SuccessAlert(res.msg)
     } catch (error) {
@@ -186,7 +186,7 @@ const AdminAddTools = () => {
                     <div className="text-sm italic text-gray-500">No features available</div>
                   )}
                   <div
-                    onMouseOver={() => setId(tool.id)} onClick={() => setDel(true)}
+                    onClick={() => { setId(tool.id); setDel(true) }}
                     className="absolute -top-4 cursor-pointer -right-4 p-1 rounded-full bg-red-500">
                     <IoMdClose className='text-xl text-white' />
                   </div>

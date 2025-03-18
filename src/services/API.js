@@ -10,8 +10,8 @@ if (import.meta.env.VITE_ENV === 'production') {
     URL = import.meta.env.VITE_LIVE_API_URL
     imageurl = import.meta.env.VITE_LIVE_API_URL
 } else {
-    URL = import.meta.env.VITE_LIVE_API_URL
-    imageurl = import.meta.env.VITE_LIVE_API_URL
+    URL = import.meta.env.VITE_API_URL
+    imageurl = import.meta.env.VITE_API_URL
 }
 
 
@@ -45,7 +45,7 @@ const notification_urls = {
     all_notis: notification + 'all-notis',
     update_all_notis: notification + 'update-all-notis',
     update_single_notis: notification + 'update-single-notis',
-    delete_notis: notification + 'delete-notis',
+    delete_notis: notification + 'delete-notis'
 }
 
 const transaction = 'api/transactions/'
@@ -62,8 +62,7 @@ const trans_url = {
     single_giftcard_order: transaction + 'single_giftcard_history',
     request_withdrawal: transaction + 'request_withdrawal',
     latest_withdrawals: transaction + 'latest_withdrawals',
-    all_trans: transaction + 'get_alltrans',
-
+    all_trans: transaction + 'get_alltrans'
 }
 
 const admin = 'api/admin/'
@@ -114,7 +113,7 @@ const admin_urls = {
     delete_testimonial: admin + 'delete_testimonial',
     crud_crypto: admin + 'create_update_delete_cryptos',
     get_cryptos: admin + "get_cryptos",
-    make_admin: admin + 'make_admin',
+    assign_role: admin + 'assign_role',
     blogs_with_comments: admin + 'blogs_with_comments',
     delete_comment: admin + 'delete_comment',
     create_tool: admin + 'create_tool',

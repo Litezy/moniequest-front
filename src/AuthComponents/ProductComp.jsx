@@ -19,7 +19,7 @@ const ProductComp = ({ item }) => {
                     </div>
                     <div className='flex justify-between gap-6 capitalize'>
                         <div>category:</div>
-                        {categories.length > 0 &&
+                        {categories.length > 0 ?
                             <div className="w-full overflow-x-auto scrollsdown cursor-all-scroll">
                                 <div className='w-fit flex gap-1 truncate ml-auto'>
                                     {categories.slice(0, 2).map((ele, i) => (
@@ -28,6 +28,8 @@ const ProductComp = ({ item }) => {
                                     {categories.length > 2 && '...'}
                                 </div>
                             </div>
+                            :
+                            <div>(other specify)</div>
                         }
                     </div>
                     <div className='flex justify-between gap-4 capitalize'>

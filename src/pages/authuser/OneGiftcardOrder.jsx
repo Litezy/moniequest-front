@@ -118,6 +118,10 @@ const OneGiftcardOrder = () => {
                                         <div className="text-sm">Status:</div>
                                         <FormInput value={data?.status} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
                                     </div>
+                                    <div className="w-full">
+                                        <div className="text-sm">Country:</div>
+                                        <FormInput value={data?.country} className={`${ green }`} />
+                                    </div>
 
                                 </div>
 
