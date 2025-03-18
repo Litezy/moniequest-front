@@ -43,7 +43,7 @@ const Blogs = () => {
             <div className='pb-20 bg-dark w-full text-gray-200'>
                 <div className=''>
                     <div className='w-full h-full  py-5'>
-                        <div className='md:text-4xl text-2xl capitalize font-bold text-white text-center'>crypto blog news</div>
+                        <div className='md:text-4xl text-2xl capitalize font-bold text-white text-center'>blogs</div>
                     </div>
                 </div>
                 <div className='w-11/12 mx-auto py-10'>
