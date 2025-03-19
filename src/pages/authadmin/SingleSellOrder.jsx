@@ -62,7 +62,7 @@ const SingleSellOrder = () => {
     }
 
     const handleChange = () => {
-        const amt = data?.amount - data?.gas_fee
+        const amt = data?.amount
         const newAmt = amt * data?.rate
         setForms({ ...forms, amount: newAmt?.toLocaleString() })
     }
@@ -163,19 +163,10 @@ const SingleSellOrder = () => {
                                         <div className="text-sm">Amount Sold:</div>
                                         <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                     </div>
-                                    <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Gas Fee:</div>
-                                        <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
-                                        </div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-sm">Rate:</div>
+                                        <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
                                     </div>
-                                    <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Amount To Receive:</div>
-                                        <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.amount - data?.gas_fee}`} className={`${green}`} />
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <div className=" flex flex-col gap-3 w-full">
                                     <div className="flex flex-col gap-2">
@@ -195,10 +186,7 @@ const SingleSellOrder = () => {
                                             <FaRegCopy onClick={() => handleCopy(data?.trans_hash, 'trans hash')} className={`${green} cursor-pointer`} />
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        <div className="text-sm">Rate:</div>
-                                        <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
-                                    </div>
+
                                     <div className="flex flex-col gap-2 w-full">
                                         <div className="text-sm">Status:</div>
                                         <FormInput read={true} value={data?.status} className={`${green}`} />

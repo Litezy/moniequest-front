@@ -276,7 +276,7 @@ export const exchangefaqs = [
     },
     {
         title: `Q6: Why do you need my NIN?`,
-        desc: `In compliance with Nigerian financial regulations, your BVN helps us verify your identity and protect your account from unauthorized access or fraud. By confirming that each user is who they claim to be, we uphold a safer platform and maintain a trusted environment for all our customers.`
+        desc: `In compliance with Nigerian financial regulations, your NIN helps us verify your identity and protect your account from unauthorized access or fraud. By confirming that each user is who they claim to be, we uphold a safer platform and maintain a trusted environment for all our customers.`
     },
     {
         title: `Q7: How secure are my Transactions?`,

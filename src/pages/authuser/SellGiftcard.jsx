@@ -176,9 +176,10 @@ const SellGiftcard = () => {
     const navigate = useNavigate()
     const confirmSend = async () => {
         setLoading({ status: true, param: 'confirmed' })
+        const amt = cards.amount.replace(/,/g, '');
         const formdata = {
             brand: cards.brand,
-            amount: cards.amount,
+            amount: amt,
             code: cards.code,
             pin: cards.pin,
             rate: rate,

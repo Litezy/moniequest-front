@@ -77,24 +77,24 @@ const OneGiftcardOrder = () => {
                                     <div className="flex flex-col items-start">
                                         <div className="text-sm">Giftcard Brand:</div>
                                         <div className="w-full">
-                                            <FormInput value={data?.brand} className={`${green} capitalize`} />
+                                            <FormInput read={true} value={data?.brand} className={`${green} capitalize`} />
                                         </div>
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Giftcard amount in USD:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data.amount}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${data.amount}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Giftcard Code:</div>
                                         <div className="w-full">
-                                            <FormInput value={data?.code} className={`${green} uppercase`} />
+                                            <FormInput read={true} value={data?.code} className={`${green} uppercase`} />
                                         </div>
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Rate:</div>
-                                        <FormInput value={`${data?.rate}/${currencies[0].symbol}`} className={`${green}`} />
+                                        <FormInput read={true} value={`${data?.rate}/${currencies[0].symbol}`} className={`${green}`} />
                                     </div>
 
 
@@ -103,24 +103,24 @@ const OneGiftcardOrder = () => {
 
                                     <div className="">
                                         <div className="text-sm">Giftcard Pin:</div>
-                                        <FormInput value={data?.pin ? data?.pin : 'nil'} className={`${green}`} />
+                                        <FormInput read={true} value={data?.pin ? data?.pin : 'nil'} className={`${green}`} />
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Giftcard amount in NGN:</div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-full">
-                                                <FormInput value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
+                                                <FormInput read={true} value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="w-full">
                                         <div className="text-sm">Status:</div>
-                                        <FormInput value={data?.status} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
+                                        <FormInput read={true} value={data?.status} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Country:</div>
-                                        <FormInput value={data?.country} className={`${ green }`} />
+                                        <FormInput read={true} value={data?.country} className={`${ green }`} />
                                     </div>
 
                                 </div>
