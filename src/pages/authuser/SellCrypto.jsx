@@ -12,7 +12,7 @@ import Loader from '../../GeneralComponents/Loader';
 import ExchangeLayout from '../../AuthComponents/ExchangeLayout';
 import { Apis, AuthPostApi } from '../../services/API';
 import { useAtom } from 'jotai';
-import { CRYPTOS, UTILS } from '../../services/store';
+import { CRYPTOS, PROFILE, UTILS } from '../../services/store';
 
 
 const SellCrypto = () => {
@@ -20,9 +20,10 @@ const SellCrypto = () => {
     const [check, setCheck] = useState(false)
     const tags = ['BUY', 'SELL']
     const [modal, setModal] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine) 
+    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
     const [loading, setLoading] = useState(false)
     const [utils] = useAtom(UTILS)
+    const [user] = useAtom(PROFILE)
     const [cryptos] = useAtom(CRYPTOS)
     const [forms, setForms] = useState({
         amount: '',
@@ -242,7 +243,7 @@ const SellCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    <div className="w- text-red-600 text-xs">Please Note: you can only sell a minimum of ${forms.minimum} and maximum of ${forms.limit.toLocaleString()}. verify your account to increase limit</div>
+                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only sell a minimum of ${forms.minimum} and maximum of ${forms.limit.toLocaleString()} of {forms.crypto}. {user?.kyc_verified === 'false' ? 'verify your account to increase limit' : ''}</div>}
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>
