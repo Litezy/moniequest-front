@@ -54,10 +54,10 @@ const OrderPage = () => {
         if (data?.amount) {
             let newAmount;
             if (tag === 'buy') {
-                newAmount = data.amount + data.gas_fee
+                newAmount = parseFloat(data.amount) + parseFloat(data.gas_fee)
                 setAmountToPay(newAmount)
             } else {
-                newAmount = data.amount - data.gas_fee
+                newAmount = parseFloat(data.amount) - parseFloat(data.gas_fee)
                 setAmountToReceive(newAmount)
             }
             const naira = newAmount * data.rate

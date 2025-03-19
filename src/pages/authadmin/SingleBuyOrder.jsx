@@ -155,7 +155,8 @@ const SingleBuyOrder = () => {
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.amount + data?.gas_fee}`} className={`${green}`} />
+                                            <FormInput value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}
+`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
