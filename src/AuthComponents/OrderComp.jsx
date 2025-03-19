@@ -12,7 +12,7 @@ const OrderComp = ({ trans }) => {
         if (trans.type === 'buy') {
             newAmount = trans?.amount + trans?.gas_fee
         } else {
-            newAmount = trans?.amount - trans?.gas_fee
+            newAmount = trans?.amount 
         }
         const naira = newAmount * trans?.rate
         setNaira(naira.toLocaleString())

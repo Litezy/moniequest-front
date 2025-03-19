@@ -81,7 +81,7 @@ const CreateProduct = () => {
     if (!form.title || !form.price || !form.about || !form.feature1 || !form.feature2 || !form.video_link || !form.contact_detail || !form.bank_name || !form.account_name || !form.account_number) return ErrorAlert('Enter all required fields')
     const amt = parseInt(form.price.replace(/,/g, ''))
     if (isNaN(amt)) return ErrorAlert('Price amount must be a number')
-    if (!productImage.image) return ErrorAlert('Upload profit tool image')
+    if (!productImage.image) return ErrorAlert('Upload productive tool tool image')
 
 
     const formbody = new FormData()

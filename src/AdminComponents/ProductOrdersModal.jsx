@@ -18,7 +18,7 @@ const ProductsOrdersModal = ({ selected }) => {
                 <div className='flex flex-col gap-2'>
                     <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between gap-4">
                         <div>Transaction Type</div>
-                        <div className="capitalize ">profit tools purchase</div>
+                        <div className="capitalize ">P purchase</div>
                     </div>
                     <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between gap-4">
                         <div>Transaction Date</div>

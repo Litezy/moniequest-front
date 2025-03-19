@@ -42,7 +42,7 @@ const mainIcons = [
         main: '/giftcards'
     },
     {
-        name: 'profit tools',
+        name: 'productive tools',
         symbol: CgToolbox,
         url: '/admin/products/orders',
         main: '/products'

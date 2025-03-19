@@ -207,7 +207,7 @@ const HomePage = () => {
               <div className="border-t-4 border-zinc-300 md:w-36 w-24 absolute top-0 left-0 slide-in"></div>
               <div className="border-b-4 border-zinc-300 md:w-36 w-24 absolute bottom-0 right-0 slide-in"></div>
             </div>
-            <p className="text-center md:text-lg max-w-2xl mx-auto">Easily Buy & Sell Gift Cards and Crypto instantly using bank transfers. <span className="text-lightgreen">Simple, fast and reliable.</span></p>
+            <p className="text-center md:text-lg max-w-2xl mx-auto">Easily Buy & Sell Gift Cards and Crypto instantly. <span className="text-lightgreen">Simple, fast and reliable.</span></p>
             <Link to="/login">
               <FormButton title="Tap and Trade" className="!w-fit !px-10 !rounded-md glow-button bounce-button" onClick={MoveToTop} />
             </Link>

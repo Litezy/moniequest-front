@@ -228,8 +228,8 @@ const formsal = () => {
                                     }
                                 </div>
                             </div>
-                            <div className="w-full lg:w-1/2 mx-auto mb-10">
-                                <FormButton onClick={confirmRequest} disabled={wallet.balance < utils.bank_withdraw_min ? true : false} title={`Request Withdrawal`} />
+                            <div className="w-full cursor-pointer lg:w-1/2 mx-auto mb-10">
+                                <FormButton type='button' onClick={confirmRequest} disabled={wallet.balance < utils.bank_withdraw_min ? true : false} title={`Request Withdrawal`} />
                             </div>
 
                         </div>

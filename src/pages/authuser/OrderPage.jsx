@@ -57,7 +57,7 @@ const OrderPage = () => {
                 newAmount = parseFloat(data.amount) + parseFloat(data.gas_fee)
                 setAmountToPay(newAmount)
             } else {
-                newAmount = parseFloat(data.amount) - parseFloat(data.gas_fee)
+                newAmount = parseFloat(data.amount) 
                 setAmountToReceive(newAmount)
             }
             const naira = newAmount * data.rate
@@ -249,23 +249,13 @@ const OrderPage = () => {
                                         <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Gas Fee:</div>
-                                        <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
-                                        </div>
-                                    </div>
-                                    <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Amount to receive in USD:</div>
-                                        <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${amountToReceive}`} className={`${green}`} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className=" flex flex-col gap-3 w-full">
-                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount to receive in NGN:</div>
                                         <FormInput value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
                                     </div>
+                                    
+                                </div>
+                                <div className=" flex flex-col gap-3 w-full">
+                                    
 
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Transaction ID/Hash:</div>
