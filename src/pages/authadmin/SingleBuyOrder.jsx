@@ -16,11 +16,19 @@ import { Apis, AuthGetApi, AuthPostApi } from '../../services/API';
 const SingleBuyOrder = () => {
     const { id } = useParams()
     const green = 'text-lightgreen'
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState({ status: '', val: '' })
     const [data, setData] = useState({})
+    const [forms, setForms] = useState({
+        confirmed: '',
+        sent_crypto: '',
+        msg: ""
+    })
+    const statuses = ["Yes", "No"]
+    const [screen, setScreen] = useState(1)
+    const [failed, setFailed] = useState(false)
 
     const fetchBuyID = async () => {
-        setLoading(true)
+        setLoading({ status: true, val: 'fetching order' })
         try {
             const res = await AuthGetApi(`${Apis.admin.single_buy}/${id}`)
             if (res.status !== 200) return ErrorAlert(res.msg)
@@ -29,7 +37,7 @@ const SingleBuyOrder = () => {
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
     }
 
@@ -52,18 +60,6 @@ const SingleBuyOrder = () => {
             .catch(() => { console.log(`failed to copy ${val}`) })
     }
 
-    const [forms, setForms] = useState({
-        confirmed: '',
-        sent_crypto: '',
-        msg: ""
-    })
-    const statuses = ["Yes", "No"]
-    const [screen, setScreen] = useState(1)
-    const [failed, setFailed] = useState(false)
-    const afterLoad = () => {
-        setLoading(false)
-        setScreen(2)
-    }
     const handleChange = (e) => {
         setForms({ ...forms, msg: e.target.value })
     }
@@ -72,18 +68,18 @@ const SingleBuyOrder = () => {
         e.preventDefault()
         if (forms.confirmed !== 'Yes' || forms.sent_crypto !== 'Yes') return ErrorAlert('Please confirm that you have received the funds and sent crypto')
         const data = { tag: 'success' }
-        setLoading(true)
+        setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_buy}/${id}`, data)
             if (res.status !== 200) return ErrorAlert(res.msg)
             fetchBuys()
             await new Promise((resolve) => setTimeout(resolve, 2000))
             SuccessAlert(res.msg)
-            afterLoad()
+            setScreen(2)
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
 
     }
@@ -91,27 +87,26 @@ const SingleBuyOrder = () => {
     const declineOrder = async () => {
         if (!forms.msg) return ErrorAlert(`Please provide failed message to user`)
         const data = { tag: 'failed', message: forms.msg }
-        setLoading(true)
+        setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_buy}/${id}`, data)
-            // console.log(res)
             if (res.status !== 200) return ErrorAlert(res.msg)
             fetchBuys()
             setFailed(false)
             await new Promise((resolve) => setTimeout(resolve, 2000))
             SuccessAlert(res.msg)
-            afterLoad()
+            setScreen(2)
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
     }
 
     return (
         <AdminPageLayout>
-            {loading &&
-                <Loader title={`closing order`} />
+            {loading.status &&
+                <Loader title={loading.val} />
             }
             {failed && <ModalLayout setModal={setFailed} clas={`w-11/12 mx-auto lg:w-1/2`}>
                 <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
@@ -146,22 +141,28 @@ const SingleBuyOrder = () => {
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Amount:</div>
+                                        <div className="text-sm">Amount Bought:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.amount}`} className={`${green}`} />
-
+                                            <FormInput value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Gas Fee:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.amount + data?.gas_fee}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Crypto Currency:</div>
                                         <div className="w-full">
                                             <FormInput value={data?.crypto_currency} className={`${green}`} />
-
                                         </div>
-                                    </div>
-                                    <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Status:</div>
-                                        <FormInput value={data?.status} className={`${data?.status === 'unpaid' ? 'text-red-600' : green}`} />
                                     </div>
 
                                 </div>
@@ -176,7 +177,7 @@ const SingleBuyOrder = () => {
                                             <div className="w-full">
                                                 <FormInput value={data?.wallet_address} className={`${green}`} />
                                             </div>
-                                            <FaRegCopy onClick={() => handleCopy(`88t9389fncjjefj`, 'wallet address')} className={`${green} cursor-pointer`} />
+                                            <FaRegCopy onClick={() => handleCopy(data?.wallet_address, 'wallet address')} className={`${green} cursor-pointer`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
@@ -194,8 +195,12 @@ const SingleBuyOrder = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Status:</div>
+                                        <FormInput value={data?.status} className={`${data?.status === 'unpaid' ? 'text-red-600' : green}`} />
+                                    </div>
 
+                                </div>
 
                             </div>
                             {data?.status === 'paid' &&
@@ -228,24 +233,26 @@ const SingleBuyOrder = () => {
                                 </>
                             }
                         </form>
+                    </div>
+                </>
+            }
+            {screen === 2 &&
+                <div className="">
+                    <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
 
-
-                    </div></>}
-            {screen === 2 && <div className="">
-                <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
-
-                    <div className="w-full flex items-center  flex-col">
-                        <Lottie options={defaultOptions} height={250} width={300} />
-                        <div className="mt-10 flex flex-col items-center ">
-                            <div className="capitalize">Thank You for confirming this order.
+                        <div className="w-full flex items-center  flex-col">
+                            <Lottie options={defaultOptions} height={250} width={300} />
+                            <div className="mt-10 flex flex-col items-center ">
+                                <div className="capitalize">Thank You for confirming this order.
+                                </div>
+                                <Link to={`/admin/exchange/buy_orders`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
+                                    Go back to orders
+                                </Link>
                             </div>
-                            <Link to={`/admin/exchange/buy_orders`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
-                                Go back to orders
-                            </Link>
                         </div>
                     </div>
                 </div>
-            </div>}
+            }
         </AdminPageLayout>
 
     )

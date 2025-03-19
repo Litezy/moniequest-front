@@ -20,7 +20,7 @@ const SellCrypto = () => {
     const [check, setCheck] = useState(false)
     const tags = ['BUY', 'SELL']
     const [modal, setModal] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(false) //!navigator.onLine
+    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine) 
     const [loading, setLoading] = useState(false)
     const [utils] = useAtom(UTILS)
     const [cryptos] = useAtom(CRYPTOS)
@@ -32,7 +32,8 @@ const SellCrypto = () => {
         network: '',
         wallet_add: '',
         minimum: '',
-        limit: ''
+        limit: '',
+        gas_fee: ''
     })
     const [active, setActive] = useState(tags[0])
     const [confirm, setConfirm] = useState(false)
@@ -60,6 +61,17 @@ const SellCrypto = () => {
         symbol: currencies[0].symbol
     })
 
+    const [inNaira, setInNaira] = useState('')
+    const [amountToReceive, setAmountToReceive] = useState('')
+    useEffect(() => {
+        if (forms.amount && forms.gas_fee) {
+            const toPay = parseFloat(forms.amount.replace(/,/g, '')) - parseFloat(forms.gas_fee)
+            setAmountToReceive(toPay.toLocaleString())
+            const naira = toPay * rate
+            setInNaira(naira.toLocaleString())
+        }
+    }, [forms.amount, rate, forms.gas_fee])
+
     const submit = (e) => {
         e.preventDefault()
         const amt = forms.amount.replace(/,/g, '')
@@ -69,15 +81,6 @@ const SellCrypto = () => {
         if (amt > forms.limit) return ErrorAlert(`Sorry, you can't sell above $${forms.limit.toLocaleString()}`)
         setModal(true)
     }
-
-    const [inNaira, setInNaira] = useState('')
-    useEffect(() => {
-        if (forms.amount) {
-            const naira = parseInt(forms.amount.replace(/,/g, '')) * rate
-            setInNaira(naira.toLocaleString())
-        }
-    }, [forms.amount, rate])
-
 
     const copyToClip = () => {
         navigator.clipboard.writeText(forms.wallet_add)
@@ -98,7 +101,8 @@ const SellCrypto = () => {
         setConfirm(false)
         setLoading(true)
         const formdata = {
-            amount: forms.amount,
+            amount: parseFloat(forms.amount),
+            gas_fee: parseFloat(forms.gas_fee),
             crypto_currency: forms.crypto,
             type: 'sell',
             trans_hash: forms.trans_hash,
@@ -148,7 +152,8 @@ const SellCrypto = () => {
                 symbol: crypto.symbol,
                 wallet_add: crypto.wallet_add,
                 minimum: crypto.sell_min,
-                limit: crypto.sell_max
+                limit: crypto.sell_max,
+                gas_fee: crypto.gas_fee
             }));
         } else {
             setForms({ ...forms, network: '', wallet_add: '' });
@@ -249,12 +254,17 @@ const SellCrypto = () => {
                                     </div>
 
                                 </div>
-                                <div className="flex item-center justify-between w-full">
-                                    <div className="text-sm">Amount in Naira</div>
-                                    <div className="flex items-center gap-1">
-                                        <div className="text-sm">{inNaira}</div>
-                                        <TbSwitch2 className='text-lightgreen ' />
-                                    </div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Gas fee</div>
+                                    <div>${forms.gas_fee}</div>
+                                </div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Amount to receive</div>
+                                    <div>${amountToReceive}</div>
+                                </div>
+                                <div className="flex item-center text-sm justify-between w-full">
+                                    <div>Amount in Naira</div>
+                                    <div>₦{inNaira}</div>
                                 </div>
                                 <div className="flex w-full item-center text-base lg:text-sm justify-between">
                                     <div className="text-sm">Selling rate</div>
@@ -270,7 +280,7 @@ const SellCrypto = () => {
                             <div className="flex w-11/12 lg:w-2/3  mx-auto mt-5 items-start gap-5 flex-col">
 
                                 <div className="flex items-start gap-2 flex-col w-full">
-                                    <div className="text-center  w-full text-2xl">Selling <span className='text-red-600 font-bold'>{currencies[0].symbol}{forms.amount}</span> worth of {forms.symbol} at <br /> <span className='text-red-600 font-bold'>{currencies[1].symbol}{inNaira}</span></div>
+                                    <div className="text-center  w-full text-2xl">Selling <span className='text-red-600 font-bold'>{currencies[0].symbol}{forms.amount.toLocaleString()}(${amountToReceive.toLocaleString()})</span> worth of {forms.symbol} at <br /> <span className='text-red-600 font-bold'>{currencies[1].symbol}{inNaira}</span></div>
                                 </div>
                                 <div className="text-sm text-center w-full">kindly send tokens to the wallet address below</div>
 
@@ -284,7 +294,7 @@ const SellCrypto = () => {
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Wallet Address</div>
-                                    <div className="w-full flex items-center gap-1  rounded-md ">
+                                    <div className="w-full flex items-center gap-1 rounded-md ">
                                         <div className="w-full">
                                             <input readOnly={true} type="text" value={forms.wallet_add}
                                                 className='w-full bg-dark focus:border-zinc-300 focus-ring-0 outline-none '
@@ -303,7 +313,6 @@ const SellCrypto = () => {
                             </div>
                         </div>
                     }
-
 
                     {screen === 3 &&
                         <div className="">

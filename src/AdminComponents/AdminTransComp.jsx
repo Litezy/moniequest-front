@@ -9,8 +9,16 @@ const AdminTransComp = ({ trans }) => {
     const [modal, setModal] = useState(false)
     const [naira, setNaira] = useState('')
     useEffect(() => {
-        let amt = trans?.amount * trans?.rate
-        setNaira(amt.toLocaleString())
+        let newAmount;
+        if (trans.type === 'buy') {
+            newAmount = trans?.amount + trans?.gas_fee
+        } else if (trans.type === 'sell'){
+            newAmount = trans?.amount - trans?.gas_fee
+        } else {
+            newAmount = trans?.amount
+        }
+        const naira = newAmount * trans?.rate
+        setNaira(naira.toLocaleString())
     }, [trans])
     return (
         <div className='w-full mb-5'>
@@ -57,13 +65,6 @@ const AdminTransComp = ({ trans }) => {
                 {trans.brand && <div className={`${trans.brand && trans.status === 'pending' ? "text-yellow-300" : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">
-
-                    {/* {trans.crypto_currency && trans.type === 'buy'  &&<div
-                        className={`${ trans.type === 'buy' && trans?.status === 'failed' ? 'text-red-600':'text-lightgreen'} `}>{currencies[1].symbol}{naira}
-                    </div>}
-                    {trans.crypto_currency && trans.type === 'sell'  && <div
-                        className={`${ trans.type === 'sell' && trans?.status === 'failed' ? 'text-red-600':'text-red-600'} `}>{currencies[1].symbol}{naira}
-                    </div>} */}
                     {trans.bank_user && <div
                         className={` text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
                     </div>}

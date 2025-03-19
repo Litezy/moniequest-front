@@ -17,7 +17,7 @@ const BuyCrypto = () => {
     const [screen, setScreen] = useState(1)
     const [check, setCheck] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(false); //!navigator.onLine
+    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
     const [modal, setModal] = useState(false)
     const [utils] = useAtom(UTILS)
     const [user] = useAtom(PROFILE)
@@ -31,7 +31,8 @@ const BuyCrypto = () => {
         wallet_add: '',
         isExpired: 'No',
         minimum: '',
-        limit: ''
+        limit: '',
+        gas_fee: ''
     })
     const rate = utils?.exchange_buy_rate
     const verified = user?.kyc_verified
@@ -60,6 +61,17 @@ const BuyCrypto = () => {
         symbol: currencies[0].symbol
     })
 
+    const [inNaira, setInNaira] = useState('')
+    const [amountToPay, setAmountToPay] = useState('')
+    useEffect(() => {
+        if (forms.amount && forms.gas_fee) {
+            const toPay = parseFloat(forms.amount.replace(/,/g, '')) + parseFloat(forms.gas_fee)
+            setAmountToPay(toPay.toLocaleString())
+            const naira = toPay * rate
+            setInNaira(naira.toLocaleString())
+        }
+    }, [forms.amount, rate, forms.gas_fee])
+
     const proceedFunc = () => {
         if (!forms.wallet_add) return ErrorAlert(`Please input your wallet address`)
         setModal(true)
@@ -79,14 +91,6 @@ const BuyCrypto = () => {
         }
         setScreen(2)
     }
-
-    const [inNaira, setInNaira] = useState('')
-    useEffect(() => {
-        if (forms.amount) {
-            const naira = parseInt(forms.amount.replace(/,/g, '')) * rate
-            setInNaira(naira.toLocaleString())
-        }
-    }, [forms.amount, rate])
 
 
     const fetchOrders = async () => {
@@ -111,7 +115,8 @@ const BuyCrypto = () => {
             type: 'buy',
             wallet_address: forms.wallet_add,
             network: forms.network,
-            amount: forms.amount,
+            amount: parseFloat(forms.amount),
+            gas_fee: parseFloat(forms.gas_fee),
             wallet_exp: forms.isExpired,
             rate: rate
         };
@@ -158,7 +163,8 @@ const BuyCrypto = () => {
                 network: crypto.network,
                 symbol: crypto.symbol,
                 minimum: crypto.buy_min,
-                limit: crypto.buy_max
+                limit: crypto.buy_max,
+                gas_fee: crypto.gas_fee
             }));
         } else {
             console.error("Selected crypto not found.");
@@ -214,17 +220,21 @@ const BuyCrypto = () => {
                                         </div>
                                         <div className="">{selectedCurr.name}</div>
                                     </div>
-
                                 </div>
-                                <div className="flex item-center justify-between w-full">
-                                    <div className="text-sm">Amount in Naira</div>
-                                    <div className="flex items-center gap-1">
-                                        <div className="text-sm">{inNaira}</div>
-                                        <TbSwitch2 className='text-lightgreen ' />
-                                    </div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Gas fee</div>
+                                    <div>${forms.gas_fee}</div>
                                 </div>
-                                <div className="flex w-full item-center text-base lg:text-sm justify-between">
-                                    <div className="text-sm">Buying rate</div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Amount to pay</div>
+                                    <div>${amountToPay}</div>
+                                </div>
+                                <div className="flex item-center text-sm justify-between w-full">
+                                    <div>Amount in Naira</div>
+                                    <div>₦{inNaira}</div>
+                                </div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Buying rate</div>
                                     <div className="">{rate}/$</div>
                                 </div>
                                 <button onClick={submit} className={`bg-green-500 hover:bg-lightgreen text-white hover:text-ash w-full h-fit py-3.5 text-lg rounded-xl`}>Buy Crypto</button>
@@ -261,7 +271,7 @@ const BuyCrypto = () => {
                                     </ModalLayout>
                                 }
                                 <div className="flex items-start gap-2 flex-col w-full">
-                                    <div className="text-center  w-full text-2xl">Buying <span className='text-lightgreen font-bold'>{currencies[0].symbol}{forms.amount}</span> worth of {forms.symbol} at <br /> <span className='text-lightgreen font-bold'>{currencies[1].symbol}{inNaira}</span></div>
+                                    <div className="text-center  w-full text-2xl">Buying <span className='text-lightgreen font-bold'>{currencies[0].symbol}{amountToPay.toLocaleString()}</span> worth of {forms.symbol} at <br /> <span className='text-lightgreen font-bold'>{currencies[1].symbol}{inNaira}</span></div>
                                 </div>
                                 <div className="text-sm text-center w-full">kindly provide your wallet address</div>
 

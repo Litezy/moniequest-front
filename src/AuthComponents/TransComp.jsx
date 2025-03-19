@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GoArrowDownLeft,  GoArrowUpLeft, GoArrowUpRight } from 'react-icons/go'
+import { GoArrowDownLeft, GoArrowUpLeft, GoArrowUpRight } from 'react-icons/go'
 import { currencies } from './AuthUtils'
 import ModalLayout from '../utils/ModalLayout'
 import TransModal from './TransModal'
@@ -8,16 +8,21 @@ import moment from 'moment'
 
 const TransComp = ({ trans }) => {
     const [modal, setModal] = useState(false)
+    const [naira, setNaira] = useState('')
 
-    const [naira,setNaira] = useState('')
-    useEffect(()=>{
-        let naira ;
-        if(trans){
-                const amt = trans?.amount * trans?.rate
-                naira = amt.toLocaleString()
-            setNaira(naira)
+    useEffect(() => {
+        let newAmount;
+        if (trans.type === 'buy') {
+            newAmount = trans?.amount + trans?.gas_fee
+        } else if (trans.type === 'sell') {
+            newAmount = trans?.amount - trans?.gas_fee
+        } else {
+            newAmount = trans?.amount
         }
-    },[])
+        const naira = newAmount * trans?.rate
+        setNaira(naira.toLocaleString())
+    }, [trans])
+
     return (
         <div className='w-full mb-5'>
             {modal &&
@@ -50,12 +55,12 @@ const TransComp = ({ trans }) => {
                             {trans.brand && <div className={`text-red-600 capitalize`}>sell</div>}
                         </div>
                         <div className="flex flex-col items-start gap-1 text-sm">
-                        <div className="">{moment(trans.createdAt).format('ddd')} {moment(trans.createdAt).format('DD-MM-YYYY')}</div>
+                            <div className="">{moment(trans.createdAt).format('ddd')} {moment(trans.createdAt).format('DD-MM-YYYY')}</div>
                             <div className="">{moment(trans.createdAt).format('hh:mm a')}</div>
                         </div>
                     </div>
                 </div>
-                {trans.crypto_currency && <div className={`${trans.crypto_currency && trans.status === 'pending' ? "text-yellow-300" : trans?.status === 'failed' ? 'text-red-600': 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
+                {trans.crypto_currency && <div className={`${trans.crypto_currency && trans.status === 'pending' ? "text-yellow-300" : trans?.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 {trans.bank_user &&
                     <div className={`${trans.bank_user && trans.status === 'pending' ? "text-yellow-300" : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
@@ -65,7 +70,7 @@ const TransComp = ({ trans }) => {
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">
 
                     {trans.bank_user && <div
-                        className={`text-sm text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
+                        className={`text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
                     </div>}
                     {!trans?.bank_user && <div
                         className={` text-white`}>{currencies[1].symbol}{naira}

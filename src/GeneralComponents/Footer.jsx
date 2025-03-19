@@ -40,17 +40,18 @@ const Footer = () => {
     email: '',
     phone: '',
   })
-  const formHandler = e => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
+
+  const handlePhoneNum = (e) => {
+    let value = e.target.value
+    const formatVal = value.replace(/\D/g, '')
+    setForm({ ...form, phone: formatVal })
   }
 
   const SubmitForm = async (e) => {
     e.preventDefault()
 
     if (!form.email || !form.phone) return ErrorAlert('Enter email address and phone number')
+    if (!/\S+@\S+\.\S+/.test(form.email)) return ErrorAlert('Enter a valid email address')
     const formbody = {
       email: form.email,
       phone_number: form.phone
@@ -119,10 +120,10 @@ const Footer = () => {
                   to stay ahead in the crypto world!</div>
               </div>
               <form className='flex flex-col gap-3 mt-6' onSubmit={SubmitForm}>
-                <FormInput placeholder='Email address' type='email' name='email' value={form.email} onChange={formHandler} className='!rounded-md' />
+                <FormInput placeholder='Email address' type='email' name='email' value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className='!rounded-md' />
                 <div className='flex items-center'>
                   <div className='md:w-3/4 w-2/3 border-y border-l border-gray-400 rounded-l-md'>
-                    <FormInput placeholder='Phone number' name='phone' value={form.phone} onChange={formHandler} className='!rounded-l-md !rounded-e-none' border={false} />
+                    <FormInput placeholder='Phone number' name='phone' value={form.phone} onChange={handlePhoneNum} className='!rounded-l-md !rounded-e-none' border={false} />
                   </div>
                   <div className='md:w-1/4 w-2/6 relative'>
                     {loading && <ButtonLoader />}

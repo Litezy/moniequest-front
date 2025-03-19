@@ -81,7 +81,7 @@ const UserDetails = () => {
 
                 <div className="py-2 w-full md:w-1/2 flex items-start md:items-center gap-2 flex-col md:flex-row">
                     <div className="">Search Users</div>
-                    <input type="text" className='rounded-md bg-dark outline-none focus:outline-none  text-white w-3/4 border-gray-400 focus:border-none' onChange={(e) => handleFilter(e)} />
+                    <input type="text" className='rounded-md bg-transparent outline-none focus:outline-none focus-within:outline-none focus:ring-0 text-white w-3/4 border-gray-400 focus:border-gray-400' onChange={(e) => handleFilter(e)} />
                 </div>
 
                 <div className="relative overflow-x-auto rounded-md mt-10">
@@ -142,7 +142,7 @@ const UserDetails = () => {
                                         {moment(item.createdAt).format(`DD-MM-YYYY hh:mm a`)}
                                     </td>
                                     <td className="px-3 py-3 truncate">
-                                        <button onClick={() => setModal(true)} onMouseOver={() => setSelectedUser(item)} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Proceed</button>
+                                        <button onClick={() => {setModal(true); setSelectedUser(item)}} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Proceed</button>
                                     </td>
                                 </tr>
                             )) :

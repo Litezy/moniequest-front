@@ -225,16 +225,16 @@ const SingleBlog = () => {
                                 <div className="flex items-start poppins flex-col gap-12 mt-10 text-gray-400">
                                     <div className='flex flex-col gap-2 items-start' id='main'>
                                         <div className="text-[1.8rem] leading-[33px] capitalize font-bold poppins text-white"> {singleBlog?.main_header_title}</div>
-                                        <p className="whitespace-pre-line">{singleBlog?.main_header_content.replace(/\\n/g, '\n')}</p>
+                                        <p className="whitespace-pre-line">{singleBlog?.main_header_content.replace(/\\n|\/n/g, '\n')}</p>
                                     </div>
                                     <div className="flex items-start gap-2 flex-col " id='first'>
                                         <div className="text-white font-bold capitalize leading-[33px] text-2xl poppins ">{singleBlog?.first_paragraph_title}</div>
-                                        <div className="whitespace-pre-line">{singleBlog?.first_paragraph_content.replace(/\\n/g, '\n')}</div>
+                                        <div className="whitespace-pre-line">{singleBlog?.first_paragraph_content.replace(/\\n|\/n/g, '\n')}</div>
                                     </div>
                                     <div className='flex flex-col gap-8'>
                                         <div className="flex items-start gap-2 flex-col" id='second'>
                                             <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.second_paragraph_title}</div>
-                                            <p className="whitespace-pre-line">{singleBlog?.second_paragraph_content.replace(/\\n/g, '\n')}</p>
+                                            <p className="whitespace-pre-line">{singleBlog?.second_paragraph_content.replace(/\\n|\/n/g, '\n')}</p>
                                         </div>
                                         {singleBlog?.second_paragraph_image && <div className="flex items-center justify-center" id='second'>
                                             <img src={singleBlog?.second_paragraph_image} alt="second image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center" />
@@ -243,7 +243,7 @@ const SingleBlog = () => {
                                     <div className='flex flex-col gap-8'>
                                         <div className="flex items-start gap-2 flex-col" id='extras'>
                                             <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.extras_title}</div>
-                                            <div className="whitespace-pre-line">{singleBlog?.extras_content.replace(/\\n/g, '\n')}</div>
+                                            <div className="whitespace-pre-line">{singleBlog?.extras_content.replace(/\\n|\/n/g, '\n')}</div>
                                         </div>
                                         {singleBlog?.extras_image && <div className="flex items-center justify-center" id='second'>
                                             <img src={singleBlog?.extras_image} alt="extras image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center " />
@@ -254,7 +254,7 @@ const SingleBlog = () => {
                         </div>
                         <div className="flex items-start gap-2 flex-col mt-10 mb-5" id='conclusion'>
                             <div className="text-white font-bold leading-[33px] text-2xl poppins ">Conclusion</div>
-                            <div className="text-gray-400 poppins whitespace-pre-line">{singleBlog?.conclusion.replace(/\\n/g, '\n')}</div>
+                            <div className="text-gray-400 poppins whitespace-pre-line">{singleBlog?.conclusion.replace(/\\n|\/n/g, '\n')}</div>
                         </div>
 
                         <div className="w-full my-10">

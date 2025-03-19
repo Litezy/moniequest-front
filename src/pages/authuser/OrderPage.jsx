@@ -10,8 +10,6 @@ import FormInput from '../../utils/FormInput'
 import { FaCopy } from 'react-icons/fa'
 import { BankAcc, currencies } from '../../AuthComponents/AuthUtils'
 import { TfiTimer } from 'react-icons/tfi'
-import { useAtom } from 'jotai'
-import { UTILS } from '../../services/store'
 
 const OrderPage = () => {
     const [loading, setLoading] = useState(false)
@@ -19,7 +17,6 @@ const OrderPage = () => {
     const [data, setData] = useState({})
     const { id, tag } = useParams()
     const [screen, setScreen] = useState(1)
-    const [utils] = useAtom(UTILS)
 
     const fetchSingleHistory = useCallback(async () => {
         setLoading(true)
@@ -47,22 +44,26 @@ const OrderPage = () => {
         fetchSingleHistory()
     }, [])
 
-    const rate = tag === 'buy' ? utils?.exchange_buy_rate : utils?.exchange_sell_rate
     const naviagate = useNavigate()
     const [confirm, setConfirm] = useState(false)
     const [cancel, setCancel] = useState(false)
     const [naira, setNaira] = useState('')
+    const [amountToPay, setAmountToPay] = useState('')
+    const [amountToReceive, setAmountToReceive] = useState('')
     useEffect(() => {
-        if (data?.amount && data.amount.length > 3) {
-            const formatAmt = data?.amount?.replace(/,/g, '')
-            const naira = formatAmt * rate
-            setNaira(naira.toLocaleString())
-        } else if (data?.amount) {
-            const naira = data?.amount * rate
+        if (data?.amount) {
+            let newAmount;
+            if (tag === 'buy') {
+                newAmount = data.amount + data.gas_fee
+                setAmountToPay(newAmount)
+            } else {
+                newAmount = data.amount - data.gas_fee
+                setAmountToReceive(newAmount)
+            }
+            const naira = newAmount * data.rate
             setNaira(naira.toLocaleString())
         }
-
-    }, [naira, data?.amount])
+    }, [data?.amount])
 
     const navigate = useNavigate()
     const copyToClip = () => {
@@ -163,35 +164,43 @@ const OrderPage = () => {
                             </div>}
                             <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5   ">
                                 <div className="flex flex-col gap-3 w-full">
-                                    <div className="flex flex-col items-start">
+                                    <div className="flex flex-col gap-2 items-start">
                                         <div className="text-sm">Crypto Currency:</div>
                                         <div className="w-full">
                                             <FormInput read={true} value={data.crypto_currency} className={`${green} capitalize`} />
                                         </div>
                                     </div>
-                                    <div className="w-full">
-                                        <div className="text-sm">Amount to pay in USD:</div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount Bought:</div>
                                         <div className="w-full">
-                                            <FormInput read={true} value={`${currencies[0].symbol}${data.amount}`} className={`${green}`} />
+                                            <FormInput value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                         </div>
                                     </div>
-                                    <div className="w-full">
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Gas Fee:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount to pay in USD:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${amountToPay}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className=" flex flex-col gap-3 w-full">
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount to pay in NGN:</div>
                                         <div className="w-full">
                                             <FormInput read={true} value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
                                         </div>
                                     </div>
-
-
-
-                                </div>
-                                <div className=" flex flex-col gap-3 w-full">
-
-                                    <div className="">
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Network provided:</div>
                                         <FormInput read={true} value={data?.network} className={`${green}`} />
                                     </div>
-                                    <div className="w-full">
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Wallet Address Provided:</div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-full">
@@ -199,14 +208,11 @@ const OrderPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="w-full">
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Status:</div>
                                         <FormInput read={true} value={data?.status} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
                                     </div>
-
                                 </div>
-
-
                             </div>
 
                             {data?.status === 'unpaid' ? <div className="w-11/12 mt-5 mx-auto md:w-5/6">
@@ -232,38 +238,40 @@ const OrderPage = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5   ">
                                 <div className="flex flex-col gap-3 w-full">
-                                    <div className="flex flex-col items-start">
+                                    <div className="flex flex-col gap-2 items-start">
                                         <div className="text-sm">Crypto Currency:</div>
                                         <div className="w-full">
                                             <FormInput value={data.crypto_currency} className={`${green} capitalize`} />
                                         </div>
                                     </div>
-                                    <div className="w-full">
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <div className="text-sm">Amount Sold:</div>
+                                        <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Gas Fee:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount to receive in USD:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data.amount}`} className={`${green}`} />
+                                            <FormInput value={`${currencies[0].symbol}${amountToReceive}`} className={`${green}`} />
                                         </div>
                                     </div>
-                                    <div className="w-full">
-                                        <div className="text-sm">Amount to receive in NGN:</div>
-                                        <div className="w-full">
-                                            <FormInput value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
-                                        </div>
-                                    </div>
-
-
-
                                 </div>
                                 <div className=" flex flex-col gap-3 w-full">
-                                    <div className="w-full">
-                                        <div className="text-sm">Transaction ID/Hash:</div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-full">
-                                                <FormInput value={data?.trans_hash} className={`${green} text-sm`} />
-                                            </div>
-                                        </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount to receive in NGN:</div>
+                                        <FormInput value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
                                     </div>
-                                    <div className="w-full">
+
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Transaction ID/Hash:</div>
+                                        <FormInput value={data?.trans_hash} className={`${green} text-sm`} />
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Status:</div>
                                         <FormInput value={data?.status} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
                                     </div>

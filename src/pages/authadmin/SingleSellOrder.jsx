@@ -11,18 +11,25 @@ import Loader from '../../GeneralComponents/Loader';
 import Lottie from 'react-lottie';
 import { Apis, AuthGetApi, AuthPostApi } from '../../services/API';
 import { currencies } from '../../AuthComponents/AuthUtils';
-import { useAtom } from 'jotai';
-import { UTILS } from '../../services/store';
 
 
 const SingleSellOrder = () => {
     const { id } = useParams()
     const green = 'text-lightgreen'
     const [data, setData] = useState({})
-    const [utils] = useAtom(UTILS)
+    const [forms, setForms] = useState({
+        confirmed: '',
+        sent_crypto: '',
+        amount: '', message: ''
+    })
+    const [applyAmt, setApplyAmt] = useState(false)
+    const [failed, setFailed] = useState(false)
+    const statuses = ["Yes", "No"]
+    const [screen, setScreen] = useState(1)
+    const [loading, setLoading] = useState({ status: '', val: '' })
 
     const fetchSellID = async () => {
-        setLoading(true)
+        setLoading({ status: true, val: 'fetching order' })
         try {
             const res = await AuthGetApi(`${Apis.admin.single_sell}/${id}`)
             if (res.status !== 200) return ErrorAlert(res.msg)
@@ -31,7 +38,7 @@ const SingleSellOrder = () => {
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
     }
 
@@ -48,34 +55,15 @@ const SingleSellOrder = () => {
         }
     }
 
-    const rate = data?.rate
     const handleCopy = (type, val) => {
         navigator.clipboard.writeText(type)
             .then(() => { SuccessAlert(`${val} copied successfully'`) })
             .catch(() => { console.log(`failed to copy ${val}`) })
     }
-    const [forms, setForms] = useState({
-        confirmed: '',
-        sent_crypto: '',
-        amount: '', message: ''
-    })
-
-    const [applyAmt, setApplyAmt] = useState(false)
-    const [failed, setFailed] = useState(false)
-    const statuses = ["Yes", "No"]
-    const [screen, setScreen] = useState(1)
-    const [loading, setLoading] = useState(false)
-    const [load, setLoad] = useState(false)
-    const afterLoad = () => {
-        setLoading(false)
-        SuccessAlert(`Order closed successfully`)
-        setScreen(2)
-    }
 
     const handleChange = () => {
-        const amt = data?.amount
-        const formatVal = amt.replace(/,/g, '')
-        const newAmt = formatVal * rate
+        const amt = data?.amount - data?.gas_fee
+        const newAmt = amt * data?.rate
         setForms({ ...forms, amount: newAmt?.toLocaleString() })
     }
 
@@ -93,7 +81,7 @@ const SingleSellOrder = () => {
         if (forms.sent_crypto !== 'Yes') return ErrorAlert(`Please confirm if you have received crypto currency`)
         const amt = forms.amount.replace(/,/g, "")
         const data = { amount: amt, tag: 'success' }
-        setLoading(true)
+        setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_sell}/${id}`, data)
             console.log(res)
@@ -102,11 +90,11 @@ const SingleSellOrder = () => {
             fetchSells()
             await new Promise((resolve) => setTimeout(resolve, 2000))
             SuccessAlert(res.msg)
-            afterLoad()
+            setScreen(2)
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
     }
 
@@ -114,32 +102,28 @@ const SingleSellOrder = () => {
         if (!forms.message) return ErrorAlert('Please provide failed message to user')
         const data = { message: forms.message, tag: 'failed' }
         setFailed(false)
-        setLoading(true)
+        setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_sell}/${id}`, data)
             if (res.status !== 200) return ErrorAlert(res.msg)
             fetchSells()
             setForms({ message: "" })
             await new Promise((resolve) => setTimeout(resolve, 2000))
-            setLoading(false)
-            SuccessAlert(`Order marked failed & closed successfully`)
+            SuccessAlert(res.msg)
             setScreen(2)
         } catch (error) {
             console.log(error)
         } finally {
-            setLoading(false)
+            setLoading({ status: false, val: '' })
         }
     }
 
-    
+
     return (
         <AdminPageLayout>
 
-            {loading &&
-                <Loader title={`closing order`} />
-            }
-            {load &&
-                <Loader title={`crediting customer`} />
+            {loading.status &&
+                <Loader title={loading.val} />
             }
             {failed && <ModalLayout setModal={setFailed} clas={`w-11/12 mx-auto lg:w-1/2`}>
                 <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
@@ -176,12 +160,20 @@ const SingleSellOrder = () => {
                                             className={`${green}`} />
                                     </div>
                                     <div className="flex flex-col gap-2 w-full">
-                                        <div className="text-sm">Amount:</div>
+                                        <div className="text-sm">Amount Sold:</div>
                                         <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                     </div>
-                                    <div className="flex flex-col gap-2 w-full">
-                                        <div className="text-sm">Status:</div>
-                                        <FormInput read={true} value={data?.status} className={`${green}`} />
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Gas Fee:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount To Receive:</div>
+                                        <div className="w-full">
+                                            <FormInput value={`${currencies[0].symbol}${data?.amount - data?.gas_fee}`} className={`${green}`} />
+                                        </div>
                                     </div>
 
                                 </div>
@@ -200,16 +192,19 @@ const SingleSellOrder = () => {
                                             <div className="w-full">
                                                 <FormInput read={true} value={data?.trans_hash} className={`${green}`} />
                                             </div>
-                                            <FaRegCopy onClick={() => handleCopy(`jmkmkdmkkfk`, 'trans hash')} className={`${green} cursor-pointer`} />
+                                            <FaRegCopy onClick={() => handleCopy(data?.trans_hash, 'trans hash')} className={`${green} cursor-pointer`} />
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <div className="text-sm">Rate:</div>
-                                        <FormInput read={true} value={`${currencies[1].symbol}${rate}`} className={`${green}`} />
+                                        <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <div className="text-sm">Status:</div>
+                                        <FormInput read={true} value={data?.status} className={`${green}`} />
                                     </div>
 
                                 </div>
-
 
                             </div>
                             <div className="flex w-full md:items-center flex-col mt-5 md:flex-row">
@@ -241,22 +236,26 @@ const SingleSellOrder = () => {
                         </form>
 
 
-                    </div></>}
-            {screen === 2 && <div className="">
-                <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
+                    </div>
+                </>
+            }
+            {screen === 2 &&
+                <div className="">
+                    <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
 
-                    <div className="w-full flex items-center  flex-col">
-                        <Lottie options={defaultOptions} height={250} width={300} />
-                        <div className="mt-10 flex flex-col items-center ">
-                            <div className="capitalize">Thank You for confirming this order.
+                        <div className="w-full flex items-center  flex-col">
+                            <Lottie options={defaultOptions} height={250} width={300} />
+                            <div className="mt-10 flex flex-col items-center ">
+                                <div className="capitalize">Thank You for confirming this order.
+                                </div>
+                                <Link to={`/admin/exchange/sell_orders`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
+                                    Go back to orders
+                                </Link>
                             </div>
-                            <Link to={`/admin/exchange/sell_orders`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
-                                Go back to orders
-                            </Link>
                         </div>
                     </div>
                 </div>
-            </div>}
+            }
         </AdminPageLayout>
 
     )

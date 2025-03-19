@@ -196,7 +196,7 @@ const SingleProductPage = () => {
                                                 <div className='w-[3%]'>
                                                     <GiCheckMark className='text-lightgreen text-sm' />
                                                 </div>
-                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature1.replace(/\\n/g, '\n')}</div>
+                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature1.replace(/\\n|\/n/g, '\n')}</div>
                                             </div>
                                             <div className='flex gap-2 items-baseline'>
                                                 <div className='w-[3%]'>
