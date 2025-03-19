@@ -17,6 +17,8 @@ const SingleAirdropPage = () => {
   const [dataLoading, setDataLoading] = useState(true)
   const navigate = useNavigate()
 
+
+
   useEffect(() => {
     const FetchCategoryAirdrops = async () => {
       setDataLoading(true)
@@ -37,12 +39,32 @@ const SingleAirdropPage = () => {
     FetchCategoryAirdrops()
   }, [id])
 
+  const steps = typeof singleAirdrop.steps === 'string' ? JSON.parse(singleAirdrop.steps) : (Array.isArray(singleAirdrop.steps) ? singleAirdrop.steps : [])
+
   const sortedAirdrops = [...categoryAirdrops].sort((a, b) => b.id - a.id)
   const currentIndex = sortedAirdrops.findIndex((item) => item.id === parseInt(id))
   const prevAirdrop = currentIndex > 0 ? sortedAirdrops[currentIndex - 1] : null
   const nextAirdrop = currentIndex < sortedAirdrops.length - 1 ? sortedAirdrops[currentIndex + 1] : null
 
 
+  const formatTextWithLinks = (text) => {
+    return text.split(/(https?:\/\/[^\s]+?\.[a-z]{2,})/gi).map((part, index) => 
+      /(https?:\/\/[^\s]+?\.[a-z]{2,})/gi.test(part) ? (
+        <a 
+          key={index} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-lightgreen underline"
+        >
+          {part}
+        </a>
+      ) : (
+        part
+      )
+    );
+  };
+  
   return (
     <PageLayout>
       <div className='w-full bg-dark md:py-20 py-10'>
@@ -136,7 +158,7 @@ const SingleAirdropPage = () => {
                 </div>
                 <div className='grid lg:grid-cols-5 grid-cols-1 gap-8'>
                   <div className='lg:col-span-3 col-span-1'>
-                  <p className="whitespace-pre-line">{singleAirdrop?.about.replace(/\\n|\/n/g, '\n')}</p>
+                    <p className="whitespace-pre-line">{singleAirdrop?.about.replace(/\\n|\/n/g, '\n')}</p>
                   </div>
                   <div className='lg:col-span-2 col-span-1'>
                     <img alt='airdrop banner image' src={singleAirdrop.banner_image} className='w-full h-auto'></img>
@@ -164,6 +186,18 @@ const SingleAirdropPage = () => {
                     </div>
                   </div>
                   <div className='lg:col-span-4 col-span-1'>
+                    <div className="w-full py-3 flex items-start flex-col gap-5 mb-5">
+                      <div className="text-xl">Step by step  guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
+                      <div className="flex items-start flex-col gap-5">
+                        {steps.map((item, i) => (
+                          <div className="gap-4 group  flex w-full text-sm  hover:bg-slate-800 h-full items-start p-4 rounded-md  font-normal cursor-pointer " key={i}>
+                            <div className="group-hover:text-lightgreen">{i + 1}</div>
+                            <div className="">{formatTextWithLinks(item)}</div>
+                          </div>
+                        ))
+                        }
+                      </div>
+                    </div>
                     <div className='w-full h-fit border border-ash bg-secondary rounded-md py-8'>
                       <div className='flex flex-col gap-4'>
                         <div className='text-xl font-bold px-4'>Step by step video guide on <span className='capitalize'>{singleAirdrop?.title}</span></div>

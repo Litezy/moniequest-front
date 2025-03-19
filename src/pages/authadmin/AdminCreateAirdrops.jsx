@@ -10,6 +10,7 @@ import AirdropsLayout from '../../AdminComponents/AirdropsLayout'
 import Lottie from 'react-lottie'
 import { Link } from 'react-router-dom'
 import { Apis, AuthPostApi } from '../../services/API'
+import { IoMdClose } from 'react-icons/io'
 
 const categories = [
     "deFi", "featured", "new", "NFT", "potential", "earn_crypto"
@@ -38,6 +39,7 @@ const AdminCreateAirdrops = () => {
         twitter_link: '',
         telegram_link: '',
         website_link: '',
+        steps: []
     })
     const [banner, setBanner] = useState({
         img: null,
@@ -49,6 +51,7 @@ const AdminCreateAirdrops = () => {
     })
     const bannerRef = useRef()
     const logoRef = useRef()
+    const [steps, setSteps] = useState([])
 
     const formHandler = (event) => {
         setForm({
@@ -83,10 +86,11 @@ const AdminCreateAirdrops = () => {
 
     const Submit = async (e) => {
         e.preventDefault()
-
+        if (steps.length === 0 || !steps[0].trim()) return ErrorAlert(`Add at least one step to this airdrop`)
         if (!form.title || !form.category || !form.about || !form.blockchain || !form.type || !form.format || !form.level || !form.video_guide_link || !form.referral_link) return ErrorAlert('Enter all required fields')
         if (!logo.image || !banner.image) return ErrorAlert('Upload airdrop logo and banner images')
 
+            // return console.log('steps',form.steps)
         const formbody = new FormData()
         formbody.append('logo_image', logo.image)
         formbody.append('banner_image', banner.image)
@@ -96,6 +100,7 @@ const AdminCreateAirdrops = () => {
         formbody.append('blockchain', form.blockchain)
         formbody.append('kyc', form.kyc)
         formbody.append('type', form.type)
+        formbody.append('steps', JSON.stringify(form.steps));
         formbody.append('format', form.format)
         formbody.append('level', form.level)
         formbody.append('referral_link', form.referral_link)
@@ -119,6 +124,26 @@ const AdminCreateAirdrops = () => {
             setLoading(false)
         }
     }
+
+    const addstep = () => {
+        const updatedSteps = [...steps, ""];
+        setSteps(updatedSteps);
+        setForm(prevForm => ({ ...prevForm, steps: updatedSteps }));
+    };
+    
+    const handleInputChange = (index, value) => {
+        const updatedSteps = [...steps];
+        updatedSteps[index] = value;
+        setSteps(updatedSteps);
+        setForm(prevForm => ({ ...prevForm, steps: updatedSteps }));
+    };
+    
+    const removestep = (index) => {
+        const updatedSteps = steps.filter((_, i) => i !== index);
+        setSteps(updatedSteps);
+        setForm(prevForm => ({ ...prevForm, steps: updatedSteps }));
+    };
+    
 
     return (
         <AirdropsLayout>
@@ -171,7 +196,8 @@ const AdminCreateAirdrops = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <div className='flex flex-col gap-6'>
+                                <div className='flex flex-col gap-6 '>
+
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*title:</div>
                                         <FormInput placeholder='Title' name='title' value={form.title} onChange={formHandler} />
@@ -194,6 +220,32 @@ const AdminCreateAirdrops = () => {
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-6'>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-lightgreen">Add Steps</div>
+                                        <div className="w-full mt-3 grid grid-cols-1 border p-5 rounded-md  gap-5">
+                                            {steps.map((step, index) => (
+                                                <div key={index} className="flex items-center  w-full gap-2 mb-2">
+                                                    <div className="w-full">
+                                                        <textarea
+                                                        className='w-full min-h-20 md:min-h-32 rounded-md overflow-auto bg-dark text-white resize-none'
+                                                            label={`step ${index + 1}`}
+                                                            value={step}
+                                                            onChange={(e) => handleInputChange(index, e.target.value)}
+                                                        ></textarea>
+                                                    </div>
+                                                    <IoMdClose className='text-2xl text-red-600 cursor-pointer'
+                                                        onClick={() => removestep(index)}
+                                                    />
+                                                </div>
+                                            ))}
+                                            <div
+                                                onClick={addstep}
+                                                className="w-fit ml-auto mt-2 px-4 py-1.5 rounded-full bg-primary text-white cursor-pointer"
+                                            >
+                                                Add new step
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*format <span className='lowercase'>(play to earn, refer to earn, e.t.c.):</span></div>
                                         <FormInput placeholder='Airdrop format' name='format' value={form.format} onChange={formHandler} />

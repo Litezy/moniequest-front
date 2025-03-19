@@ -32,6 +32,7 @@ const AdminAllAirdrops = () => {
         FetchAllAirdrops()
     }, [])
 
+   
     const featuredAirdrops = useMemo(() => {
         return airdrops.filter((ele) => ele.category === 'featured');
     }, [airdrops])
