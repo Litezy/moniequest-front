@@ -70,11 +70,6 @@ const extraIcons = [
         symbol: MdLeaderboard,
         url: '/user/leaderboard',
     },
-
-    {
-        name: 'logout',
-        symbol: FiLogOut,
-    },
 ]
 
 const emailSupport = {
@@ -97,7 +92,7 @@ const AuthFooter = () => {
         Cookies.remove(CookieName)
         navigate('/login')
     }
-    
+
     return (
         <div className='w-full fixed bottom-1 z-30'>
             {logOutModal &&
@@ -109,7 +104,6 @@ const AuthFooter = () => {
                                 <button onClick={() => setLogOutModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
                                 <button onClick={LogoutUser} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm</button>
                             </div>
-
                         </div>
                     </ModalLayout>
                 </div>
@@ -141,7 +135,7 @@ const AuthFooter = () => {
                 </div>
                 {view &&
                     <div className='absolute -top-12 overflow-x-auto  right-0 bg-secondary border border-primary px-4 flex items-center justify-around gap-2 rounded-full'>
-                        {extraIcons.slice(0, extraIcons.length - 1).map((item, i) => (
+                        {extraIcons.map((item, i) => (
                             <div key={i} className='flex items-center py-4 relative'>
                                 {pathName === item.url || pathName.includes(item.main) ?
                                     <div className="bg-lightgreen absolute top-0 w-full h-1 rounded-b-full"></div>
@@ -156,17 +150,10 @@ const AuthFooter = () => {
                                 </Link>
                             </div>
                         ))}
-                        {extraIcons.slice(extraIcons.length - 1, extraIcons.length).map((item, i) => (
-                            <div key={i} className='flex items-center py-4 relative'>
-                                <button onClick={() => setLogOutModal(true)}
-                                    className={` group-hover:text-lightgreen px-2 text-white/60 hover:text-lightgreen cursor-pointer flex flex-col gap-1 items-center`}>
-                                    <div className='relative'>
-                                        <div className="text-[1.5rem]">{<item.symbol />}</div>
-                                    </div>
-                                </button>
-                            </div>
-                        ))}
-
+                        <button onClick={() => setLogOutModal(true)}
+                            className={` group-hover:text-lightgreen px-2 text-white/60 hover:text-lightgreen cursor-pointer flex flex-col gap-1 items-center`}>
+                            <div className="text-[1.5rem]"><FiLogOut /></div>
+                        </button>
                         <a
                             href={emailSupport.url}
                             target="_blank"
@@ -175,8 +162,6 @@ const AuthFooter = () => {
                                 <div className="text-[1.5rem]">{<emailSupport.symbol />}</div>
                             </div>
                         </a>
-
-
                     </div>
                 }
             </div>

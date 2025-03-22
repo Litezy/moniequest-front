@@ -127,7 +127,7 @@ const SingleBuyOrder = () => {
                     <div className="w-11/12 mx-auto mt-2">
                         <Link to={`/admin/exchange/buy_orders`} className="w-fit px-4 py-1.5 rounded-md bg-ash">back to orders</Link>
                     </div>
-                    <div className="mt-5 md:mt-10  mont">
+                    <div className="mt-5 mont">
 
                         <div className="w-full text-center capitalize font-bold poppins">Review Order Number <span className={`${green}`}>{data?.order_no}</span></div>
 
@@ -155,8 +155,7 @@ const SingleBuyOrder = () => {
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}
-`} className={`${green}`} />
+                                            <FormInput value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">

@@ -7,7 +7,7 @@ import avatar from '../assets/images/avatar.svg'
 import { CookieName, ErrorAlert, MoveToTop, SuccessAlert } from '../utils/pageUtils'
 import { Apis, AuthGetApi, AuthPostApi, imageurl } from '../services/API'
 import { useAtom } from 'jotai'
-import { BANK, CRYPTOS, PROFILE, TOOLS, UTILS, WALLET } from '../services/store'
+import { BANK, CRYPTOS, GIFTCARDS, PROFILE, TOOLS, UTILS, WALLET } from '../services/store'
 import Cookies from 'js-cookie';
 import ModalLayout from '../utils/ModalLayout'
 
@@ -20,6 +20,7 @@ const AuthPageLayout = ({ children }) => {
   const [, setUtils] = useAtom(UTILS)
   const [, setCryptos] = useAtom(CRYPTOS)
   const [, setTools] = useAtom(TOOLS)
+  const [, setGiftcards] = useAtom(GIFTCARDS)
   const navigate = useNavigate()
   const location = useLocation()
   const pathName = location.pathname
@@ -60,9 +61,20 @@ const AuthPageLayout = ({ children }) => {
         console.log(`Error in fetching tools data`, error)
       }
     }
+    const fetchGiftcards = async () => {
+      try {
+        const res = await AuthGetApi(Apis.admin.get_giftcards)
+        if (res.status !== 200) return;
+        const data = res.data
+         setGiftcards(data)
+      } catch (error) {
+        console.log(`error in fetching giftcards`, error)
+      }
+    }
     fetchTools()
     fetchCryptos()
     FetchWalletBankAndUtils()
+    fetchGiftcards()
   }, [])
 
   const SendOTP = async () => {

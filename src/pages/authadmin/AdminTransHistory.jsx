@@ -11,6 +11,7 @@ const AdminTransHistory = () => {
   const [searchValue, setSearchValue] = useState('')
   const [dynamicData, setDynamicData] = useState([])
   const [transactions, setTransactions] = useState([])
+  const [dataLoading, setDataLoading] = useState(true)
 
   const fetchTrans = async () => {
     try {
@@ -21,6 +22,8 @@ const AdminTransHistory = () => {
       setTransactions(data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setDataLoading(false)
     }
   }
 
@@ -73,47 +76,70 @@ const AdminTransHistory = () => {
           <div className="text-zinc-400 mt-5">{active ? active === 'Withdrawal' ? 'Bank Withdrawal' : active : 'All'} Transactions</div>
         </div>
         <div className="w-full mt-5">
-          {transactions.length > 0 ?
+          {dataLoading ?
+            <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-1 w-full animate-pulse'>
+              <div className='flex lg:gap-5 gap-2 items-start'>
+                <div className='w-12 h-12 rounded-full bg-slate-400'></div>
+                <div className='flex flex-col gap-5'>
+                  <div className='md:w-40 w-36 md:h-3.5 h-3 rounded-full bg-slate-400'></div>
+                  <div className='flex flex-col gap-2'>
+                    <div className='md:w-28 w-24 h-2 rounded-full bg-slate-400'></div>
+                    <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+                  </div>
+                </div>
+              </div>
+              <div className='flex justify-center items-center'>
+                <div className='md:w-12 w-10 h-2 rounded-full bg-slate-400'></div>
+              </div>
+              <div className='flex justify-center items-center'>
+                <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+              </div>
+            </div>
+            :
             <>
-              {active === tags[0] &&
+              {transactions.length > 0 ?
                 <>
-                  {transactions.length > 0 && transactions.map((trans, i) => {
-                    return (
-                      <AdminTransComp key={i} trans={trans} />
-                    )
-                  })}
+                  {active === tags[0] &&
+                    <>
+                      {transactions.length > 0 && transactions.map((trans, i) => {
+                        return (
+                          <AdminTransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[1] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
+                        return (
+                          <AdminTransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[2] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
+                        return (
+                          <AdminTransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[3] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
+                        return (
+                          <AdminTransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
                 </>
-              }
-              {active === tags[1] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
-                    return (
-                      <AdminTransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
-              }
-              {active === tags[2] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
-                    return (
-                      <AdminTransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
-              }
-              {active === tags[3] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
-                    return (
-                      <AdminTransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
+                :
+                <div className="w-full text-gray-400 text-center">No record found...</div>
               }
             </>
-            :
-            <div className="w-full text-gray-400 text-center">No record found...</div>
           }
         </div>
       </div>

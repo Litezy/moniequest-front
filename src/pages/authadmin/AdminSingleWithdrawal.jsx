@@ -67,7 +67,7 @@ const AdminSingleWithdrawal = () => {
                 <div className=" mt-2">
                     <Link to={`/admin/bank_withdrawals  `} className="w-fit px-4 py-1.5 rounded-md bg-ash">back</Link>
                 </div>
-                <div className="w-full text-center capitalize font-bold poppins">Withdrawal Review Number <span className={`${green}`}>GY8343</span></div>
+                <div className="mt-5 w-full text-center capitalize font-bold poppins">Withdrawal Review Number <span className={`${green}`}>GY8343</span></div>
                 <form onSubmit={submitOrder} className="bg-primary p-5 rounded-md  mx-auto mt-5 md:mt-10 mb-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5   ">
                         <div className="flex flex-col gap-3 w-full">

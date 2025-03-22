@@ -10,10 +10,10 @@ import Loader from '../../GeneralComponents/Loader'
 
 const AdminUpdateCryptos = () => {
     const [loading, setLoading] = useState({ status: false, val: '' })
+    const [dataLoading, setDataLoading] = useState(true)
     const [data, setData] = useState([])
 
     const fetchCryptos = async () => {
-        setLoading({ status: true, val: 'fetch' })
         try {
             const res = await AuthGetApi(Apis.admin.get_cryptos)
             if (res.status !== 200) return;
@@ -21,7 +21,7 @@ const AdminUpdateCryptos = () => {
             setData(data)
         } catch (error) {
             console.log(`failed to fetch cryptos data`, error)
-        } finally { setLoading({ status: false, val: '' }) }
+        } finally { setDataLoading(false) }
     }
 
     useEffect(() => {
@@ -73,9 +73,12 @@ const AdminUpdateCryptos = () => {
             const formatWords = value.toUpperCase()
             setForms({ ...forms, symbol: formatWords })
         }
+        else if (name === 'wallet_add') {
+            setForms({ ...forms, wallet_add: value })
+        }
         else {
-            setForms({ ...forms, [e.target.name]: value })
-
+            const formatVal = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+            setForms({ ...forms, [e.target.name]: formatVal })
         }
     }
 
@@ -170,19 +173,13 @@ const AdminUpdateCryptos = () => {
         <AdminPageLayout>
 
             {loading.status && loading.val === 'create' &&
-                <ModalLayout>
-                    <Loader title={`creating wallet`} />
-                </ModalLayout>
+                <Loader title={`creating wallet`} />
             }
             {loading.status && loading.val === 'update' &&
-                <ModalLayout>
-                    <Loader title={`updating wallet`} />
-                </ModalLayout>
+                <Loader title={`updating wallet`} />
             }
             {loading.status && loading.val === 'delete' &&
-                <ModalLayout>
-                    <Loader title={`deleting wallet`} />
-                </ModalLayout>
+                <Loader title={`deleting wallet`} />
             }
 
             {add &&
@@ -257,7 +254,7 @@ const AdminUpdateCryptos = () => {
                 <div className="w-fit ml-auto">
                     <button onClick={addCrypto} className="px-4 py-2 rounded-md text-sm text-dark bg-white">Add Crypto</button>
                 </div>
-                {!loading.status && loading.val === '' &&
+                {!dataLoading ?
                     <div className="relative overflow-x-auto rounded-md mt-10">
                         <table className="w-full text-sm text-center rtl:text-right">
                             <thead className=" bg-primary text-base poppins ">
@@ -278,7 +275,7 @@ const AdminUpdateCryptos = () => {
                                             {item?.network}
                                         </td>
                                         <td className="px-3 py-3 truncate">
-                                            {item?.wallet_add}
+                                            {item.wallet_add?.slice(0, 5)}.....{item.wallet_add?.slice(-10)}
                                         </td>
 
                                         <td className="px-3 py-3">
@@ -304,8 +301,20 @@ const AdminUpdateCryptos = () => {
 
                             </tbody>
                         </table>
+                    </div>
+                    :
+                    <div className="w-full">
+                        <div className="mt-10 w-11/12 mx-auto">
+                            {new Array(2).fill(0).map((_, i) => {
+                                return (
+                                    <div key={i} className="flex animate-pulse mb-5 items-start gap-1 flex-col">
 
-
+                                        <div className="w-full h-16 bg-gray-500 rounded-sm"></div>
+                                    </div>
+                                )
+                            })}
+                            <div className="text-center">...loading</div>
+                        </div>
                     </div>
                 }
             </div>

@@ -49,7 +49,6 @@ const OrderPage = () => {
     const [cancel, setCancel] = useState(false)
     const [naira, setNaira] = useState('')
     const [amountToPay, setAmountToPay] = useState('')
-    const [amountToReceive, setAmountToReceive] = useState('')
     useEffect(() => {
         if (data?.amount) {
             let newAmount;
@@ -57,8 +56,7 @@ const OrderPage = () => {
                 newAmount = parseFloat(data.amount) + parseFloat(data.gas_fee)
                 setAmountToPay(newAmount)
             } else {
-                newAmount = parseFloat(data.amount) 
-                setAmountToReceive(newAmount)
+                newAmount = parseFloat(data.amount)
             }
             const naira = newAmount * data.rate
             setNaira(naira.toLocaleString())
@@ -252,10 +250,10 @@ const OrderPage = () => {
                                         <div className="text-sm">Amount to receive in NGN:</div>
                                         <FormInput value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
                                     </div>
-                                    
+
                                 </div>
                                 <div className=" flex flex-col gap-3 w-full">
-                                    
+
 
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Transaction ID/Hash:</div>

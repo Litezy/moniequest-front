@@ -72,6 +72,7 @@ import AdminFilterBlogs from "../pages/authadmin/AdminFilterBlogs";
 import AdminFilterComments from "../pages/authadmin/AdminFilterComments";
 import AdminAddTools from "../pages/authadmin/AdminAddTools";
 import AdminSubscribers from "../pages/authadmin/AdminSubscribers";
+import AdminAddGiftcards from "../pages/authadmin/AdminAddGiftcards";
 
 export const GeneralPagesLinks = [
     { path: '*', component: Notfound },
@@ -154,4 +155,5 @@ export const AdminPagesLinks = [
     { path: '/admin/utilities/filter_blogs', component: AdminFilterBlogs},
     { path: '/admin/utilities/filter_blogs/:id', component: AdminFilterComments},
     { path: '/admin/utilities/create_tools', component: AdminAddTools},
+    { path: '/admin/utilities/manage_giftcards', component: AdminAddGiftcards},
 ]

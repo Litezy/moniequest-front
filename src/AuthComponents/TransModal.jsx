@@ -8,11 +8,9 @@ const TransModal = ({ trans }) => {
     useEffect(() => {
         let newAmount;
         if (trans.type === 'buy') {
-            newAmount = trans?.amount + trans?.gas_fee
-        } else if (trans.type === 'sell') {
-            newAmount = trans?.amount 
+            newAmount = parseFloat(trans?.amount) + parseFloat(trans?.gas_fee)
         } else {
-            newAmount = trans?.amount
+            newAmount = parseFloat(trans?.amount)
         }
         const naira = newAmount * trans?.rate
         setInNaira(naira.toLocaleString())
@@ -49,7 +47,7 @@ const TransModal = ({ trans }) => {
             </div>}
             {trans.crypto_currency && trans.type === 'buy' && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">
                 <div className="">Amount paid in USD</div>
-                <div className="capitalize">{currencies[0].symbol}{ trans?.amount + trans?.gas_fee }</div>
+                <div className="capitalize">{currencies[0].symbol}{parseFloat(trans?.amount) + parseFloat(trans?.gas_fee)}</div>
             </div>}
 
             {!trans.bank_user && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">

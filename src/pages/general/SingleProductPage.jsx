@@ -23,6 +23,7 @@ const SingleProductPage = () => {
     const [dataLoading, setDataLoading] = useState(true)
     const [loading, setLoading] = useState(false)
     const categories = singleProduct?.category ? JSON.parse(singleProduct.category) : []
+    const features = singleProduct?.features ? JSON.parse(singleProduct.features) : []
     const discountPrice = singleProduct?.discount_percentage && singleProduct?.price ? (100 - singleProduct.discount_percentage) / 100 * singleProduct.price : 0
 
     useEffect(() => {
@@ -189,21 +190,17 @@ const SingleProductPage = () => {
                                             }
                                             {singleProduct?.discount_endDate && <div className='text-sm italic text-lightgreen'>Discount ends {moment(new Date(singleProduct?.discount_endDate)).format('Do MMMM')}</div>}
                                         </div>
-                                        <p className='text-sm whitespace-pre-line'>{singleProduct?.about.replace(/\\n/g, '\n')}</p>
+                                        <p className='text-sm whitespace-pre-line'>{singleProduct?.about.replace(/\\n|\/n/g, '\n')}</p>
                                         <div className='flex flex-col gap-2'>
                                             <div className='uppercase font-bold'>key features:</div>
-                                            <div className='flex gap-2 items-baseline'>
-                                                <div className='w-[3%]'>
-                                                    <GiCheckMark className='text-lightgreen text-sm' />
+                                            {features.length > 0 && features.map((item, i) => (
+                                                <div key={i} className='flex gap-2 items-baseline'>
+                                                    <div className='w-[3%]'>
+                                                        <GiCheckMark className='text-lightgreen text-sm' />
+                                                    </div>
+                                                    <div className='w-[97%] whitespace-pre-line'>{item.replace(/\\n|\/n/g, '\n')}</div>
                                                 </div>
-                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature1.replace(/\\n|\/n/g, '\n')}</div>
-                                            </div>
-                                            <div className='flex gap-2 items-baseline'>
-                                                <div className='w-[3%]'>
-                                                    <GiCheckMark className='text-lightgreen text-sm' />
-                                                </div>
-                                                <div className='w-[97%] whitespace-pre-line'>{singleProduct?.feature2.replace(/\\n/g, '\n')}</div>
-                                            </div>
+                                            ))}
                                         </div>
                                         <div className='flex justify-end mt-4'>
                                             <button className='outline-none w-fit h-fit flex gap-2 items-center justify-center py-3 px-14 bg-lightgreen uppercase text-sm font-extrabold rounded-[4px] text-ash tracking-wider' onClick={AddToCart}>

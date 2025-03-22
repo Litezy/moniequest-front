@@ -55,31 +55,28 @@ const AdminProductsOrders = () => {
                         <CiSearch className='text-xl cursor-pointer text-white' />
                     </div>
                 </div>
+                <div className="text-2xl md:text-3xl font-bold text-gray-300 capitalize mt-8">latest products purchases</div>
                 {datatLoading ?
-                    <div className='flex flex-col gap-10 mt-8 animate-pulse'>
-                        <div className='md:w-96 w-64 md:h-5 h-4 rounded-md bg-slate-400'></div>
-                        <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-1 w-full'>
-                            <div className='flex lg:gap-5 gap-2 items-start'>
-                                <div className='w-12 h-12 rounded-full bg-slate-400'></div>
-                                <div className='flex flex-col gap-5'>
-                                    <div className='md:w-40 w-36 md:h-3.5 h-3 rounded-full bg-slate-400'></div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='md:w-28 w-24 h-2 rounded-full bg-slate-400'></div>
-                                        <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
-                                    </div>
+                    <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-1 mt-6 w-full animate-pulse'>
+                        <div className='flex lg:gap-5 gap-2 items-start'>
+                            <div className='w-12 h-12 rounded-full bg-slate-400'></div>
+                            <div className='flex flex-col gap-4'>
+                                <div className='w-36 h-3 rounded-full bg-slate-400'></div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='md:w-28 w-24 h-2 rounded-full bg-slate-400'></div>
+                                    <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
                                 </div>
                             </div>
-                            <div className='flex justify-center items-center'>
-                                <div className='md:w-12 w-10 h-2 rounded-full bg-slate-400'></div>
-                            </div>
-                            <div className='flex justify-center items-center'>
-                                <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
-                            </div>
+                        </div>
+                        <div className='flex justify-center items-center'>
+                            <div className='md:w-12 w-10 h-2 rounded-full bg-slate-400'></div>
+                        </div>
+                        <div className='flex justify-center items-center'>
+                            <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
                         </div>
                     </div>
                     :
-                    <div className='flex flex-col gap-5 mt-8'>
-                        <div className="text-2xl md:text-3xl font-bold text-gray-300 capitalize">latest products purchases</div>
+                    <div className='mt-6'>
                         {modal &&
                             <ModalLayout clas={`w-11/12 mx-auto lg:w-1/2 scroll rounded-md`} setModal={setModal}>
                                 <div className="w-full p-5 lg:p-10 bg-primary">
@@ -95,7 +92,7 @@ const AdminProductsOrders = () => {
                                 <div className='flex flex-col gap-5'>
                                     {productOrders.slice(0, visibleCount).map((item, i) => (
                                         <div key={i}>
-                                            <div onClick={() => { setModal(true); setSelected(item) }} className="w-full flex items-center cursor-pointer lg:grid lg:grid-cols-3 justify-between border-b-primary pb-1 border-b mt-2">
+                                            <div onClick={() => { setModal(true); setSelected(item) }} className="w-full flex items-center cursor-pointer lg:grid lg:grid-cols-3 justify-between border-b-primary pb-1 border-b">
                                                 <div className="flex items-start gap-2 lg:gap-5 w-fit lg:w-full">
                                                     <div className="w-fit px-4 py-4 rounded-full bg-primary">
                                                         <GoArrowUpRight className='text-lightgreen' />

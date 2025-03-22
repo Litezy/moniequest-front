@@ -8,34 +8,35 @@ const TransHistory = () => {
   const tags = ['All', 'Crypto', 'GiftCards', 'Withdrawal']
   const [active, setActive] = useState(tags[0])
   const [searchValue, setSearchValue] = useState('')
-  const [loading, setLoading] = useState(false)
   const [transData, setTransData] = useState([])
   const [transactions, setTransactions] = useState([])
+  const [dataLoading, setDataLoading] = useState(true)
 
-  const fetchTrans = useCallback(async () => {
-    const res = await AuthGetApi(Apis.transaction.all_trans)
-    if (res.status !== 200) {
-      setLoading(true)
-    };
-    const data = res.data
-    setTransData(data)
-  }, [loading])
+  const fetchTrans = async () => {
+    try {
+      const res = await AuthGetApi(Apis.transaction.all_trans)
+      if (res.status !== 200) return;
+      const data = res.data
+      setTransData(data)
+      setTransactions(data)
+    } catch (error) {
+      //
+    } finally {
+      setDataLoading(false)
+    }
+  }
 
   useEffect(() => {
     fetchTrans()
   }, []);
 
-  useEffect(() => {
-    setTransactions(transData)
-  }, [transData])
-
   const filterTrans = () => {
     const mainData = transData
     if (searchValue.length > 1) {
-      const filtered = mainData.filter(trans => String(trans.amount).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.type).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || 
-      String(trans.trans_id).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || 
-      String(trans.tag).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || 
-      String(trans.order_no).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()))
+      const filtered = mainData.filter(trans => String(trans.amount).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.type).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.trans_id).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.tag).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.order_no).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()))
       setTransactions(filtered)
     } else {
       setTransactions(mainData)
@@ -45,25 +46,8 @@ const TransHistory = () => {
 
   return (
     <AuthPageLayout>
-      {loading &&
 
-        <div className="flex w-11/12 mx-auto mt-20 items-start animate-pulse gap-3 flex-col">
-          {
-            new Array(5).fill(0).map((_, i) => {
-              return (
-                <div key={i} className="w-full mb-3 flex items-center gap-2">
-                  <div className="w-14 rounded-full h-14 bg-gray-500"></div>
-                  <div className="bg-gray-500 w-3/4 h-14 rounded-md"></div>
-                </div>
-              )
-            })
-          }
-
-        </div>
-
-      }
-
-      {!loading && <div className="w-11/12 mx-auto">
+      <div className="w-11/12 mx-auto">
 
         <div className="w-full my-2">
           <div className="w-full lg:w-2/3 flex gap-2 pr-2 mx-auto items-center border border-zinc-500 rounded-lg ">
@@ -94,50 +78,73 @@ const TransHistory = () => {
           <div className="text-zinc-400 mt-5">{active ? active === 'Withdrawal' ? 'Bank Withdrawal' : active : 'All'} Transactions</div>
         </div>
         <div className="w-full mt-5">
-          {transData.length > 0 ?
+          {dataLoading ?
+            <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-1 w-full animate-pulse'>
+              <div className='flex lg:gap-5 gap-2 items-start'>
+                <div className='w-12 h-12 rounded-full bg-slate-400'></div>
+                <div className='flex flex-col gap-5'>
+                  <div className='md:w-40 w-36 md:h-3.5 h-3 rounded-full bg-slate-400'></div>
+                  <div className='flex flex-col gap-2'>
+                    <div className='md:w-28 w-24 h-2 rounded-full bg-slate-400'></div>
+                    <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+                  </div>
+                </div>
+              </div>
+              <div className='flex justify-center items-center'>
+                <div className='md:w-12 w-10 h-2 rounded-full bg-slate-400'></div>
+              </div>
+              <div className='flex justify-center items-center'>
+                <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+              </div>
+            </div>
+            :
             <>
-              {active === tags[0] &&
+              {transData.length > 0 ?
                 <>
-                  {transactions.length > 0 && transactions.map((trans, i) => {
-                    return (
-                      <TransComp key={i} trans={trans} />
-                    )
-                  })}
+                  {active === tags[0] &&
+                    <>
+                      {transactions.length > 0 && transactions.map((trans, i) => {
+                        return (
+                          <TransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[1] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
+                        return (
+                          <TransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[2] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
+                        return (
+                          <TransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
+                  {active === tags[3] &&
+                    <>
+                      {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
+                        return (
+                          <TransComp key={i} trans={trans} />
+                        )
+                      })}
+                    </>
+                  }
                 </>
-              }
-              {active === tags[1] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
-                    return (
-                      <TransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
-              }
-              {active === tags[2] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
-                    return (
-                      <TransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
-              }
-              {active === tags[3] &&
-                <>
-                  {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
-                    return (
-                      <TransComp key={i} trans={trans} />
-                    )
-                  })}
-                </>
+                :
+                <div className="w-full text-gray-400 text-center">No record found...</div>
               }
             </>
-            :
-            <div className="w-full text-gray-400 text-center">No record found...</div>
           }
         </div>
-      </div>}
+      </div>
     </AuthPageLayout>
   )
 }

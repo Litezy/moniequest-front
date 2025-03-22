@@ -63,7 +63,6 @@ const SellCrypto = () => {
     })
 
     const [inNaira, setInNaira] = useState('')
-   
     useEffect(() => {
         if (forms.amount) {
             const toPay = parseFloat(forms.amount.replace(/,/g, ''))

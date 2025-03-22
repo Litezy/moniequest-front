@@ -16,7 +16,7 @@ const SingleAirdropPage = () => {
   const [singleAirdrop, setSingleAirdrop] = useState({})
   const [dataLoading, setDataLoading] = useState(true)
   const navigate = useNavigate()
-
+  const steps = singleAirdrop?.steps ? JSON.parse(singleAirdrop.steps) : []
 
 
   useEffect(() => {
@@ -39,8 +39,6 @@ const SingleAirdropPage = () => {
     FetchCategoryAirdrops()
   }, [id])
 
-  const steps = typeof singleAirdrop.steps === 'string' ? JSON.parse(singleAirdrop.steps) : (Array.isArray(singleAirdrop.steps) ? singleAirdrop.steps : [])
-
   const sortedAirdrops = [...categoryAirdrops].sort((a, b) => b.id - a.id)
   const currentIndex = sortedAirdrops.findIndex((item) => item.id === parseInt(id))
   const prevAirdrop = currentIndex > 0 ? sortedAirdrops[currentIndex - 1] : null
@@ -48,13 +46,13 @@ const SingleAirdropPage = () => {
 
 
   const formatTextWithLinks = (text) => {
-    return text.split(/(https?:\/\/[^\s]+?\.[a-z]{2,})/gi).map((part, index) => 
+    return text.split(/(https?:\/\/[^\s]+?\.[a-z]{2,})/gi).map((part, index) =>
       /(https?:\/\/[^\s]+?\.[a-z]{2,})/gi.test(part) ? (
-        <a 
-          key={index} 
-          href={part} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-lightgreen underline"
         >
           {part}
@@ -64,7 +62,7 @@ const SingleAirdropPage = () => {
       )
     );
   };
-  
+
   return (
     <PageLayout>
       <div className='w-full bg-dark md:py-20 py-10'>
@@ -186,12 +184,12 @@ const SingleAirdropPage = () => {
                     </div>
                   </div>
                   <div className='lg:col-span-4 col-span-1'>
-                    <div className="w-full py-3 flex items-start flex-col gap-5 mb-5">
-                      <div className="text-xl">Step by step  guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
-                      <div className="flex items-start flex-col gap-5">
+                    <div className="w-full flex items-start flex-col gap-4 mb-8 bg-secondary border border-ash px-4 py-6 rounded-md">
+                      <div className="text-xl font-bold">Step by step  guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
+                      <div className="flex items-start flex-col gap-4">
                         {steps.map((item, i) => (
-                          <div className="gap-4 group  flex w-full text-sm  hover:bg-slate-800 h-full items-start p-4 rounded-md  font-normal cursor-pointer " key={i}>
-                            <div className="group-hover:text-lightgreen">{i + 1}</div>
+                          <div className="gap-3 group flex w-full text-sm hover:bg-slate-800 h-full items-start p-4 rounded-md  cursor-pointer" key={i}>
+                            <div className="group-hover:text-lightgreen">{i + 1}.</div>
                             <div className="">{formatTextWithLinks(item)}</div>
                           </div>
                         ))
@@ -200,8 +198,9 @@ const SingleAirdropPage = () => {
                     </div>
                     <div className='w-full h-fit border border-ash bg-secondary rounded-md py-8'>
                       <div className='flex flex-col gap-4'>
-                        <div className='text-xl font-bold px-4'>Step by step video guide on <span className='capitalize'>{singleAirdrop?.title}</span></div>
-                        {singleAirdrop?.video_guide_link.includes(`https://www.youtube.com`) ? <YouTubeComp videoId={singleAirdrop?.video_guide_link} title={singleAirdrop?.title} />
+                        <div className='text-xl font-bold px-4'>Step by step video guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
+                        {singleAirdrop?.video_guide_link.includes(`https://www.youtube.com`) ?
+                          <YouTubeComp videoId={singleAirdrop?.video_guide_link} title={singleAirdrop?.title} />
                           :
                           <div className="capitalize w-11/12 mx-auto">No steps video provided for this airdrop!</div>
                         }

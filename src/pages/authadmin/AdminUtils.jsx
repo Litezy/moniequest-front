@@ -8,6 +8,7 @@ const AdminUtils = () => {
         { path: 'Testimonials', url: '/admin/utilities/testimonials' },
         { path: 'Filter Comments', url: '/admin/utilities/filter_blogs' },
         { path: 'Create Tools', url: '/admin/utilities/create_tools' },
+        { path: 'Manage Giftcards', url: '/admin/utilities/manage_giftcards' },
     ]
 
     return (

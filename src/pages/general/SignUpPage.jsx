@@ -122,7 +122,7 @@ const SignUpPage = () => {
             </div>
             <div className='text-3xl font-bold text-center'>Create an account</div>
             <div className='text-sm mt-2 text-center'>Already have an account? <Link to='/login' onClick={MoveToTop} className='text-lightgreen cursor-pointer'>Sign in</Link></div>
-            <form className='flex flex-col gap-5 mt-10' onSubmit={CreateAccount}>
+            <form className='flex flex-col gap-5 mt-8' onSubmit={CreateAccount}>
               <div className='grid md:grid-cols-2 grid-cols-1 gap-5'>
                 <FormInput label='First name' placeholder='Your first name' name='first_name' value={form.first_name} onChange={formHandler} />
                 <FormInput label='Surname' placeholder='Your surname' name='surname' value={form.surname} onChange={formHandler} />

@@ -20,6 +20,7 @@ const formsal = () => {
     const [utils] = useAtom(UTILS)
     const [bankAcc] = useAtom(BANK)
     const [loading, setLoading] = useState(false)
+    const [dataLoading, setDataLoading] = useState(true)
     const [records, setRecords] = useState([])
     const [confirm, setConfirm] = useState(false)
     const [forms, setForms] = useState({
@@ -38,6 +39,8 @@ const formsal = () => {
 
         } catch (error) {
             console.log(error)
+        } finally {
+            setDataLoading(false)
         }
     })
 
@@ -237,12 +240,37 @@ const formsal = () => {
                         <div className="text-xl w-11/12 mx-auto mt-5 md:text-2xl font-bold text-gray-300 ">Latest Bank Transactions <span className='text-yellow-300'>(On Hold)</span></div>
                         <div className="w-11/12 mx-auto text-sm ">NB: on hold and transactions can be found in <Link to={`/user/transactions_history`} className='text-blue-600'>Transactions History</Link></div>
                         <div className="mt-5 w-11/12 mx-auto">
-                            {records && records.length > 0 ? records.map((trans, i) => {
-                                return (
-                                    <WithdrawComp key={i} trans={trans} />
-                                )
-                            }) :
-                                <div className="">No transations on hold!</div>
+                            {dataLoading ?
+                                <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-2 w-full animate-pulse'>
+                                    <div className='flex lg:gap-5 gap-2 items-start'>
+                                        <div className='w-12 h-12 rounded-full bg-slate-400'></div>
+                                        <div className='flex flex-col gap-4'>
+                                            <div className='w-32 h-3 rounded-full bg-slate-400'></div>
+                                            <div className='flex flex-col gap-2'>
+                                                <div className='md:w-28 w-24 h-2 rounded-full bg-slate-400'></div>
+                                                <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-center items-center'>
+                                        <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+                                    </div>
+                                    <div className='flex justify-center items-center'>
+                                        <div className='md:w-16 w-12 h-2 rounded-full bg-slate-400'></div>
+                                    </div>
+                                </div>
+                                :
+                                <>
+                                    {records && records.length > 0 ?
+                                        records.map((trans, i) => {
+                                            return (
+                                                <WithdrawComp key={i} trans={trans} />
+                                            )
+                                        })
+                                        :
+                                        <div className="">No transations on hold!</div>
+                                    }
+                                </>
                             }
                         </div>
                     </div></>}

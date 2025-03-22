@@ -29,7 +29,7 @@ const AdminTestimonials = () => {
     return (
         <AdminPageLayout>
             {loading ?
-                <Loader />
+                <Loader title={`loading`} />
                 :
                 <div className="w-11/12 mx-auto mb-10 ">
                     <div className=" text-center text-3xl mb-5 font-bold text-">Testimonials</div>

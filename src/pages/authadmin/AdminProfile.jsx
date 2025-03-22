@@ -73,10 +73,10 @@ const AdminProfile = () => {
         })
     }
 
-    const handlePhoneNum = (e) => {
+    const handleNums = (e) => {
         let value = e.target.value
         const formatVal = value.replace(/\D/g, '')
-        setForm({ ...form, phone_number: formatVal })
+        setForm({ ...form, [e.target.name]: formatVal })
     }
 
     const handleAccNum = (e) => {
@@ -293,9 +293,9 @@ const AdminProfile = () => {
     }
 
     const optimizeImageUrl = (url) => {
-        if (!url || !url.includes('cloudinary.com')) return url; 
+        if (!url || !url.includes('cloudinary.com')) return url;
         const parts = url.split('/upload/');
-        return `${parts[0]}/upload/q_auto,f_webp/${parts[1]}`; 
+        return `${parts[0]}/upload/q_auto,f_webp/${parts[1]}`;
     };
 
 
@@ -349,7 +349,7 @@ const AdminProfile = () => {
                                     <MdEmail className='absolute top-11 right-3 text-xl text-gray-400' />
                                 </div>
                                 <div className='relative'>
-                                    <FormInput label='Phone number' placeholder='Phone number' name='phone_number' value={form.phone_number} onChange={handlePhoneNum} className='!pl-4 !pr-10' />
+                                    <FormInput label='Phone number' placeholder='Phone number' name='phone_number' value={form.phone_number} onChange={handleNums} className='!pl-4 !pr-10' />
                                     <BiSolidPhoneCall className='absolute top-11 right-3 text-xl text-gray-400' />
                                 </div>
                             </div>
@@ -381,33 +381,33 @@ const AdminProfile = () => {
                                 <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Exchange buy rate ($/₦)</div>
-                                        <FormInput placeholder='Enter rate amount' name='exchange_buy_rate' value={form.exchange_buy_rate} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter rate amount' name='exchange_buy_rate' value={form.exchange_buy_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Exchange sell rate ($/₦)</div>
-                                        <FormInput placeholder='Enter rate amount' name='exchange_sell_rate' value={form.exchange_sell_rate} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter rate amount' name='exchange_sell_rate' value={form.exchange_sell_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Giftcard rate ($/₦)</div>
-                                        <FormInput placeholder='Enter rate amount' name='giftcard_rate' value={form.giftcard_rate} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter rate amount' name='giftcard_rate' value={form.giftcard_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Bank withdrawal min (NGN)</div>
-                                        <FormInput placeholder='Enter minimum withdrawal amount' name='bank_min' value={form.bank_min} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter minimum withdrawal amount' name='bank_min' value={form.bank_min} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>KYC threshold (USD)</div>
-                                        <FormInput placeholder='Enter KYC threshold amount' name='kyc_threshold' value={form.kyc_threshold} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter KYC threshold amount' name='kyc_threshold' value={form.kyc_threshold} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Leaderboard reward (USD)</div>
-                                        <FormInput placeholder='Enter leaderboard reward amount' name='leaderboard_reward' value={form.leaderboard_reward} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                        <FormInput placeholder='Enter leaderboard reward amount' name='leaderboard_reward' value={form.leaderboard_reward} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                 </div>
                                 <FormButton title='Update' className='!py-3 !text-base md:!w-1/2 mx-auto' type='button' onClick={UpdateUtils} />
                             </div>
                         </div>
-                        
+
                         <div className='flex flex-col gap-5'>
                             <div className='text-xl capitalize font-medium text-lightgreen'>add carousel images</div>
                             <div className='w-fit h-fit bg-primary rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden'>

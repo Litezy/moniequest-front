@@ -62,9 +62,8 @@ const SingleSellOrder = () => {
     }
 
     const handleChange = () => {
-        const amt = data?.amount
-        const newAmt = amt * data?.rate
-        setForms({ ...forms, amount: newAmt?.toLocaleString() })
+        const amt = parseFloat(data?.amount) * parseFloat(data?.rate)
+        setForms({ ...forms, amount: amt?.toLocaleString() })
     }
 
     const handleMsg = (e) => {
@@ -143,7 +142,7 @@ const SingleSellOrder = () => {
                     <div className="w-11/12 mx-auto mt-2">
                         <Link to={`/admin/exchange/sell_orders`} className="w-fit px-4 py-1.5 rounded-md bg-ash">back to orders</Link>
                     </div>
-                    <div className="mt-5 md:mt-10 w-11/12 mx-auto mont">
+                    <div className="mt-5 w-11/12 mx-auto mont">
 
                         <div className="w-full text-center capitalize font-bold poppins">Review Order Number <span className={`${green}`}>{data?.order_no}</span></div>
 

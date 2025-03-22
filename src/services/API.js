@@ -119,7 +119,13 @@ const admin_urls = {
     create_tool: admin + 'create_tool',
     get_tools: admin + 'get_tools',
     delete_tool: admin + 'delete_tool',
-    get_subs: admin + 'get_subs'
+    get_subs: admin + 'get_subs',
+
+    //giftcards
+    add_giftcard:admin + 'add_giftcard',
+    update_giftcard:admin + 'update_giftcard',
+    get_giftcards: admin +'get_giftcards',
+    delete_giftcard:admin + 'delete_giftcard',
 }
 
 const products = 'api/product/'

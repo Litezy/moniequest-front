@@ -99,7 +99,7 @@ const LoginPage = () => {
             </div>
             <div className='text-3xl font-bold text-center text-white'>Welcome back!</div>
             <div className='text-sm mt-2 text-center text-zinc-300'>New to MonieQuest? <Link to='/signup' onClick={MoveToTop} className='text-lightgreen cursor-pointer'>Create account</Link></div>
-            <form className='flex flex-col gap-5 mt-3' onSubmit={LoginAccount}>
+            <form className='flex flex-col gap-5 mt-8' onSubmit={LoginAccount}>
               <FormInput label='Email Address' placeholder='example@gmail.com' name='email' value={form.email} onChange={formHandler} type='email' />
               <PasswordInputField label='Password' placeholder='*********' name='password' value={form.password} onChange={formHandler} />
               <Link to='/forgot-password' onClick={MoveToTop} className='text-lightgreen text-sm cursor-pointer ml-auto'>Forgot password?</Link>

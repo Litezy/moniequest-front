@@ -11,7 +11,7 @@ import { BANK, TOOLS } from '../../services/store';
 import { Apis, AuthPostApi } from '../../services/API';
 import ProductsLayout from '../../AuthComponents/ProductsLayout';
 import ToolsDiv from '../../AuthComponents/ToolsDiv';
-
+import { MdDelete } from 'react-icons/md';
 
 
 const CreateProduct = () => {
@@ -24,8 +24,7 @@ const CreateProduct = () => {
     price: '',
     title: '',
     about: '',
-    feature1: '',
-    feature2: '',
+    features: [''],
     bank_name: '',
     account_number: '',
     account_name: '',
@@ -78,10 +77,10 @@ const CreateProduct = () => {
   const Submit = async (e) => {
     e.preventDefault()
     if (form.category.length < 1 && !form.other) return ErrorAlert('Choose or specify your product category')
-    if (!form.title || !form.price || !form.about || !form.feature1 || !form.feature2 || !form.video_link || !form.contact_detail || !form.bank_name || !form.account_name || !form.account_number) return ErrorAlert('Enter all required fields')
+    if (!form.title || !form.price || !form.about || form.features.length < 1 || !form.video_link || !form.contact_detail || !form.bank_name || !form.account_name || !form.account_number) return ErrorAlert('Enter all required fields')
     const amt = parseInt(form.price.replace(/,/g, ''))
     if (isNaN(amt)) return ErrorAlert('Price amount must be a number')
-    if (!productImage.image) return ErrorAlert('Upload productive tool tool image')
+    if (!productImage.image) return ErrorAlert('Upload productive tool image')
 
 
     const formbody = new FormData()
@@ -90,16 +89,18 @@ const CreateProduct = () => {
     form.category.forEach(ele => {
       formbody.append('category', ele)
     })
+    form.features.forEach(ele => {
+      formbody.append('features', ele)
+    })
     formbody.append('price', parseFloat(amt))
     formbody.append('about', form.about)
-    formbody.append('feature1', form.feature1)
-    formbody.append('feature2', form.feature2)
     formbody.append('video_link', form.video_link)
     formbody.append('contact_detail', form.contact_detail)
     formbody.append('bank_name', form.bank_name)
     formbody.append('account_number', form.account_number)
     formbody.append('account_name', form.account_name)
-    formbody.append('other', form.other || '')
+    formbody.append('other', form.other)
+
     setLoading(true)
     try {
       const response = await AuthPostApi(Apis.product.submit_product, formbody)
@@ -131,8 +132,30 @@ const CreateProduct = () => {
         }
       }
     })
-
   }
+
+  const addFeature = () => {
+    setForm(prevForm => ({
+      ...prevForm,
+      features: [...prevForm.features, ""]
+    }));
+  };
+
+  const handleFeatureChange = (index, value) => {
+    setForm(prevForm => {
+      const updatedFeatures = [...prevForm.features];
+      updatedFeatures[index] = value;
+      return { ...prevForm, features: updatedFeatures };
+    });
+  };
+
+  const removeFeature = (index) => {
+    setForm(prevForm => {
+      const updatedFeatures = [...prevForm.features];
+      updatedFeatures.splice(index, 1);
+      return { ...prevForm, features: updatedFeatures };
+    });
+  };
 
 
   return (
@@ -248,8 +271,26 @@ const CreateProduct = () => {
                     <div className='font-bold text-lg text-lightgreen'>Product Details</div>
                     <FormInput placeholder='Enter title' name='title' value={form.title} onChange={formHandler} className='!rounded-none' />
                     <FormInput formtype='textarea' placeholder='What is this product about?' name='about' value={form.about} onChange={formHandler} className='!rounded-none' />
-                    <FormInput formtype='textarea' placeholder='Enter a key feature' name='feature1' value={form.feature1} onChange={formHandler} className='!rounded-none !h-20' />
-                    <FormInput formtype='textarea' placeholder='Enter key feature2' name='feature2' value={form.feature2} onChange={formHandler} className='!rounded-none !h-20' />
+                    <div className="flex flex-col gap-2">
+                      {form.features.map((item, index) => (
+                        <div key={index} className="flex items-center w-full gap-2">
+                          <div className="w-full">
+                            <FormInput
+                              formtype='textarea'
+                              placeholder={`Feature ${index + 1}`}
+                              value={item}
+                              onChange={(e) => handleFeatureChange(index, e.target.value)}
+                              className={`!h-20 !rounded-none`}
+                            ></FormInput>
+                          </div>
+                          <div onClick={() => removeFeature(index)}
+                            className="bg-red-500 cursor-pointer p-2 rounded-full">
+                            <MdDelete className="text-white" />
+                          </div>
+                        </div>
+                      ))}
+                      <div onClick={addFeature} className="w-fit my-2 px-5 py-2 rounded-md cursor-pointer bg-ash text-white">Add new feature</div>
+                    </div>
                     <label className='cursor-pointer'>
                       {productImage.img ?
                         <div className='relative'>

@@ -79,7 +79,16 @@ const ProductsPage = () => {
   const FilterProducts = () => {
     const mainData = staticData
     if (search.length > 2) {
-      const filtered = mainData.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.gen_id.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.category.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.feature1.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.feature2.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+      const filtered = mainData.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.gen_id.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+        (item.category
+          ? JSON.parse(item.category).some(cat => cat?.toLowerCase().includes(search.toLowerCase()))
+          : false
+        ) ||
+        (item.features
+          ? JSON.parse(item.features).some(feat => feat?.toLowerCase().includes(search.toLowerCase()))
+          : false
+        )
+      )
       setProducts(filtered)
     } else {
       setProducts(staticData)
@@ -164,7 +173,7 @@ const ProductsPage = () => {
             {dataLoading ?
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {new Array(4).fill(0).map((_, i) => (
-                  <div key={i} className='w-72 h-80 rounded-[4px] bg-slate-400 animate-pulse p-1'>
+                  <div key={i} className='md:w-full w-11/12 mx-auto h-80 rounded-[4px] bg-slate-400 animate-pulse p-1'>
                     <div className="w-full h-48 bg-slate-500 rounded-t-[4px]"></div>
                   </div>
                 ))}
@@ -173,7 +182,7 @@ const ProductsPage = () => {
               <>
                 {products.length > 0 ?
                   <div className="flex flex-col gap-16">
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                       {currentProducts.map((item, i) => {
                         const categories = item?.category ? JSON.parse(item.category) : []
                         const discountPrice = item?.discount_percentage && item?.price ? (100 - item.discount_percentage) / 100 * item.price : 0
