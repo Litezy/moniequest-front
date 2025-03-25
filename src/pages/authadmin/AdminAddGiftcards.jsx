@@ -12,11 +12,10 @@ import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
 import Loader from '../../GeneralComponents/Loader'
 
 const AdminAddGiftcards = () => {
-
     const [loading, setLoading] = useState({ status: false, val: '' })
     const [add, setAdd] = useState(false)
     const [data, setData] = useState([])
-    const [dataloading, setDataLoading] = useState(false)
+    const [dataloading, setDataLoading] = useState(true)
     const [selected, setSelected] = useState({})
     const [update, setUpdate] = useState(false)
     const [del, setDel] = useState(false)
@@ -41,7 +40,6 @@ const AdminAddGiftcards = () => {
         })
     }
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -63,7 +61,6 @@ const AdminAddGiftcards = () => {
         setAdd(true)
     }
 
-
     const fetchCards = useCallback(async () => {
         try {
             const res = await AuthGetApi(Apis.admin.get_giftcards)
@@ -74,6 +71,8 @@ const AdminAddGiftcards = () => {
             setCardImage({ ...cardImage, img: data?.image })
         } catch (error) {
             console.log(`error in fetching giftcards`, error)
+        } finally {
+            setDataLoading(false)
         }
     }, [])
 
@@ -87,6 +86,7 @@ const AdminAddGiftcards = () => {
         setCardImage({ img: item?.image, image: null });
         setUpdate(true);
     };
+
     const crudCard = async (val) => {
         const tags = ['create', 'update', 'delete']
         if (!tags.includes(val)) return ErrorAlert('Invalid tag found')
@@ -178,19 +178,19 @@ const AdminAddGiftcards = () => {
                             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <FormInput label={`Giftcard Name`} name={`name`} value={forms.name} onChange={handleChange} />
                                 <FormInput label={`Rate`} name={`rate`} value={forms.rate} onChange={handleChange} />
-                                <FormInput  className={`!w-20`} label={`Regrex Value`} name={`regrex`} value={forms.regrex} onChange={handleChange} />
+                                <FormInput className={`!w-20`} label={`Regrex Value`} name={`regrex`} value={forms.regrex} onChange={handleChange} />
                             </div>
                             <label className='cursor-pointer w-full'>
                                 {cardImage.img ?
                                     <div className='relative'>
-                                        <img src={cardImage.img} alt={`giftcarrd image`} className='w-fit h-32 object-contain'></img>
+                                        <img src={cardImage.img} alt={`giftcarrd image`} className='w-full h-52 object-contain'></img>
                                         <div className="absolute top-0 left-52 main font-bold">
                                             <FaEdit className='text-2xl text-lightgreen' />
                                         </div>
                                     </div>
                                     :
-                                    <div className='w-full h-52 border border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
-                                        <div className='bg-primary rounded-full p-4'><FiUploadCloud /></div>
+                                    <div className='w-full h-52 border border-gray-400 border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
+                                        <div className='bg-gray-400 rounded-full p-4'><FiUploadCloud /></div>
                                         <span>click to add image</span>
                                     </div>
                                 }
@@ -215,14 +215,14 @@ const AdminAddGiftcards = () => {
                                 <label className='cursor-pointer w-full'>
                                     {cardImage.img ?
                                         <div className='relative'>
-                                            <img src={cardImage.img} alt={`giftcarrd image`} className='w-fit h-32 object-contain'></img>
+                                            <img src={cardImage.img} alt={`giftcarrd image`} className='w-full h-52 object-contain'></img>
                                             <div className="absolute top-0 left-52 main font-bold">
                                                 <FaEdit className='text-2xl text-lightgreen' />
                                             </div>
                                         </div>
                                         :
-                                        <div className='w-full h-72 border border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
-                                            <div className='bg-primary rounded-full p-4'><FiUploadCloud /></div>
+                                        <div className='w-full h-52 border border-gray-400 border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
+                                            <div className='bg-gray-400 rounded-full p-4'><FiUploadCloud /></div>
                                             <span>click to add image</span>
                                         </div>
                                     }

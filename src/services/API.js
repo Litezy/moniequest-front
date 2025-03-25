@@ -107,6 +107,7 @@ const admin_urls = {
     get_trans_history: admin + 'get_trans_history',
     get_bank_withdrawals: admin + 'get_bank_withdrawals',
     get_single_withdrawal: admin + 'get_single_withdrawal',
+    confirm_withdrawal: admin + 'confirm_withdrawal',
     create_testimonial: admin + 'create_testimonial',
     update_testimonial: admin + 'update_testimonial',
     single_testimonial: admin + 'single_testimonial',
@@ -120,8 +121,6 @@ const admin_urls = {
     get_tools: admin + 'get_tools',
     delete_tool: admin + 'delete_tool',
     get_subs: admin + 'get_subs',
-
-    //giftcards
     add_giftcard:admin + 'add_giftcard',
     update_giftcard:admin + 'update_giftcard',
     get_giftcards: admin +'get_giftcards',

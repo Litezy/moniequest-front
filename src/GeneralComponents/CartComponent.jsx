@@ -43,8 +43,8 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
         try {
             const response = await GetApi(Apis.product.get_admin_bank)
             if (response.status === 200) {
-                await new Promise((resolve) => setTimeout(resolve, 2000))
                 setAdminBank(response.msg)
+                await new Promise((resolve) => setTimeout(resolve, 2000))
                 setScreen(2)
             } else {
                 ErrorAlert(response.msg)

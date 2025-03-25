@@ -3,12 +3,12 @@ import AuthPageLayout from '../../AuthComponents/AuthPageLayout'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ModalLayout from '../../utils/ModalLayout'
 import Loader from '../../GeneralComponents/Loader'
-import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
+import { Apis, AuthGetApi, AuthPostApi, GetApi } from '../../services/API'
 import { ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
 import FormButton from '../../utils/FormButton'
 import FormInput from '../../utils/FormInput'
 import { FaCopy } from 'react-icons/fa'
-import { BankAcc, currencies } from '../../AuthComponents/AuthUtils'
+import { currencies } from '../../AuthComponents/AuthUtils'
 import { TfiTimer } from 'react-icons/tfi'
 
 const OrderPage = () => {
@@ -17,6 +17,7 @@ const OrderPage = () => {
     const [data, setData] = useState({})
     const { id, tag } = useParams()
     const [screen, setScreen] = useState(1)
+    const [adminBank, setAdminBank] = useState({})
 
     const fetchSingleHistory = useCallback(async () => {
         setLoading(true)
@@ -24,7 +25,6 @@ const OrderPage = () => {
             const res = await AuthGetApi(`${Apis.transaction.single_history}/${id}/${tag}`)
             if (res.status !== 200) return ErrorAlert(res.msg)
             setData(res.data[0])
-            // console.log(res)
         } catch (error) {
             ErrorAlert(error.message)
         } finally {
@@ -65,12 +65,30 @@ const OrderPage = () => {
 
     const navigate = useNavigate()
     const copyToClip = () => {
-        navigator.clipboard.writeText(BankAcc.accountNumber).then(() => {
+        navigator.clipboard.writeText(adminBank?.accountNumber).then(() => {
             SuccessAlert(`account number copied successfully`)
         }).catch((error) => console.log(`failed to copy acount number, ${error}`))
     }
     const green = `text-lightgreen`
 
+
+    const GetAdminBank = async () => {
+        setLoad(true)
+        try {
+            const response = await GetApi(Apis.product.get_admin_bank)
+            if (response.status === 200) {
+                setAdminBank(response.msg)
+                await new Promise((resolve) => setTimeout(resolve, 2000))
+                setScreen(2)
+            } else {
+                ErrorAlert(response.msg)
+            }
+        } catch (error) {
+            //
+        } finally {
+            setLoad(false)
+        }
+    }
 
     const confirmAndPay = async () => {
         setConfirm(false)
@@ -90,7 +108,7 @@ const OrderPage = () => {
             console.log(error)
             ErrorAlert(error.message)
         } finally {
-            setLoading(false)
+            setLoad(false)
         }
     }
 
@@ -214,7 +232,7 @@ const OrderPage = () => {
                             </div>
 
                             {data?.status === 'unpaid' ? <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                                <FormButton type='button' onClick={() => setScreen(2)} title={`Proceed to make payment`} />
+                                <FormButton type='button' onClick={GetAdminBank} title={`Proceed to make payment`} />
                             </div> :
 
                                 <>
@@ -315,18 +333,18 @@ const OrderPage = () => {
                             <div className="w-11/12 px-5 text-dark py-5 bg-[#fafafa] rounded-md lg:w-2/3 mx-auto flex items-center justify-between flex-col ">
                                 <div className="flex items-center justify-between w-full">
                                     <div className="">Bank Name</div>
-                                    <div className="">{BankAcc.name}</div>
+                                    <div className="">{adminBank?.bank_name}</div>
                                 </div>
                                 <div className="flex items-center justify-between w-full">
                                     <div className="">Account number</div>
                                     <div className="flex items-center gap-2">
-                                        <div className="">{BankAcc.accountNumber}</div>
+                                        <div className="">{adminBank?.account_number}</div>
                                         <FaCopy onClick={copyToClip} className='text-ash text-xs cursor-pointer' />
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between w-full">
                                     <div className="">Account name</div>
-                                    <div className="">{BankAcc.accountName}</div>
+                                    <div className="">{adminBank?.account_name}</div>
                                 </div>
                             </div>
                             <div className="flex w-11/12 md:w-8/12 items-center gap-5 justify-between">

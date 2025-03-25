@@ -20,7 +20,7 @@ const AdminAddTools = () => {
   const [id, setId] = useState('')
 
   const FetchTools = async () => {
-    setDataLoading({ staus: true, val: 'fetch' });
+    setDataLoading({ status: true, val: 'fetch' });
     try {
       const response = await AuthGetApi(Apis.admin.get_tools);
       if (response.status === 200) {
@@ -96,12 +96,13 @@ const AdminAddTools = () => {
       setDataLoading({ status: false, val: '' })
     }
   }
+
   return (
     <AdminPageLayout>
       {del &&
         <ModalLayout setModal={setDel} clas={`lg:w-[50%] w-10/12 mx-auto`}>
           <div className="p-5  bg-white text-dark shadow-xl rounded-md">
-            <div className="text-base text-center mb-3">Are you sure you want to make this tool?</div>
+            <div className="text-base text-center mb-3">Are you sure you want to delete this tool?</div>
 
             <div className="flex items-center justify-between">
               <button onClick={() => setDel(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>

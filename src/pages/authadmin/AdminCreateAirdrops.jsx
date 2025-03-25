@@ -224,29 +224,6 @@ const AdminCreateAirdrops = () => {
                                     </div>
                                 </div>
                                 <div className='flex flex-col gap-6'>
-                                    <div className="flex flex-col gap-2">
-                                        <div className="text-lightgreen">*Add Steps</div>
-                                        <div className='flex flex-col gap-3'>
-                                            {form.steps.map((step, index) => (
-                                                <div key={index} className="flex items-center w-full gap-2">
-                                                    <div className="w-full">
-                                                        <FormInput
-                                                            formtype='textarea'
-                                                            label={`step ${index + 1}`}
-                                                            value={step}
-                                                            onChange={(e) => handleStepChange(index, e.target.value)}
-                                                            className={`!h-20`}
-                                                        ></FormInput>
-                                                    </div>
-                                                    <div onClick={() => removeStep(index)}
-                                                        className="bg-red-500 cursor-pointer p-2 rounded-full">
-                                                        <MdDelete className="text-white" />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div onClick={addStep} className="w-fit mt-2 px-5 py-2 rounded-md cursor-pointer bg-ash text-white">Add new step</div>
-                                    </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*format <span className='lowercase'>(play to earn, refer to earn, e.t.c.):</span></div>
                                         <FormInput placeholder='Airdrop format' name='format' value={form.format} onChange={formHandler} />
@@ -259,12 +236,35 @@ const AdminCreateAirdrops = () => {
                                         <div className='text-lightgreen capitalize font-medium'>*about <span className='lowercase'>(add \n for paragraph spacing)</span>:</div>
                                         <FormInput formtype='textarea' placeholder='About airdrop' name='about' value={form.about} onChange={formHandler} />
                                     </div>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <div className="text-lightgreen">*Add Steps</div>
+                                    <div className='flex flex-col gap-3'>
+                                        {form.steps.map((step, index) => (
+                                            <div key={index} className="flex items-center w-full gap-2">
+                                                <div className="w-full">
+                                                    <FormInput
+                                                        formtype='textarea'
+                                                        label={`step ${index + 1}`}
+                                                        value={step}
+                                                        onChange={(e) => handleStepChange(index, e.target.value)}
+                                                        className={`!h-20`}
+                                                    ></FormInput>
+                                                </div>
+                                                <div onClick={() => removeStep(index)}
+                                                    className="bg-red-500 cursor-pointer p-2 rounded-full">
+                                                    <MdDelete className="text-white" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div onClick={addStep} className="w-fit mt-2 px-5 py-2 rounded-md cursor-pointer bg-ash text-white">Add new step</div>
+                                </div>
+                                <div className='flex flex-col gap-6'>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*referral link:</div>
                                         <FormInput placeholder='Referral link' name='referral_link' value={form.referral_link} onChange={formHandler} />
                                     </div>
-                                </div>
-                                <div className='flex flex-col gap-6'>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>*video guide link:</div>
                                         <FormInput placeholder='Video guide link' name='video_guide_link' value={form.video_guide_link} onChange={formHandler} />
@@ -273,6 +273,8 @@ const AdminCreateAirdrops = () => {
                                         <div className='text-lightgreen capitalize font-medium'>twitter link:</div>
                                         <FormInput placeholder='Twitter link' name='twitter_link' value={form.twitter_link} onChange={formHandler} />
                                     </div>
+                                </div>
+                                <div className='flex flex-col gap-6'>
                                     <div className='flex flex-col gap-2'>
                                         <div className='text-lightgreen capitalize font-medium'>telegram link:</div>
                                         <FormInput placeholder='Telegram link' name='telegram_link' value={form.telegram_link} onChange={formHandler} />

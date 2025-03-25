@@ -69,7 +69,7 @@ const TransModal = ({ trans }) => {
                 <div className="capitalize ">{trans?.order_no}</div>
             </div>}
             {trans?.bank_user && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">
-                <div className="">Transaction Reference</div>
+                <div className="">Transaction Number</div>
                 <div className="">{trans?.reference_id ? trans?.reference_id : 'Not confirmed'}</div>
             </div>}
             {trans?.bank_name && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">

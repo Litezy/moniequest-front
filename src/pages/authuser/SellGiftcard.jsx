@@ -10,7 +10,7 @@ import { MdRateReview } from "react-icons/md";
 import { Apis, AuthPostApi } from '../../services/API'
 import Giftcards from '../../AuthComponents/Giftcards'
 import { useAtom } from 'jotai'
-import { UTILS } from '../../services/store'
+import { GIFTCARDS } from '../../services/store'
 import { countries } from '../../utils/countries'
 import handleOutsideClicks from '../../utils/handleOutsideClicks'
 
@@ -21,6 +21,9 @@ const SellGiftcard = () => {
     //defining states
     const [selectBrand, setSelectBrand] = useState(false)
     const [screen, setScreen] = useState(1)
+    const [giftcards] = useAtom(GIFTCARDS)
+    const [selectedCard, setSelectedCard] = useState({})
+    // console.log(giftcards)
     const [cards, setCards] = useState({
         brand: `--Select Brand--`,
         amount: '',
@@ -29,115 +32,68 @@ const SellGiftcard = () => {
         has_pin: 'no',
         country: ''
     })
-    const [utils] = useAtom(UTILS)
-    const rate = utils?.giftcard_rate
+
     const [carderror, setCarderror] = useState({
         status: false,
         msg: '',
         color: ''
     })
     const [proceed, setProceed] = useState(false)
-    const [selectedCard, setSelectedCard] = useState({
-        brand: '', length: '', regex: '', codelength: '', pin: ''
-    })
+
     const [selectedCurr, setSelectedCurr] = useState({
         name: currencies[0].name,
         symbol: currencies[0].symbol
     })
     const [loading, setLoading] = useState({ status: false, param: "" })
     const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
-    const [selectedCountry, setSelectedCountry] = useState({})
     const [selectCountry, setSelectCountry] = useState(false)
 
     //defining refs
     const brandref = useRef(null)
-   
+
 
     //defining functions
 
-    useEffect(() => {
-        const findcard = () => {
-            if (cards.brand) {
-                const findBrand = CardsArray.filter((b) => b.brand === cards.brand)
-                setSelectedCard(findBrand[0])
-                // console.log(findBrand)
-            }
-        }
 
-        findcard()
-    }, [cards.brand])
+
 
     const handleAmount = (e) => {
-        const rawValue = e.target.value.replace(/,/g, '');
+        if (!cards.brand || cards.brand === `--Select Brand--`) {
+            return ErrorAlert("Please select a card brand");
+        }
+        const rawValue = e.target.value ? e.target.value.replace(/,/g, '') : '0';
         if (!isNaN(rawValue)) {
             const numericValue = Number(rawValue);
-            setCards({
-                ...cards,
+            setCards((prev) => ({
+                ...prev,
                 amount: numericValue.toLocaleString(),
-            });
+            }));
         }
     }
 
-    const checkCode = () => {
-        if (!cards.country) return ErrorAlert('please select country')
-        if (!selectedCard || !selectedCard.brand) {
-            return ErrorAlert("Please select a gift card brand ");
-        }
-        if (!selectedCard.codelength) {
-            return ErrorAlert(`Please enter a valid ${selectedCard.brand} code or re-enter last digits of your code.`);
-        }
-        if (!cards.amount) return ErrorAlert('Please input a valid amount')
-        const selectedBrand = CardsArray.find(item => item.brand === selectedCard.brand)
-        if (!selectedBrand) return ErrorAlert("Invalid brand selected");
-        if (parseInt(selectedCard.codelength) !== selectedBrand.length) {
-            setCarderror({ status: true, msg: 'code too short', color: 'red-600' });
-            ErrorAlert(`Code must be ${selectedCard.length} characters long`);
-            return setTimeout(() => {
-                setCarderror({ status: false, msg: '', color: '' })
-            }, 4000)
-        }
-        if (selectedCard.regex.test(selectedCard.regex)) {
-            console.log("Invalid code")
-            return setCarderror({ status: true, msg: 'Invalid code' });
-        }
-        // If all validations pass
-        setCarderror({ status: true, msg: "valid code", color: 'green-600' });
-        SuccessAlert('valid code')
-        setProceed(true)
-        return setTimeout(() => {
-            setCarderror({ status: false, msg: "", color: '' });
-        }, 4000)
-    }
 
     const handleCode = (e) => {
         let value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
-        const selectedBrand = selectedCard.brand
-        if (!selectedBrand) ErrorAlert('please select a giftcard brand')
-        value = value.substring(0, selectedCard.length);
-        const formattedValue = value.match(/.{1,5}/g)?.join('-') || value;
-        const newval = formattedValue.replace(/-/g, '')
+        if (!selectedCard?.name || selectedCard?.name === `--Select Brand--`) return ErrorAlert('please select a giftcard brand')
+        const addhyphen = selectedCard?.regrex
+        const makeNum = Number(addhyphen)
+        if (isNaN(makeNum) || makeNum < 1) return;
+        const formattedValue = value.match(new RegExp(`.{1,${makeNum}}`, 'g'))?.join('-') || value;
         setCards({
             ...cards,
             code: formattedValue
         });
-        setSelectedCard({
-            ...selectedCard,
-            codelength: newval.length
-        })
     };
 
     const handlePin = (e) => {
         let value = e.target.value.replace(/[^0-9]/g, '');
-        value = value.substring(0, 4);
+        value = value.substring(0, 5);
         setCards({
             ...cards,
             pin: value
         });
-        setSelectedCard({
-            ...selectedCard,
-            pin: newval
-        })
     }
+
     const sellCard = (e) => {
         e.preventDefault()
         if (!cards.country) return ErrorAlert('country is required')
@@ -154,24 +110,26 @@ const SellGiftcard = () => {
     }
 
     const handleChange = (e) => {
+        const { name, value } = e.target
         setCards({
             ...cards,
-            [e.target.name]: e.target.value
+            [name]: value
         })
     }
 
     const selectABrand = (val) => {
-        setCards({ ...cards, brand: val })
+        setCards({ ...cards, brand: val.name })
         setSelectBrand(false)
+        setSelectedCard(val)
     }
 
     const [inNaira, setInNaira] = useState('')
     useEffect(() => {
         if (cards.amount) {
-            const naira = parseInt(cards.amount.replace(/,/g, '')) * rate
+            const naira = parseInt(cards.amount.replace(/,/g, '')) * selectedCard?.rate
             setInNaira(naira.toLocaleString())
         }
-    }, [cards.amount, rate])
+    }, [cards.amount, cards.brand])
 
     const navigate = useNavigate()
     const confirmSend = async () => {
@@ -182,7 +140,7 @@ const SellGiftcard = () => {
             amount: amt,
             code: cards.code,
             pin: cards.pin,
-            rate: rate,
+            rate: selectedCard?.rate,
             country: cards.country
         }
         // return console.log(formdata)
@@ -224,8 +182,17 @@ const SellGiftcard = () => {
 
     }
 
+    useEffect(()=>{
+        if(cards.has_pin !== 'Yes'){
+            setCards({
+                ...cards,
+                pin:''
+            })
+        }
+    },[cards.has_pin])
+
     handleOutsideClicks(brandref, () => setSelectBrand(false))
-  
+
 
     return (
         <Giftcards>
@@ -268,7 +235,7 @@ const SellGiftcard = () => {
                                     ))}
                                 </select>
 
-                            
+
                             </div>
 
 
@@ -279,22 +246,25 @@ const SellGiftcard = () => {
                                 <input onClick={() => setSelectBrand(true)} className='outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 focus:border cursor-pointer  bg-transparent w-full h-fit py-3 text-lightgreen px-4 lg:text-sm text-base rounded-md'
                                     type="text" name="brand" value={cards.brand} onChange={handleChange} />
                                 {selectBrand &&
-                                    <div 
-                                    ref={brandref}
-                                    className="absolute h-96 w-full border rounded-md border-gray-600 px-10 top-1 overflow-y-auto scroll z-50 bg-dark">
-                                        
-                                        {CardsArray.map((gift, i) => {
+                                    <div
+                                        ref={brandref}
+                                        className="absolute h-96 w-full border rounded-md border-gray-600 px-10 top-1 overflow-y-auto scroll z-50 bg-dark">
+
+                                        {giftcards.length > 0 ? giftcards.map((gift, i) => {
                                             return (
-                                                <div onClick={() => selectABrand(gift.brand)} key={i}
-                                                   
+                                                <div onClick={() => selectABrand(gift)} key={i}
+
                                                     className="flex w-full py-2 border-b-gray-600 border-b  items-center justify-between ">
-                                                    <div className='w-2/3 text-base text-lightgreen' >{gift.brand}</div>
+                                                    <div className='w-2/3 text-base text-lightgreen' >{gift.name}</div>
                                                     <div className="w-2/3 ">
-                                                        <img src={gift.image} className='h-16 w-fit bg-cover ' alt={`${gift.brand} image`} />
+                                                        <img src={gift.image} className='h-16 w-fit bg-cover ' alt={`${gift.name} image`} />
                                                     </div>
                                                 </div>
                                             )
-                                        })}
+                                        }) :
+                                            <div className="">No giftcards available to trade</div>
+
+                                        }
                                     </div>
                                 }
                             </div>
@@ -310,17 +280,17 @@ const SellGiftcard = () => {
 
                         </div>
                         <div className="flex item-center justify-between w-full">
-                            <div className="font-bold">Amount in Naira</div>
+                            <div className="font-bold">Amount in Naira:</div>
                             <div className="flex items-center gap-1 cursor-pointer">
                                 <div className="text-sm">{inNaira}</div>
                             </div>
                         </div>
                         <div className="flex w-full item-center text-base lg:text-sm justify-between">
-                            <div className="font-bold">Buying rate</div>
-                            <div className="">{rate}/$</div>
+                            <div className="font-bold">Buying rate:</div>
+                            <div className="">{selectedCard?.rate}/$</div>
                         </div>
                         <div className="flex items-start gap-2 w-full flex-col">
-                            <div className="font-bold">Giftcard Code</div>
+                            <div className="font-bold">Giftcard Code:</div>
                             <div className="w-full">
                                 <input
                                     className={`outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 uppercase focus:border ${carderror.status ? `border-2 border-${carderror.color}` : 'border border-gray-400'} bg-transparent w-full h-fit  px-4 lg:text-sm text-base rounded-md `}
@@ -348,7 +318,7 @@ const SellGiftcard = () => {
                                 <div className="">Card PIN</div>
                                 <input type="text"
                                     className={`outline-none  w-1/2 focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 bg-dark `}
-                                    placeholder={`XXXX`}
+                                    placeholder={`XXXXX`}
                                     onChange={handlePin}
                                     name='pin'
                                     value={cards.pin}
@@ -356,7 +326,7 @@ const SellGiftcard = () => {
                             </div>
                         }
                         <div className="mt-5 w-full">
-                            <button onClick={proceed ? sellCard : checkCode} className={`w-full bg-ash  py-3 font-bold rounded-md`}>{proceed ? 'Proceed' : 'Check Code'}</button>
+                            <button onClick={sellCard } className={`w-full bg-ash  py-3 font-bold rounded-md`}>Continue</button>
                         </div>
                     </div>
                 }
@@ -365,25 +335,37 @@ const SellGiftcard = () => {
                         <div className='flex flex-col gap-7 items-center max-w-md mx-auto mt-10'>
                             <MdRateReview className='text-8xl' />
                             <div className='text-center mont font-bold text-2xl'>Review Your Order</div>
-                            <div className="w-11/12 mx-auto  border border-gray-500 rounded-md p-5">
+                            <div className="w-full mx-auto  border border-gray-500 rounded-md p-5">
                                 <div className="w-full flex-col gap-3 flex items-center justify-between">
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">GiftCard Brand</div>
                                         <div className="text- font-bold text-lightgreen">{cards.brand}</div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
+                                        <div className="text-base">Country</div>
+                                        <div className="text- font-bold text-lightgreen">{cards.country}</div>
+                                    </div>
+                                    <div className="flex items-center justify-between w-full">
+                                        <div className="text-base">GiftCard Code</div>
+                                        <div className="text- font-bold text-lightgreen uppercase">{cards.code}</div>
+                                    </div>
+                                    <div className="flex items-center justify-between w-full">
+                                        <div className="text-base">GiftCard Pin</div>
+                                        <div className="text- font-bold text-lightgreen">{cards.pin ? cards.pin : 'n/a'}</div>
+                                    </div>
+                                    <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Buying Rate</div>
-                                        <div className="text- font-bold text-lightgreen">{currencies[1].symbol}{rate}</div>
+                                        <div className="text- font-bold text-lightgreen">{currencies[1].symbol}{selectedCard?.rate}</div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Amount in (USD)</div>
                                         <div className="text- font-bold text-lightgreen">
-                                            {currencies[0].symbol}{parseInt(inNaira.replace(/,/g, '')) / rate}</div>
+                                            {currencies[0].symbol}{parseInt(inNaira.replace(/,/g, '')) / selectedCard?.rate}</div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Amount in (NGN)</div>
                                         <div className="text- font-bold text-lightgreen">{currencies[1].symbol}{inNaira}</div>
-                                    </div>
+                                    </div>  
                                 </div>
                             </div>
                             <div onClick={() => setScreen(1)} className="flex w-full items-center justify-between gap-4">

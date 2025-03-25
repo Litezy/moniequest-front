@@ -13,7 +13,7 @@ import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
 
 const GiftCardSingleOrder = () => {
     const [forms, setForms] = useState({
-        amount: '', valid: '', error: ''
+        amount: '', valid: 'select', error: '',
     })
     const { id } = useParams()
     const [screen, setScreen] = useState(1)
@@ -26,8 +26,8 @@ const GiftCardSingleOrder = () => {
     const [applyAmt, setApplyAmt] = useState(false)
     const [data, setData] = useState({})
     const green = `text-lightgreen`
-    const statuses = [`Yes`, `No`]
-    const navigate = useNavigate()
+    const statuses = [`select`,`Yes`, `No`]
+    const [hideBadButton,setHideBadButton] = useState(false)
 
 
     const fetchGiftCardOrder = async () => {
@@ -101,7 +101,7 @@ const GiftCardSingleOrder = () => {
     const declineOrder = async (e) => {
         e.preventDefault()
         const formdata = { message: forms.error, tag: 'failed' }
-        setLoading({ status: true, param: 'credit' })
+        setLoading({ status: true, param: 'exit' })
         setConfirmMsg(true)
         try {
             const res = await AuthPostApi(`${Apis.admin.credit_gift_customer}/${id}`, formdata)
@@ -115,7 +115,7 @@ const GiftCardSingleOrder = () => {
             fetchGiftCardOrder()
             await new Promise((resolve) => setTimeout(resolve, 2000))
             setLoading({ status: false, param: '' })
-            setForms({ ...forms, amount: '' })
+            setForms({ ...forms, amount: '' ,error:'',valid:''})
         } catch (error) {
             console.log(error)
         } finally {
@@ -167,7 +167,7 @@ const GiftCardSingleOrder = () => {
                         <div className="w-full text-center font-bold">Enter message to customer</div>
                         <div className="mt-3 flex items-center flex-col gap-3">
                             <div className="w-full">
-                                <FormInput formtype='textarea' name={`error`} value={forms.error} onChange={handleErr} />
+                                <FormInput read={true} formtype='textarea' name={`error`} value={forms.error} onChange={handleErr} />
                             </div>
                             <button disabled={confirmMsg ? true : false} type='button' onClick={submitErrorMsg} className='px-4 rounded-md bg-red-600 py-1.5'>confirm message</button>
                         </div>
@@ -201,42 +201,42 @@ const GiftCardSingleOrder = () => {
                                     <div className="flex flex-col gap-3 w-full">
                                         <div className="flex flex-col gap-2 items-start">
                                             <div className="text-sm">Customer ID:</div>
-                                            <FormInput value={data?.gift_seller?.id} className={`${green}`} />
+                                            <FormInput read={true} value={data?.gift_seller?.id} className={`${green}`} />
                                         </div>
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">GiftCard Brand:</div>
-                                            <FormInput value={data?.brand} className={`${green}`} />
+                                            <FormInput read={true} value={data?.brand} className={`${green}`} />
                                         </div>
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Country:</div>
-                                            <FormInput value={data?.country} className={`${green}`} />
+                                            <FormInput read={true} value={data?.country} className={`${green}`} />
                                         </div>
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Amount:</div>
-                                            <FormInput value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                         </div>
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Rate:</div>
-                                            <FormInput value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
                                         </div>
 
                                     </div>
                                     <div className=" flex flex-col gap-3 w-full">
                                         <div className="flex flex-col gap-2">
                                             <div className="text-sm">FullName:</div>
-                                            <FormInput value={`${data?.gift_seller?.first_name} ${data?.gift_seller?.surname}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${data?.gift_seller?.first_name} ${data?.gift_seller?.surname}`} className={`${green}`} />
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <div className="text-sm">GitfCard Code:</div>
-                                            <FormInput value={data?.code} className={`${green} uppercase`} />
+                                            <FormInput read={true} value={data?.code} className={`${green} uppercase`} />
                                         </div>
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Amount In NGN:</div>
-                                            <FormInput value={`${currencies[1].symbol}${inNaira}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[1].symbol}${inNaira}`} className={`${green}`} />
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <div className="text-sm">GitfCard PIN:</div>
-                                            <FormInput value={data?.pin ? data?.pin : 'n/a'} className={`${green}`} />
+                                            <FormInput read={true} value={data?.pin ? data?.pin : 'n/a'} className={`${green}`} />
                                         </div>
                                     </div>
                                 </div>
@@ -245,7 +245,7 @@ const GiftCardSingleOrder = () => {
                                     {!credited && data?.status === 'pending' && <div className="flex items-start flex-col w-full  ">
                                         <div className=" lowercase">Confirm Valid Card</div>
                                         <div className="">
-                                            <SelectComp options={statuses} value={forms.sent_crypto} width={200} style={{ bg: '#212134', color: 'lightgreen', font: '0.8rem' }}
+                                            <SelectComp options={statuses} value={forms.valid} width={200} style={{ bg: '#212134', color: 'lightgreen', font: '0.8rem' }}
                                                 handleChange={(e) => setForms({ ...forms, valid: e.target.value })}
                                             />
                                         </div>
@@ -262,9 +262,14 @@ const GiftCardSingleOrder = () => {
                                         <div className="">
                                             <button type='button' onClick={() => setConfirmBad(true)} className='px-4 rounded-md bg-red-600 py-1.5'>confirm card is bad</button>
                                         </div>
+                                    }{data?.status === 'failed'  &&
+                                        <div className="className=' text-red-600">
+                                            Card confirmed bad
+                                        </div>
                                     }
+                                    
                                 </div>
-                                {data?.status !== 'completed' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+                                {data?.status !== 'completed' && data?.status !=='pending' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
                                     <FormButton type='button' onClick={(e) => closeOrder(e, 'failed')} title={` Close Order`} />
                                 </div>}
                                 {data?.status === 'completed' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">

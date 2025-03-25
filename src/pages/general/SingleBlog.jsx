@@ -42,6 +42,7 @@ const SingleBlog = () => {
 
 
     const FetchSingleBlog = useCallback(async () => {
+        setDataLoading(true)
         try {
             const response = await GetApi(`${Apis.admin.single_blog}/${id}`)
             if (response.status === 200) {

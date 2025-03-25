@@ -49,7 +49,7 @@ const SingleProductPage = () => {
                 setSingleProduct(response.msg)
             }
         } catch (error) {
-            //
+            console.log(`error in fetch product`,error)
         } finally {
             setDataLoading(false)
         }

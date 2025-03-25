@@ -186,7 +186,7 @@ const SingleAirdropPage = () => {
                   <div className='lg:col-span-4 col-span-1'>
                     <div className="w-full flex items-start flex-col gap-4 mb-8 bg-secondary border border-ash px-4 py-6 rounded-md">
                       <div className="text-xl font-bold">Step by step  guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
-                      <div className="flex items-start flex-col gap-4">
+                      <div className="flex items-start flex-col">
                         {steps.map((item, i) => (
                           <div className="gap-3 group flex w-full text-sm hover:bg-slate-800 h-full items-start p-4 rounded-md  cursor-pointer" key={i}>
                             <div className="group-hover:text-lightgreen">{i + 1}.</div>

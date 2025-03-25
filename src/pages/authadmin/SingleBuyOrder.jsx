@@ -86,13 +86,13 @@ const SingleBuyOrder = () => {
 
     const declineOrder = async () => {
         if (!forms.msg) return ErrorAlert(`Please provide failed message to user`)
+        setFailed(false)
         const data = { tag: 'failed', message: forms.msg }
         setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_buy}/${id}`, data)
             if (res.status !== 200) return ErrorAlert(res.msg)
             fetchBuys()
-            setFailed(false)
             await new Promise((resolve) => setTimeout(resolve, 2000))
             SuccessAlert(res.msg)
             setScreen(2)

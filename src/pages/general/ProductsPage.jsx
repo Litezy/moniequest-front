@@ -79,7 +79,7 @@ const ProductsPage = () => {
   const FilterProducts = () => {
     const mainData = staticData
     if (search.length > 2) {
-      const filtered = mainData.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.gen_id.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+      const filtered = mainData.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.gen_id.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || item.about.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
         (item.category
           ? JSON.parse(item.category).some(cat => cat?.toLowerCase().includes(search.toLowerCase()))
           : false

@@ -68,7 +68,7 @@ const AdminAllBlogs = () => {
                             {tags.map((tag, i) => {
                                 return (
                                     <div key={i} onClick={() => setActive(tag)}
-                                        className={`w-full h-fit py-1 text-sm md:text-base flex items-center justify-center text-center rounded-md capitalize ${active === tag ? 'bg-ash' : 'bg-primary hover:bg-primary/50'} cursor-pointer`}>{tag}</div>
+                                        className={`w-full h-fit py-1 px-1 text-sm md:text-base flex items-center justify-center text-center rounded-md capitalize ${active === tag ? 'bg-ash' : 'bg-primary hover:bg-primary/50'} cursor-pointer`}>{tag}</div>
                                 )
                             })}
                         </div>

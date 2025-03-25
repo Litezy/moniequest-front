@@ -15,6 +15,10 @@ export const UserRoles = [
         role: 'admin',
         url: '/admin/dashboard'
     },
+    {
+        role: 'super admin',
+        url: '/admin/dashboard'
+    },
 ]
 
 export const ErrorAlert = (message) => {

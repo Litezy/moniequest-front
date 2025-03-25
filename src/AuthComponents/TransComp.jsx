@@ -58,12 +58,13 @@ const TransComp = ({ trans }) => {
                         </div>
                     </div>
                 </div>
-                {trans.crypto_currency && <div className={`${trans.crypto_currency && trans.status === 'pending' ? "text-yellow-300" : trans?.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
+                {trans.crypto_currency && <div className={`${trans.crypto_currency && ['pending', 'unpaid'].includes(trans.status) ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 {trans.bank_user &&
-                    <div className={`${trans.bank_user && trans.status === 'pending' ? "text-yellow-300" : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
+                    <div className={`${trans.bank_user && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>
+                }
 
-                {trans.brand && <div className={`${trans.brand && trans.status === 'pending' ? "text-yellow-300" : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
+                {trans.brand && <div className={`${trans.brand && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">
 

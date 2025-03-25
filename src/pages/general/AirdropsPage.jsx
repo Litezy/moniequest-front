@@ -106,7 +106,7 @@ const AirdropsPage = () => {
   return (
     <PageLayout>
       <div className='pb-20 pt-8 bg-dark w-full text-gray-200'>
-        
+
         <div className='w-11/12 mx-auto'>
           <div className='flex flex-col gap-6'>
             <div className='flex md:flex-row flex-col gap-4 items-center justify-center'>
@@ -114,26 +114,29 @@ const AirdropsPage = () => {
               <FormInput placeholder='Search airdrops by title' className='md:!w-96 !w-72 !rounded-full ipt' value={search} onChange={(e) => setSearch(e.target.value)} onKeyUp={SearchFilter} />
             </div>
             {dataLoading ?
-              <div className='flex flex-col gap-16'>
+              <div className='flex flex-col gap-16 animate-pulse'>
                 <div className='flex lg:flex-row flex-col lg:gap-8 gap-4 items-center justify-center'>
-                  <div className='w-24 h-2 rounded-full bg-slate-400 animate-pulse'></div>
-                  <div className='grid md:grid-cols-5 grid-cols-2 gap-8 items-center'>
-                    {new Array(5).fill(0).map((_, i) => (
-                      <div key={i} className='w-28 h-12 rounded-[3px] bg-slate-400 animate-pulse'></div>
-                    ))}
+                  <div className='w-24 h-2 rounded-full bg-slate-400'></div>
+                  <div className='flex md:flex-row flex-col gap-8 items-center'>
+                    <div className='grid md:grid-cols-4 grid-cols-2 gap-8 items-center'>
+                      {new Array(4).fill(0).map((_, i) => (
+                        <div key={i} className='w-28 h-12 rounded-[3px] bg-slate-400'></div>
+                      ))}
+                    </div>
+                    <div className='w-28 h-12 rounded-[3px] bg-slate-400'></div>
                   </div>
                 </div>
-                <div className='flex flex-col gap-4 pb-8 border-b border-slate-400 animate-pulse'>
+                <div className='flex flex-col gap-4 pb-8 border-b border-slate-400'>
                   <div className='flex justify-between items-center gap-4'>
                     <div className='flex items-center gap-2'>
-                      <div className='w-6 h-6 rounded-full bg-slate-400 animate-pulse'></div>
-                      <div className='w-52 h-4 rounded-full bg-slate-400 animate-pulse'></div>
+                      <div className='w-6 h-6 rounded-full bg-slate-400'></div>
+                      <div className='w-52 h-4 rounded-full bg-slate-400'></div>
                     </div>
                     <div className='md:flex gap-4 items-center hidden'>
-                      <div className='w-16 h-2 rounded-full bg-slate-400 animate-pulse'></div>
+                      <div className='w-16 h-2 rounded-full bg-slate-400'></div>
                       <div className='flex gap-2'>
                         {new Array(2).fill(0).map((_, i) => (
-                          <div key={i} className='w-7 h-7 rounded-[3px] bg-slate-400 animate-pulse'></div>
+                          <div key={i} className='w-7 h-7 rounded-[3px] bg-slate-400'></div>
                         ))}
                       </div>
                     </div>
@@ -141,7 +144,7 @@ const AirdropsPage = () => {
                   <div className='w-full overflow-x-hidden'>
                     <div className='w-fit flex gap-4'>
                       {new Array(5).fill(0).map((_, i) => (
-                        <div key={i} className='w-72 h-40 rounded-md bg-slate-400 animate-pulse'></div>
+                        <div key={i} className='w-72 h-40 rounded-md bg-slate-400'></div>
                       ))}
                     </div>
                   </div>
