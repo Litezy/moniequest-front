@@ -52,7 +52,7 @@ const HomePage = () => {
                 <span className="text-gradient">Get paid</span> for participating in Airdrops
               </h1>
               <div className="flex items-center justify-center">
-                <div className="flex items-center  text-base md:text-lg font-bold text-white flex-col gap-2" data-aos="fade-up">
+                <div className="flex items-center  text-base md:text-[1.09rem] font-bold text-white flex-col gap-2" data-aos="fade-up">
                   <p className='hidden lg:block'>Our platform ensures you are always ahead in the crypto space and maximizing your earnings.</p>
                   <p>Over <span className="text-lightgreen font-bold ">500 updates</span> available, you could earn up to <span className="text-lightgreen font-bold">$2,000</span> per month by just participating.</p>
                   <p>The simplest and fastest way of making money online.</p>

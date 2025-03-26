@@ -320,6 +320,15 @@ input[type=number]:focus {
   justify-content: center;
 }
 
+.styled-link {
+  color: #00fe5e;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.styled-link:hover {
+  color: #49f187;
+}
 
 /*animation stops */
 

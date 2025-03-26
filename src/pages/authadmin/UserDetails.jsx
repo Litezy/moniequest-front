@@ -53,6 +53,9 @@ const UserDetails = () => {
             setLoading(false)
         }
     }
+    const nums = [2, 4, 5, 9]
+    const sum = nums.reduce((a, b) => a + b)
+    console.log(sum)
     return (
         <AdminPageLayout>
 
@@ -138,7 +141,7 @@ const UserDetails = () => {
                                     </td>
 
                                     <td className="px-3 py-3">
-                                        {currencies[1].symbol}{item?.user_wallets?.balance ? item?.user_wallets?.balance.toLocaleString():0}
+                                        {currencies[1].symbol}{item?.user_wallets?.balance ? item?.user_wallets?.balance.toLocaleString() : 0}
                                     </td>
                                     <td className="px-3 py-3 truncate">
                                         {moment(item.createdAt).format(`DD-MM-YYYY hh:mm a`)}

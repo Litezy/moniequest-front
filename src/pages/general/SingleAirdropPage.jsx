@@ -45,23 +45,14 @@ const SingleAirdropPage = () => {
   const nextAirdrop = currentIndex < sortedAirdrops.length - 1 ? sortedAirdrops[currentIndex + 1] : null
 
 
-  const formatTextWithLinks = (text) => {
-    return text.split(/(https?:\/\/[^\s]+?\.[a-z]{2,})/gi).map((part, index) =>
-      /(https?:\/\/[^\s]+?\.[a-z]{2,})/gi.test(part) ? (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-lightgreen underline"
-        >
-          {part}
-        </a>
-      ) : (
-        part
-      )
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  function formatTextWithLinks(text) {
+    return text.replace(
+      urlRegex,
+      (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="styled-link">${url}</a>`
     );
-  };
+  }
 
   return (
     <PageLayout>
@@ -188,12 +179,17 @@ const SingleAirdropPage = () => {
                       <div className="text-xl font-bold">Step by step  guide on <span className='capitalize text-lightgreen'>{singleAirdrop?.title}</span></div>
                       <div className="flex items-start flex-col">
                         {steps.map((item, i) => (
-                          <div className="gap-3 group flex w-full text-sm hover:bg-slate-800 h-full items-start p-4 rounded-md  cursor-pointer" key={i}>
+                          <div
+                            className="gap-3 group flex w-full text-sm hover:bg-slate-800 h-full items-start p-4 rounded-md cursor-pointer"
+                            key={i}
+                          >
                             <div className="group-hover:text-lightgreen">{i + 1}.</div>
-                            <div className="">{formatTextWithLinks(item)}</div>
+                            <div
+                              dangerouslySetInnerHTML={{ __html: formatTextWithLinks(item) }}
+                              className="styled-link-container"
+                            />
                           </div>
-                        ))
-                        }
+                        ))}
                       </div>
                     </div>
                     <div className='w-full h-fit border border-ash bg-secondary rounded-md py-8'>
