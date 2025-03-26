@@ -138,7 +138,7 @@ const UserDetails = () => {
                                     </td>
 
                                     <td className="px-3 py-3">
-                                        {currencies[1].symbol}{item?.user_wallets?.balance.toLocaleString()}
+                                        {currencies[1].symbol}{item?.user_wallets?.balance ? item?.user_wallets?.balance.toLocaleString():0}
                                     </td>
                                     <td className="px-3 py-3 truncate">
                                         {moment(item.createdAt).format(`DD-MM-YYYY hh:mm a`)}

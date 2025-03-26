@@ -45,20 +45,18 @@ const HomePage = () => {
     <PageLayout>
       <div className="pb-20 w-full bg-dark">
         {/* Hero Section */}
-        <div className="pageBg min-h-96 md:h-[25rem] overflow-hidden  md:w-full">
-          <div className="w-full h-full  bg-dark/70 md:bg-dark/10  ">
-            <div className="w-full h-full md:pt-16 pb-10 pt-12 px-4">
-              <div className="w-11/12 mx-auto text-center md:mr-10">
-                <h1 className="md:text-4xl text-2xl capitalize md:mb-5 mb-3 font-extrabold text-white lg:w-3/5 mx-auto glowing-text">
-                  <span className="text-gradient">Get paid</span> for participating in Airdrops
-                </h1>
-                <div className="flex items-center justify-center">
-                  <div className="flex items-center  text-base md:text-lg font-bold text-white flex-col gap-2" data-aos="fade-up">
-                    <p className='hidden lg:block'>Our platform ensures you are always ahead in the crypto space and maximizing your earnings.</p>
-                    <p>Over <span className="text-lightgreen font-bold ">500 updates</span> available, you could earn up to <span className="text-lightgreen font-bold">$2,000</span> per month by just participating.</p>
-                    <p>The simplest and fastest way of making money online.</p>
-                    <p className="text-base md:text-xl lg:text-2xl">Also trade your <span className="text-lightgreen font-bold">Coins</span> and <span className="text-lightgreen font-bold">Gift Cards</span> with us today</p>
-                  </div>
+        <div className="pageBg min-h-96 overflow-hidden w-full">
+          <div className="w-full min-h-96 bg-dark/70 md:bg-dark/10 md:pt-16 pb-10 pt-12 px-4">
+            <div className="w-11/12 mx-auto text-center">
+              <h1 className="md:text-4xl text-2xl capitalize md:mb-5 mb-3 font-extrabold text-white lg:w-3/5 mx-auto glowing-text">
+                <span className="text-gradient">Get paid</span> for participating in Airdrops
+              </h1>
+              <div className="flex items-center justify-center">
+                <div className="flex items-center  text-base md:text-lg font-bold text-white flex-col gap-2" data-aos="fade-up">
+                  <p className='hidden lg:block'>Our platform ensures you are always ahead in the crypto space and maximizing your earnings.</p>
+                  <p>Over <span className="text-lightgreen font-bold ">500 updates</span> available, you could earn up to <span className="text-lightgreen font-bold">$2,000</span> per month by just participating.</p>
+                  <p>The simplest and fastest way of making money online.</p>
+                  <p className="text-base md:text-xl lg:text-2xl">Also trade your <span className="text-lightgreen font-bold">Coins</span> and <span className="text-lightgreen font-bold">Gift Cards</span> with us today</p>
                 </div>
               </div>
             </div>
