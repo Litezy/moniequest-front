@@ -51,7 +51,7 @@ const CategoryAirdropsPage = () => {
                                 <div className='font-bold capitalize'>{category === 'earn_crypto' ? 'all earn crypto airdrops' : `all ${category} airdrops`}</div>
                             </div>
                             {categoryAirdrops.length > 0 ?
-                                <div className='flex flex-wrap gap-4'>
+                                <div className='flex flex-wrap gap-4 md:justify-normal justify-center'>
                                     {categoryAirdrops.map((item, i) => (
                                         <AirdropDiv key={i} item={item} />
                                     ))}

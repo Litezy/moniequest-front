@@ -66,7 +66,7 @@ const AuthPageLayout = ({ children }) => {
         const res = await AuthGetApi(Apis.admin.get_giftcards)
         if (res.status !== 200) return;
         const data = res.data
-         setGiftcards(data)
+        setGiftcards(data)
       } catch (error) {
         console.log(`error in fetching giftcards`, error)
       }
@@ -131,7 +131,7 @@ const AuthPageLayout = ({ children }) => {
             <div className='text-base text-center font-bold capitalize text-gray-200'>{user?.surname} {user?.first_name}</div>
           </div>
           <div className="flex mt-10 pb-10 flex-col items-start px-5 gap-4 h-[65vh] overflow-y-auto scroll">
-            {links.slice(0, links.length - 1).map((link, i) => {
+            {links.slice(0, -1).map((link, i) => {
               return (
                 <Link onClick={MoveToTop} to={link.url}
                   className={` py-2 group text-base flex items-center gap-2 px-5 w-full capitalize ${pathName === link.url || pathName.includes(link.main) ? active : nonactive} `} key={i}>
@@ -143,7 +143,7 @@ const AuthPageLayout = ({ children }) => {
                 </Link>
               )
             })}
-            {links.slice(links.length - 1, links.length).map((link, i) => {
+            {links.slice(-1).map((link, i) => {
               return (
                 <button onClick={() => setLogOutModal(true)} to={link.url}
                   className={` py-2 group text-base flex items-center gap-2 px-5 w-full capitalize hover:bg-primary rounded-sm text-[#9696b5]`} key={i}>

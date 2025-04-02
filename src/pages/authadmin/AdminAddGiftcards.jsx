@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout'
 import FormInput from '../../utils/FormInput'
 import ModalLayout from '../../utils/ModalLayout'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import FormButton from '../../utils/FormButton'
 import { FaEdit } from 'react-icons/fa'
@@ -11,17 +11,17 @@ import { ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
 import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
 import Loader from '../../GeneralComponents/Loader'
 
+
 const AdminAddGiftcards = () => {
     const [loading, setLoading] = useState({ status: false, val: '' })
     const [add, setAdd] = useState(false)
     const [data, setData] = useState([])
     const [dataloading, setDataLoading] = useState(true)
     const [selected, setSelected] = useState({})
-    const [update, setUpdate] = useState(false)
     const [del, setDel] = useState(false)
     const cardref = useRef(null)
     const [forms, setForms] = useState({
-        name: '', rate: '', regrex: ''
+        name: '',
     })
     const [cardImage, setCardImage] = useState({
         img: null,
@@ -57,17 +57,18 @@ const AdminAddGiftcards = () => {
     };
 
     const addCard = () => {
-        setForms({ name: '', rate: '' })
+        setForms({ name: '', })
         setAdd(true)
     }
-
+    const navigate = useNavigate()
     const fetchCards = useCallback(async () => {
         try {
             const res = await AuthGetApi(Apis.admin.get_giftcards)
             if (res.status !== 200) return;
             const data = res.data
+            // console.log(data)
             setData(data)
-            setForms({ ...forms, name: data?.name, rate: data?.rate, regrex: data?.regrex })
+            setForms({ ...forms, name: data?.name, })
             setCardImage({ ...cardImage, img: data?.image })
         } catch (error) {
             console.log(`error in fetching giftcards`, error)
@@ -80,27 +81,19 @@ const AdminAddGiftcards = () => {
         fetchCards()
     }, [])
 
-    const updateCard = (item) => {
-        setSelected(item);
-        setForms({ name: item?.name, rate: item?.rate, regrex: item?.regrex });
-        setCardImage({ img: item?.image, image: null });
-        setUpdate(true);
-    };
+
 
     const crudCard = async (val) => {
-        const tags = ['create', 'update', 'delete']
+        const tags = ['create', 'delete']
         if (!tags.includes(val)) return ErrorAlert('Invalid tag found')
         if (val === 'create') {
-            if (!forms.name || !forms.rate || !forms.regrex) return ErrorAlert('Please fill in the card name and rate')
+            if (!forms.name) return ErrorAlert('Please fill in the card name')
             if (!cardImage.img) return ErrorAlert('Please upload giftcard image')
 
             setAdd(false)
             const formdata = new FormData()
             formdata.append('name', forms.name)
-            formdata.append('rate', forms.rate)
-            formdata.append('regrex', parseInt(forms.regrex))
             formdata.append('image', cardImage.image)
-            //    return console.log(typeof parseInt(forms.regrex))
             setLoading({ status: true, val: 'create' })
             try {
                 const res = await AuthPostApi(Apis.admin.add_giftcard, formdata)
@@ -109,33 +102,13 @@ const AdminAddGiftcards = () => {
                 SuccessAlert(res.msg)
                 setForms({ name: '', rate: '', regrex: '' })
                 setCardImage({ img: null, image: null })
+                navigate(`/admin/utilities/manage_giftcards/${res.data.id}`)
                 await new Promise((resolve) => setTimeout(resolve, 2000))
             } catch (error) {
                 console.log(`error in creating giftcard`, error)
             } finally { setLoading({ status: false, val: '' }) }
         }
-        else if (val === 'update') {
-            if (!forms.name || !forms.rate) return ErrorAlert('Please fill in the card name and rate')
-            if (!cardImage.img) return ErrorAlert('Please upload giftcard image')
-            setUpdate(false)
-            const formdata = new FormData()
-            formdata.append('name', forms.name)
-            formdata.append('id', selected?.id)
-            formdata.append('rate', forms.rate)
-            formdata.append('regrex', parseInt(forms.regrex))
-            formdata.append('image', cardImage.image)
 
-            setLoading({ status: true, val: 'update' })
-            try {
-                const res = await AuthPostApi(Apis.admin.update_giftcard, formdata)
-                if (res.status !== 200) return ErrorAlert(res.msg)
-                fetchCards()
-                SuccessAlert(res.msg)
-                await new Promise((resolve) => setTimeout(resolve, 2000))
-            } catch (error) {
-                console.log(`error in updating giftcard`, error)
-            } finally { setLoading({ status: false, val: '' }) }
-        }
         else {
             // return console.log(selected)
             if (!selected?.id) return ErrorAlert('Card ID not found')
@@ -155,7 +128,12 @@ const AdminAddGiftcards = () => {
         }
     }
 
-    const Topheaders = [`Name`, 'Rate(NGN)', 'Image', 'Regrex', 'Date Added', 'Update', 'Delete']
+    const Topheaders = [`Name`, 'Image', 'Date Added', 'More', 'Delete']
+
+
+
+
+
 
     return (
         <AdminPageLayout>
@@ -177,19 +155,17 @@ const AdminAddGiftcards = () => {
                             <div className="capitalize font-semibold">Add below new crypto</div>
                             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <FormInput label={`Giftcard Name`} name={`name`} value={forms.name} onChange={handleChange} />
-                                <FormInput label={`Rate`} name={`rate`} value={forms.rate} onChange={handleChange} />
-                                <FormInput className={`!w-20`} label={`Regrex Value`} name={`regrex`} value={forms.regrex} onChange={handleChange} />
                             </div>
                             <label className='cursor-pointer w-full'>
                                 {cardImage.img ?
                                     <div className='relative'>
-                                        <img src={cardImage.img} alt={`giftcarrd image`} className='w-full h-52 object-contain'></img>
+                                        <img src={cardImage.img} alt={`giftcarrd image`} className='w-full h-32 object-contain'></img>
                                         <div className="absolute top-0 left-52 main font-bold">
                                             <FaEdit className='text-2xl text-lightgreen' />
                                         </div>
                                     </div>
                                     :
-                                    <div className='w-full h-52 border border-gray-400 border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
+                                    <div className='w-full h-32 border border-gray-400 border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
                                         <div className='bg-gray-400 rounded-full p-4'><FiUploadCloud /></div>
                                         <span>click to add image</span>
                                     </div>
@@ -203,39 +179,8 @@ const AdminAddGiftcards = () => {
                     </div>
                 </ModalLayout>
             }
-            {update &&
-                <ModalLayout setModal={setUpdate} clas={`w-11/12 mx-auto lg:w-1/2`}>
-                    <div className="w-full p-5 bg-white text-dark rounded-md">
-                        <div className="w-full flex items-center flex-col gap-5">
-                            <div className="capitalize font-semibold">Update {selected?.name} crypto wallet</div>
-                            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <FormInput label={`Giftcard Name`} name={`name`} value={forms.name} onChange={handleChange} />
-                                <FormInput label={`Rate`} name={`rate`} value={forms.rate} onChange={handleChange} />
-                                <FormInput className={`!w-20`} label={`Regrex Value`} name={`regrex`} value={forms.regrex} onChange={handleChange} />
-                                <label className='cursor-pointer w-full'>
-                                    {cardImage.img ?
-                                        <div className='relative'>
-                                            <img src={cardImage.img} alt={`giftcarrd image`} className='w-full h-52 object-contain'></img>
-                                            <div className="absolute top-0 left-52 main font-bold">
-                                                <FaEdit className='text-2xl text-lightgreen' />
-                                            </div>
-                                        </div>
-                                        :
-                                        <div className='w-full h-52 border border-gray-400 border-dashed rounded-xl flex flex-col gap-2 items-center justify-center'>
-                                            <div className='bg-gray-400 rounded-full p-4'><FiUploadCloud /></div>
-                                            <span>click to add image</span>
-                                        </div>
-                                    }
-                                    <input ref={cardref} type="file" onChange={handleImageUpload} hidden />
-                                </label>
-                            </div>
-                            <div className="w-11/12 mx-auto  ">
-                                <FormButton type='button' onClick={() => crudCard('update')} title={`Update Card`} />
-                            </div>
-                        </div>
-                    </div>
-                </ModalLayout>
-            }
+
+
             {del &&
                 <ModalLayout setModal={setDel} clas={`w-11/12 mx-auto lg:w-1/2`}>
                     <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
@@ -279,26 +224,19 @@ const AdminAddGiftcards = () => {
                                         <td scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
                                             {item?.name}
                                         </td>
-                                        <td className="px-3 py-3">
-                                            {item?.rate}
-                                        </td>
                                         <td className="px-3 py-3 truncate flex items-center justify-center">
                                             <img src={item?.image} alt={`${item.name}  image`}
                                                 className='w-10 h-10 object-contain'
                                             />
                                         </td>
                                         <td className="px-3 py-3">
-                                            {item?.regrex}
-                                        </td>
-
-                                        <td className="px-3 py-3">
                                             {moment(item?.createdAt).format(`DD-MM-YYYY a`)}
                                         </td>
                                         <td
-                                            onClick={() => updateCard(item)}
+                                            onClick={() => navigate(`/admin/utilities/manage_giftcards/${item?.id}`)}
                                             className="px-1 text-dark relative">
                                             <button
-                                                className="w-full h-fit bg-white rounded-md py-1.5">update</button>
+                                                className="w-full h-fit bg-white rounded-md py-1.5">explore</button>
                                         </td>
                                         <td className="px-1 text-white relative">
                                             <button
@@ -308,7 +246,7 @@ const AdminAddGiftcards = () => {
                                     </tr>
                                 )) :
                                     <tr className=" w-full text-lg  font-semibold ">
-                                        <td colSpan='5' className='text-center py-2'>No giftcard  added  </td>
+                                        <td colSpan='7' className='text-center py-2'>No giftcard  added  </td>
                                     </tr>
                                 }
 

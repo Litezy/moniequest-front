@@ -8,18 +8,14 @@ import logo from '../../assets/images/logo.png'
 import { Apis, PostApi } from '../../services/API'
 import Loader from '../../GeneralComponents/Loader'
 import GoogleSignInButton from '../../GeneralComponents/GoogleSignInButton'
-import { jwtDecode } from 'jwt-decode'
 import { decodeToken } from 'react-jwt'
 import Cookies from 'js-cookie'
-import ModalLayout from '../../utils/ModalLayout'
-
 
 
 const SignUpPage = () => {
   const [check, setCheck] = useState(false)
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
+  const [loading, setLoading] = useState({ status: false, val: '' })
   const [form, setForm] = useState({
     first_name: '',
     surname: '',
@@ -27,7 +23,6 @@ const SignUpPage = () => {
     phone: '',
     password: '',
     confirm_password: '',
-    referral_id: ''
   })
 
   const formHandler = e => {
@@ -60,7 +55,7 @@ const SignUpPage = () => {
       confirm_password: form.confirm_password
     }
 
-    setLoading(true)
+    setLoading({ status: true, val: 'signing up' })
     try {
       const response = await PostApi(Apis.user.signup, formbody)
       if (response.status === 200) {
@@ -72,12 +67,12 @@ const SignUpPage = () => {
     } catch (error) {
       ErrorAlert(`${error.message}`)
     } finally {
-      setLoading(false)
+      setLoading({ status: false, val: '' })
     }
   }
 
 
- 
+
   const handleSuccess = async (user) => {
     const formbody = {
       email: user.email,
@@ -85,7 +80,7 @@ const SignUpPage = () => {
       surname: user.lastname,
       image: user.image,
     };
-    setGoogleLoading(true);
+    setLoading({ status: true, val: 'please wait' })
     try {
       const res = await PostApi(Apis.user.continue_with_google, formbody);
       if (res.status !== 201 && res.status !== 200) return ErrorAlert(res.msg);
@@ -99,22 +94,18 @@ const SignUpPage = () => {
       console.log(`Failed to sign up with google: ${error.message}`);
       ErrorAlert(`Failed to sign up with google: ${error.message}`);
     } finally {
-      setGoogleLoading(false);
+      setLoading({ status: false, val: '' })
     }
   };
 
   const handleFailure = (error) => {
     console.error("Google Sign-in failed:", error);
   };
+
   return (
-    <div className="w-full bg-dark h-screen overflow-y-auto">
-      {loading && <Loader />}
-      {googleLoading &&
-        <ModalLayout setModal={setGoogleLoading}>
-          <Loader title='please wait' />
-        </ModalLayout>
-      }
-      <div className='w-11/12 mx-auto py-10'>
+    <div className="w-full bg-dark h-screen overflow-y-auto py-10">
+      {loading.status && <Loader title={loading.val} />}
+      <div className='w-11/12 mx-auto'>
         <div className='flex items-center justify-center max-w-xl mx-auto relative'>
           <div className='w-full h-full flex flex-col text-zinc-300'>
             <div className="flex items-center justify-center w-full">
@@ -132,7 +123,7 @@ const SignUpPage = () => {
                 <FormInput label='Phone number' placeholder='Phone number' name='phone' value={form.phone} onChange={handlePhoneNum} />
               </div>
               <div className='grid md:grid-cols-2 grid-cols-1 gap-5'>
-                <PasswordInputField label='Password' placeholder='password' name='password' value={form.password} onChange={formHandler} />
+                <PasswordInputField label='Password' placeholder='Password' name='password' value={form.password} onChange={formHandler} />
                 <PasswordInputField label='Confirm password' placeholder='Confirm password' name='confirm_password' value={form.confirm_password} onChange={formHandler} />
               </div>
               <div className='flex flex-col gap-5 items-center'>

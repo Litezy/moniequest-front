@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { TbSwitch2 } from "react-icons/tb";
 import { ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
 import FormInput from '../../utils/FormInput';
 import { currencies, instructions } from '../../AuthComponents/AuthUtils';
@@ -23,7 +22,6 @@ const BuyCrypto = () => {
     const [user] = useAtom(PROFILE)
     const [cryptos] = useAtom(CRYPTOS)
     const navigate = useNavigate()
-
     const [forms, setForms] = useState({
         crypto: '',
         amount: '',
@@ -32,11 +30,11 @@ const BuyCrypto = () => {
         isExpired: 'No',
         minimum: '',
         limit: '',
-        gas_fee: ''
+        gas_fee: '',
+        kyc_limit: ''
     })
     const rate = utils?.exchange_buy_rate
     const verified = user?.kyc_verified
-    const kyc_threshhold = utils?.kyc_threshold
 
     const handleChange = (e) => {
         setForms({
@@ -80,14 +78,13 @@ const BuyCrypto = () => {
     const submit = (e) => {
         e.preventDefault()
         const amt = forms.amount.replace(/,/g, '')
-        if (!forms.crypto) return ErrorAlert('crypto currency is required')
-        if (!forms.amount) return ErrorAlert('amount is required')
+        if (!forms.crypto) return ErrorAlert('Select a cryptocurrency')
+        if (!forms.amount) return ErrorAlert('Enter an amount')
         if (amt < forms.minimum) return ErrorAlert(`Minimum ${forms.crypto} buy amount is $${forms.minimum}`)
-        if (amt > forms.limit) return ErrorAlert(`Sorry, you can't buy above $${forms.limit.toLocaleString()}`)
-        if (amt > kyc_threshhold) {
-            if (verified === 'false') {
-                return ErrorAlert(`Please complete your kyc to be able to trade this amount!`)
-            }
+        if (verified === 'false') {
+            if (amt > forms.limit) return ErrorAlert(`Please complete your KYC verification to be able to trade this amount`)
+        } else {
+            if (amt > forms.kyc_limit) return ErrorAlert(`Sorry, you can't buy above $${forms.kyc_limit.toLocaleString()} worth of ${forms.crypto} `)
         }
         setScreen(2)
     }
@@ -164,6 +161,7 @@ const BuyCrypto = () => {
                 symbol: crypto.symbol,
                 minimum: crypto.buy_min,
                 limit: crypto.buy_max,
+                kyc_limit: crypto.kyc_buymax,
                 gas_fee: crypto.gas_fee
             }));
         } else {
@@ -210,7 +208,7 @@ const BuyCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    {forms.crypto &&<div className="text-red-600 text-xs">Please Note: you can only buy a minimum of ${forms.minimum} and maximum of ${forms.limit.toLocaleString()} of {forms.crypto}. {user?.kyc_verified === 'false' ? 'verify your account to increase limit' :''}</div>}
+                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only buy a minimum of ${forms.minimum} and maximum of {user?.kyc_verified === 'false' ? `$${forms.limit.toLocaleString()}` : `$${forms.kyc_limit.toLocaleString()}`} of {forms.crypto}. {user?.kyc_verified === 'false' ? 'Verify your account to increase limit.' : ''}</div>}
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>

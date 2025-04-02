@@ -30,7 +30,7 @@ const AdminUpdateCryptos = () => {
 
     const Topheaders = [`Name`, 'Network', 'Wallet Address', 'Symbol', 'Update', 'Delete']
     const [forms, setForms] = useState({
-        name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: ''
+        name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: '', kyc_buymax: '', kyc_sellmax: ''
     })
     const [add, setAdd] = useState(false)
     const [update, setUpdate] = useState(false)
@@ -48,12 +48,14 @@ const AdminUpdateCryptos = () => {
             buy_max: selected?.buy_max,
             sell_min: selected?.sell_min,
             sell_max: selected?.sell_max,
-            gas_fee: selected?.gas_fee
+            gas_fee: selected?.gas_fee,
+            kyc_buymax: selected?.kyc_buymax,
+            kyc_sellmax: selected?.kyc_sellmax
         })
     }, [update, selected])
 
     const addCrypto = () => {
-        setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: '' })
+        setForms({ name: '', network: '', wallet_add: '', symbol: '', buy_min: '', buy_max: '', sell_min: '', sell_max: '', gas_fee: '', kyc_buymax: '', kyc_sellmax: '' })
         setAdd(true)
     }
 
@@ -84,7 +86,7 @@ const AdminUpdateCryptos = () => {
 
     const crudCrypto = async (tag) => {
         if (tag === 'create') {
-            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max, forms.gas_fee]
+            const reqFields = [forms.name, forms.network, forms.wallet_add, forms.symbol, forms.buy_min, forms.buy_max, forms.sell_min, forms.sell_max, forms.gas_fee, forms.kyc_buymax, forms.kyc_sellmax]
             if (reqFields.some((value) => value === '')) return ErrorAlert(`Please fill out all fields`)
             const formdata = {
                 tag: tag,
@@ -96,7 +98,9 @@ const AdminUpdateCryptos = () => {
                 buy_max: forms.buy_max,
                 sell_min: forms.sell_min,
                 sell_max: forms.sell_max,
-                gas_fee: forms.gas_fee
+                gas_fee: forms.gas_fee,
+                kyc_buymax: forms.kyc_buymax,
+                kyc_sellmax: forms.kyc_sellmax
             }
             setAdd(false)
             setLoading({ status: true, val: tag })
@@ -127,7 +131,9 @@ const AdminUpdateCryptos = () => {
                 buy_max: forms.buy_max,
                 sell_min: forms.sell_min,
                 sell_max: forms.sell_max,
-                gas_fee: forms.gas_fee
+                gas_fee: forms.gas_fee,
+                kyc_buymax: forms.kyc_buymax,
+                kyc_sellmax: forms.kyc_sellmax
             }
             setUpdate(false)
             setLoading({ status: true, val: tag })
@@ -196,6 +202,8 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
                                 <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
                                 <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
+                                <FormInput label={`KYC buy max (USD)`} name={`kyc_buymax`} value={forms.kyc_buymax} onChange={handleChange} />
+                                <FormInput label={`KYC sell max (USD)`} name={`kyc_sellmax`} value={forms.kyc_sellmax} onChange={handleChange} />
                                 <FormInput label={`Gas fee (USD)`} name={`gas_fee`} value={forms.gas_fee} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
@@ -219,6 +227,8 @@ const AdminUpdateCryptos = () => {
                                 <FormInput label={`Buy max (USD)`} name={`buy_max`} value={forms.buy_max} onChange={handleChange} />
                                 <FormInput label={`Sell min (USD)`} name={`sell_min`} value={forms.sell_min} onChange={handleChange} />
                                 <FormInput label={`Sell max (USD)`} name={`sell_max`} value={forms.sell_max} onChange={handleChange} />
+                                <FormInput label={`KYC buy max (USD)`} name={`kyc_buymax`} value={forms.kyc_buymax} onChange={handleChange} />
+                                <FormInput label={`KYC sell max (USD)`} name={`kyc_sellmax`} value={forms.kyc_sellmax} onChange={handleChange} />
                                 <FormInput label={`Gas fee (USD)`} name={`gas_fee`} value={forms.gas_fee} onChange={handleChange} />
                             </div>
                             <div className="w-11/12 mx-auto  ">
@@ -242,9 +252,7 @@ const AdminUpdateCryptos = () => {
                 </ModalLayout>
             }
 
-
-
-            <div className="w-11/12 mx-auto mb-10 ">
+            <div className="w-11/12 mx-auto mb-10">
                 <div className=" text-center text-3xl mb-5 font-bold text-">Update Crypto Currencies </div>
                 <div className="flex items-center justify-between w-full">
                     <Link to={`/admin/utilities`} className='px-4 py-1.5 rounded-md bg-ash'>back to utilities</Link>

@@ -54,14 +54,14 @@ const Dashboard = () => {
                   <div className='flex flex-col gap-1'>
                     <div className='flex gap-1 items-center'>
                       <div className='md:size-3.5 size-3 bg-lightgreen rounded-full'></div>
-                      <div className='md:text-sm text-xs capitalize font-medium'>total deposit</div>
+                      <div className='md:text-sm text-xs capitalize font-medium flex items-center gap-1'><span className='md:flex hidden'>total</span> <span>inflow</span></div>
                     </div>
                     <div className='font-bold'>{currencies[1].symbol}{Object.values(wallet).length !== 0 ? <span>{wallet.total_deposit.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span> : <span>0.00</span>}</div>
                   </div>
                   <div className='flex flex-col gap-1 border-l-2 md:pl-10 pl-4'>
                     <div className='flex gap-1 items-center'>
                       <div className='md:size-3.5 size-3 bg-red-600 rounded-full'></div>
-                      <div className='md:text-sm text-xs capitalize font-medium'>total outflow</div>
+                      <div className='md:text-sm text-xs capitalize font-medium flex items-center gap-1'><span className='md:flex hidden'>total</span> <span>outflow</span></div>
                     </div>
                     <div className='font-bold'>{currencies[1].symbol}{Object.values(wallet).length !== 0 ? <span>{wallet.total_outflow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span> : <span>0.00</span>}</div>
                   </div>

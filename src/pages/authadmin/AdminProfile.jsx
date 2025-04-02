@@ -96,7 +96,6 @@ const AdminProfile = () => {
             exchange_sell_rate: utils?.exchange_sell_rate || '',
             giftcard_rate: utils?.giftcard_rate || '',
             bank_min: utils?.bank_withdraw_min || '',
-            kyc_threshold: utils?.kyc_threshold || '',
             leaderboard_reward: utils?.leaderboard_reward || '',
         })
     }, [utils, bank])
@@ -394,10 +393,6 @@ const AdminProfile = () => {
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Bank withdrawal min (NGN)</div>
                                         <FormInput placeholder='Enter minimum withdrawal amount' name='bank_min' value={form.bank_min} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
-                                    </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>KYC threshold (USD)</div>
-                                        <FormInput placeholder='Enter KYC threshold amount' name='kyc_threshold' value={form.kyc_threshold} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Leaderboard reward (USD)</div>

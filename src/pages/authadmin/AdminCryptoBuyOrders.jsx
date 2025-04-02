@@ -32,7 +32,7 @@ const AdminCryptoBuyOrders = () => {
             <div className='w-11/12 mx-auto'>
                 <div className=" text-lg font-bold w-full text-center capitalize">See Latest Buy Orders below</div>
                 {!loading ?
-                    <div className="relative overflow-x-auto rounded-md mt-10">
+                    <div className="relative overflow-x-auto rounded-md mt-5">
                         <table className="w-full text-sm text-left rtl:text-right">
                             <thead className=" bg-primary text-base poppins ">
                                 <tr>
@@ -72,7 +72,7 @@ const AdminCryptoBuyOrders = () => {
                                     </tr>
                                 )) :
                                     <tr className="w-full truncate text-lg font-semibold">
-                                        <td colSpan="6" className='text-center py-2'>No Buy Orders</td>
+                                        <td colSpan="6" className='text-center py-3'>No Buy Orders</td>
                                     </tr>
                                 }
 
@@ -83,7 +83,7 @@ const AdminCryptoBuyOrders = () => {
                     </div>
                     :
                     <div className="w-full ">
-                        <div className="mt-10 w-11/12 mx-auto">
+                        <div className="mt-5 w-11/12 mx-auto">
                             {new Array(2).fill(0).map((_, i) => {
                                 return (
                                     <div key={i} className="flex animate-pulse mb-5 items-start gap-1 flex-col">

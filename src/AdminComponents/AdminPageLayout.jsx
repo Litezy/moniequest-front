@@ -42,14 +42,14 @@ const AdminPageLayout = ({ children }) => {
                 console.log(error)
             }
         }
-        const fetchSubs = async ()=>{
+        const fetchSubs = async () => {
             try {
                 const res = await AuthGetApi(Apis.admin.get_subs)
-                if(res.status !== 200) return;
-                 const data = res.data
-                 setSubscribers(data)
+                if (res.status !== 200) return;
+                const data = res.data
+                setSubscribers(data)
             } catch (error) {
-                console.log(`error in fetching subscribers`,error)
+                console.log(`error in fetching subscribers`, error)
             }
         }
         const fetchAllUsers = async () => {
@@ -121,7 +121,7 @@ const AdminPageLayout = ({ children }) => {
                         <div className='text-xl text-center font-bold capitalize text-gray-200'>{user?.first_name}  {user?.surname}</div>
                     </div>
                     <div className="flex mt-10 pb-16 flex-col items-start px-5 gap-4 h-[65vh] overflow-y-auto scroll">
-                        {pagelinks.slice(0, pagelinks.length - 1).map((link, i) => {
+                        {pagelinks.slice(0, -1).map((link, i) => {
                             return (
                                 <Link onClick={MoveToTop} to={link.url}
                                     className={` py-2 group text-base flex items-center gap-2 px-5 w-full capitalize ${pathName === link.url || pathName.includes(link.main) ? active : nonactive} `} key={i}>
@@ -133,7 +133,7 @@ const AdminPageLayout = ({ children }) => {
                                 </Link>
                             )
                         })}
-                        {pagelinks.slice(pagelinks.length - 1, pagelinks.length).map((link, i) => {
+                        {pagelinks.slice(-1).map((link, i) => {
                             return (
                                 <button onClick={() => setLogOutModal(true)}
                                     className={` py-2 group text-base flex items-center gap-2 px-5 w-full capitalize hover:bg-primary rounded-sm text-[#9696b5] `} key={i}>

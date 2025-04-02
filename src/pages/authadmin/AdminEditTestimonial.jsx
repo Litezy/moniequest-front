@@ -129,7 +129,7 @@ const AdminEditTestimonial = () => {
                         <FormInput label={`Title/Field`} name={`title`} value={forms.title} onChange={handleChange} />
 
                     </div>
-                    <div className="mt-5 w-11/12 mx-auto relative">
+                    <div className="mt-5 md:w-11/12 w-full mx-auto relative">
                         <FormInput label={`Content`} formtype='textarea' onChange={handleChange} name={`content`} value={forms.content} />
                     </div>
                     <div className="mt-5 w-full lg:w-1/2 mx-auto">

@@ -85,11 +85,11 @@ const VerifyAccount = () => {
     }
 
     return (
-        <div className='bg-dark w-full h-screen overflow-y-auto'>
+        <div className='bg-dark w-full h-screen overflow-y-auto py-36'>
             {loading.status &&
                 <Loader title={loading.val} />
             }
-            <div className='w-11/12 mx-auto py-36'>
+            <div className='w-11/12 mx-auto'>
                 <div className='flex items-center justify-center max-w-md mx-auto relative'>
                     <div className='w-full h-full flex flex-col'>
                         <div className="flex items-center justify-center w-full ">

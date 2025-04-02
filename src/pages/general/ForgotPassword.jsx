@@ -130,9 +130,9 @@ const ForgotPassword = () => {
 
 
   return (
-    <div className='w-full bg-dark h-screen overflow-y-auto'>
+    <div className='w-full bg-dark h-screen overflow-y-auto py-24'>
       {loading && <Loader />}
-      <div className='w-11/12 mx-auto py-24'>
+      <div className='w-11/12 mx-auto'>
         <div className='flex items-center justify-center max-w-md mx-auto relative'>
           <div className='w-full h-full flex flex-col'>
             <div className="flex items-center justify-center w-full">
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
                   <div className='text-left text-sm text-lightgreen'>Enter your email address to find your account and reset password</div>
                 </div>
                 <div className='flex flex-col gap-5 mt-8 text-white'>
-                  <FormInput label='Email address' type='email' placeholder='E.g: john14@gmail.com' name='email' value={form.email} onChange={formHandler} />
+                  <FormInput label='Email address' type='email' placeholder='example@gmail.com' name='email' value={form.email} onChange={formHandler} />
                   <FormButton title='Find account' />
                 </div>
               </form>

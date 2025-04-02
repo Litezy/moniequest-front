@@ -172,7 +172,7 @@ const AdminAddTools = () => {
               create new
             </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-8">
             {Array.isArray(tools) && tools.length > 0 ? (
               tools.map((tool, i) => (
                 <div key={i} className='w-full border border-gray-500 rounded-md p-2 relative'>

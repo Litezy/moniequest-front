@@ -22,6 +22,8 @@ const AdminCreateUsers = () => {
     });
     const [, setUserDetails] = useAtom(USERDETAILS)
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
+
     const handleChange = (e) => {
         setForms({
             ...forms,
@@ -29,7 +31,12 @@ const AdminCreateUsers = () => {
         })
     }
 
-    const navigate = useNavigate()
+    const handlePhoneNum = (e) => {
+        let value = e.target.value
+        const formatVal = value.replace(/\D/g, '')
+        setForms({ ...forms, phone: formatVal })
+    }
+
     const createUser = async (e) => {
         e.preventDefault()
         if (!forms.firstname) return ErrorAlert('First name required')
@@ -88,7 +95,7 @@ const AdminCreateUsers = () => {
                                     <FormInput label='Last Name' name={`lastname`} value={forms.lastname} onChange={handleChange} />
                                 </div>
                                 <div className="w-full">
-                                    <FormInput label='Phone No' type='phone' name={`phone`} value={forms.phone} onChange={handleChange} />
+                                    <FormInput label='Phone No' type='phone' name={`phone`} value={forms.phone} onChange={handlePhoneNum} />
                                 </div>
                             </div>
                             <div className="flex flex-col items-start w-full gap-4">

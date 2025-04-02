@@ -6,7 +6,6 @@ import FormButton from '../../utils/FormButton'
 import { CookieName, ErrorAlert, MoveToTop, UserRoles } from '../../utils/pageUtils'
 import Cookies from 'js-cookie'
 import { decodeToken } from 'react-jwt'
-import { jwtDecode } from 'jwt-decode'
 import logo from '../../assets/images/logo.png'
 import { Apis, PostApi } from '../../services/API'
 import Loader from '../../GeneralComponents/Loader'
@@ -89,10 +88,10 @@ const LoginPage = () => {
   
   
   return (
-    <div className="w-full bg-dark flex items-center justify-center overflow-y-auto relative h-screen">
+    <div className="w-full bg-dark flex items-center justify-center overflow-y-auto relative h-screen py-10">
       {loading && <Loader title={`logging in`} />}
-      <div className='w-11/12 mx-auto py-10'>
-        <div className='flex items-center justify-center max-w-md mx-auto rounded-md  relative'>
+      <div className='w-11/12 mx-auto'>
+        <div className='flex items-center justify-center max-w-md mx-auto rounded-md relative'>
           <div className='w-full h-full flex flex-col text-white'>
             <div className="flex items-center justify-center w-full">
               <img src={logo} className='w-52' alt="logo alt" />
@@ -113,9 +112,7 @@ const LoginPage = () => {
               />
             </div>
             <Link className='text-sm text-center mt-5 text-lightgreen underline' to={'/'}>Go Back Home</Link>
-
           </div>
-
         </div>
       </div>
     </div>

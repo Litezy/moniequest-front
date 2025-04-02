@@ -109,14 +109,14 @@ const KycModal = ({ data, setModal }) => {
 
                     </div>
                 </div>
-                <div className="w-11/12 items-center flex-col lg:flex-row gap-10 mx-auto mt-6  flex ">
-                    <div className="lg:w-1/2 ">
-                        <h1>ID Front Photo</h1>
-                        <img src={data?.front_image} className='w-full md:h-96 object-contain' alt="kyc front image" />
+                <div className="w-11/12 mx-auto grid md:grid-cols-2 grid-cols-1 gap-10 items-center mt-6">
+                    <div>
+                        <div>ID Front Photo</div>
+                        <img src={data?.front_image} className='w-full h-auto object-contain mt-4' alt="kyc front image" />
                     </div>
-                    <div className="lg:w-1/2">
-                        <h1>ID Back Photo</h1>
-                        <img src={data?.back_image} className='w-full md:h-96 object-contain' alt="kyc back image" />
+                    <div>
+                        <div>ID Back Photo</div>
+                        <img src={data?.back_image} className='w-full h-auto object-contain mt-4' alt="kyc back image" />
                     </div>
                 </div>
                 {data?.status === 'processing' && <div className="w-11/12 mt-10 mb-5 mx-auto flex items-center justify-between">

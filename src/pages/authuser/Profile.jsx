@@ -276,7 +276,7 @@ const Profile = () => {
               <div className='w-fit h-fit bg-primary rounded-2xl p-4 flex flex-col gap-3 relative'>
                 {loading.sub && <Loading />}
                 <FormInput placeholder='Account number' name='account_number' value={form.account_number} onChange={handleAccNum} className='!bg-secondary !w-64' border={false} />
-                <FormInput defaultValue={`${user?.first_name} ${user?.surname}`} className='!bg-secondary !w-64' border={false} read={true} />
+                <FormInput value={`${user?.first_name} ${user?.surname}`} className='!bg-secondary !w-64' border={false} read={true} />
                 <FormInput placeholder='Bank name' name='bank_name' value={form.bank_name} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
                 <FormButton title={Object.keys(bank).length !== 0 ? 'Update' : 'Save'} className='!py-3 !text-base' type='button' onClick={AddBankAccount} />
               </div>

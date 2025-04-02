@@ -1,6 +1,6 @@
 import React from 'react'
 
-const FormInput = ({ formtype = 'text', border = true, label, type = 'text', read = false, value, name, placeholder, className, onChange, onKeyUp, defaultValue }) => {
+const FormInput = ({ formtype = 'text', border = true, label, type = 'text', read = false, value='', name, placeholder, className, onChange, onKeyUp, defaultValue }) => {
   return (
     <div className='flex flex-col gap-2'>
       {label && <div className='text-base font-medium'>{label}</div>}

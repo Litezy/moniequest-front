@@ -87,7 +87,7 @@ const AdminCreateAirdrops = () => {
         e.preventDefault()
 
         if (form.steps.length === 0) return ErrorAlert(`Add at least a step to this airdrop`)
-        if (!form.title || !form.category || !form.about || !form.blockchain || !form.type || !form.format || !form.level || !form.video_guide_link || !form.referral_link) return ErrorAlert('Enter all required fields')
+        if (!form.title || !form.category || !form.about || !form.blockchain || !form.type || !form.format || !form.level || !form.referral_link) return ErrorAlert('Enter all required fields')
         if (!logo.image || !banner.image) return ErrorAlert('Upload airdrop logo and banner images')
 
         const formbody = new FormData()
@@ -266,7 +266,7 @@ const AdminCreateAirdrops = () => {
                                         <FormInput placeholder='Referral link' name='referral_link' value={form.referral_link} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>*video guide link:</div>
+                                        <div className='text-lightgreen capitalize font-medium'>video guide link:</div>
                                         <FormInput placeholder='Video guide link' name='video_guide_link' value={form.video_guide_link} onChange={formHandler} />
                                     </div>
                                     <div className='flex flex-col gap-2'>

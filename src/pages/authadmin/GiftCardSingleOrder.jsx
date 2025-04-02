@@ -26,8 +26,8 @@ const GiftCardSingleOrder = () => {
     const [applyAmt, setApplyAmt] = useState(false)
     const [data, setData] = useState({})
     const green = `text-lightgreen`
-    const statuses = [`select`,`Yes`, `No`]
-    const [hideBadButton,setHideBadButton] = useState(false)
+    const statuses = [`select`, `Yes`, `No`]
+    const [hideBadButton, setHideBadButton] = useState(false)
 
 
     const fetchGiftCardOrder = async () => {
@@ -37,6 +37,7 @@ const GiftCardSingleOrder = () => {
             if (res.status !== 200) return ErrorAlert(res.msg)
             const data = res.data
             setData(data)
+            // console.log(data)
         } catch (error) {
             console.log(error)
         } finally {
@@ -115,7 +116,7 @@ const GiftCardSingleOrder = () => {
             fetchGiftCardOrder()
             await new Promise((resolve) => setTimeout(resolve, 2000))
             setLoading({ status: false, param: '' })
-            setForms({ ...forms, amount: '' ,error:'',valid:''})
+            setForms({ ...forms, amount: '', error: '', valid: '' })
         } catch (error) {
             console.log(error)
         } finally {
@@ -147,6 +148,16 @@ const GiftCardSingleOrder = () => {
             }, 2000)
         }
     }
+
+
+    const imagesArray = data?.images ? JSON.parse(data.images) : []
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+    };
+
+
 
     return (
         <AdminPageLayout>
@@ -215,29 +226,31 @@ const GiftCardSingleOrder = () => {
                                             <div className="text-sm">Amount:</div>
                                             <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                         </div>
+
+
+                                    </div>
+                                    <div className=" flex flex-col gap-3 w-full">
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Rate:</div>
                                             <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
                                         </div>
 
-                                    </div>
-                                    <div className=" flex flex-col gap-3 w-full">
                                         <div className="flex flex-col gap-2">
                                             <div className="text-sm">FullName:</div>
                                             <FormInput read={true} value={`${data?.gift_seller?.first_name} ${data?.gift_seller?.surname}`} className={`${green}`} />
                                         </div>
-                                        <div className="flex flex-col gap-2">
+                                        {data?.code && <div className="flex flex-col gap-2">
                                             <div className="text-sm">GitfCard Code:</div>
                                             <FormInput read={true} value={data?.code} className={`${green} uppercase`} />
-                                        </div>
+                                        </div>}
                                         <div className="w-full flex flex-col gap-2">
                                             <div className="text-sm">Amount In NGN:</div>
                                             <FormInput read={true} value={`${currencies[1].symbol}${inNaira}`} className={`${green}`} />
                                         </div>
-                                        <div className="flex flex-col gap-2">
+                                        {data?.pin && <div className="flex flex-col gap-2">
                                             <div className="text-sm">GitfCard PIN:</div>
                                             <FormInput read={true} value={data?.pin ? data?.pin : 'n/a'} className={`${green}`} />
-                                        </div>
+                                        </div>}
                                     </div>
                                 </div>
 
@@ -262,14 +275,58 @@ const GiftCardSingleOrder = () => {
                                         <div className="">
                                             <button type='button' onClick={() => setConfirmBad(true)} className='px-4 rounded-md bg-red-600 py-1.5'>confirm card is bad</button>
                                         </div>
-                                    }{data?.status === 'failed'  &&
+                                    }{data?.status === 'failed' &&
                                         <div className="className=' text-red-600">
                                             Card confirmed bad
                                         </div>
                                     }
-                                    
+
                                 </div>
-                                {data?.status !== 'completed' && data?.status !=='pending' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+
+
+                                {imagesArray.length > 0 && (
+                                    <>
+                                        <div className="mt-5 mb-2">Images of giftcards submitted:</div>
+                                        <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
+
+                                            {imagesArray.map((image, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="relative cursor-pointer rounded-md overflow-hidden group"
+                                                    onClick={() => handleImageClick(image)}
+                                                >
+                                                    <img
+                                                        src={image}
+                                                        alt={`Gift Card ${index + 1}`}
+                                                        className="w-full h-40 object-cover"
+                                                    />
+                                                    {/* Hover Overlay */}
+                                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <span className="text-white font-semibold">View Image</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
+
+                                )}
+
+                                {/* Modal */}
+                                {selectedImage && (
+                                    <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+                                        <div className="relative p-4 bg-white rounded-lg">
+                                            <button
+                                                className="absolute top-2 right-2 text-black font-bold"
+                                                onClick={() => setSelectedImage(null)}
+                                            >
+                                                ✕
+                                            </button>
+                                            <img src={selectedImage} alt="Full View" className="max-w-full max-h-[80vh] rounded-md" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {data?.status !== 'completed' && data?.status !== 'pending' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
                                     <FormButton type='button' onClick={(e) => closeOrder(e, 'failed')} title={` Close Order`} />
                                 </div>}
                                 {data?.status === 'completed' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
@@ -278,7 +335,8 @@ const GiftCardSingleOrder = () => {
                             </form>
 
 
-                        </div></>}
+                        </div>
+                    </>}
                 {screen === 2 && <div className="">
                     <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
                         <div className="w-full flex items-center  flex-col">

@@ -1,393 +1,756 @@
-import React, { useEffect, useRef, useState } from 'react'
-import FormInput from '../../utils/FormInput'
-import { currencies } from '../../AuthComponents/AuthUtils'
-import { currencySign, ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
-import { SlClock } from 'react-icons/sl'
-import { Link, useNavigate } from 'react-router-dom'
-import Loader from '../../GeneralComponents/Loader'
-import { CardsArray } from '../../AuthComponents/GiftcardsArray'
+import React, { useEffect, useRef, useState } from 'react';
+import FormInput from '../../utils/FormInput';
+import { currencies } from '../../AuthComponents/AuthUtils';
+import { currencySign, ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
+import { SlClock } from 'react-icons/sl';
+import { Link, useNavigate } from 'react-router-dom';
+import Loader from '../../GeneralComponents/Loader';
 import { MdRateReview } from "react-icons/md";
-import { Apis, AuthPostApi } from '../../services/API'
-import Giftcards from '../../AuthComponents/Giftcards'
-import { useAtom } from 'jotai'
-import { GIFTCARDS } from '../../services/store'
-import { countries } from '../../utils/countries'
-import handleOutsideClicks from '../../utils/handleOutsideClicks'
-
-
+import { Apis, AuthPostApi } from '../../services/API';
+import Giftcards from '../../AuthComponents/Giftcards';
+import { useAtom } from 'jotai';
+import { GIFTCARDS } from '../../services/store';
+import handleOutsideClicks from '../../utils/handleOutsideClicks';
 
 const SellGiftcard = () => {
-
-    //defining states
-    const [selectBrand, setSelectBrand] = useState(false)
-    const [screen, setScreen] = useState(1)
-    const [giftcards] = useAtom(GIFTCARDS)
-    const [selectedCard, setSelectedCard] = useState({})
-    // console.log(giftcards)
+    // State definitions
+    const [selectBrand, setSelectBrand] = useState(false);
+    const [selectCategory, setSelectCategory] = useState(false);
+    const [screen, setScreen] = useState(1);
+    const [giftcards] = useAtom(GIFTCARDS);
+    const [selectedCard, setSelectedCard] = useState(null);
     const [cards, setCards] = useState({
-        brand: `--Select Brand--`,
+        brand: '--Select Brand--',
         amount: '',
         code: '',
         pin: '',
         has_pin: 'no',
-        country: ''
-    })
+        country: '',
+        category: ''
+    });
 
-    const [carderror, setCarderror] = useState({
+    const [amountError, setAmountError] = useState({
+        status: false,
+        message: '',
+        isInvalid: false
+    });
+
+    const [cardError, setCardError] = useState({
         status: false,
         msg: '',
         color: ''
-    })
-    const [proceed, setProceed] = useState(false)
+    });
 
-    const [selectedCurr, setSelectedCurr] = useState({
+    const [selectedCurr] = useState({
         name: currencies[0].name,
         symbol: currencies[0].symbol
-    })
-    const [loading, setLoading] = useState({ status: false, param: "" })
-    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine)
-    const [selectCountry, setSelectCountry] = useState(false)
+    });
 
-    //defining refs
-    const brandref = useRef(null)
+    const [loading, setLoading] = useState({ status: false, param: "" });
+    const [isPageLoading, setIsPageLoading] = useState(!navigator.onLine);
+    const [inNaira, setInNaira] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [categories, setCategories] = useState([]);
 
+    // Refs
+    const brandRef = useRef(null);
+    const categoryRef = useRef(null);
+    const navigate = useNavigate();
 
-    //defining functions
+    // Validate amount against selected category
+    const validateAmount = (amount) => {
+        if (!selectedCategory) return { valid: false, message: 'Please select a category first' };
 
+        const numericAmount = Number(amount.replace(/,/g, ''));
 
-
-
-    const handleAmount = (e) => {
-        if (!cards.brand || cards.brand === `--Select Brand--`) {
-            return ErrorAlert("Please select a card brand");
+        if (numericAmount < selectedCategory.min_value) {
+            return {
+                valid: false,
+                message: `Amount is below minimum value (${selectedCategory.currency}${selectedCategory.min_value})`,
+                isBelowMin: true
+            };
         }
-        const rawValue = e.target.value ? e.target.value.replace(/,/g, '') : '0';
-        if (!isNaN(rawValue)) {
-            const numericValue = Number(rawValue);
-            setCards((prev) => ({
-                ...prev,
-                amount: numericValue.toLocaleString(),
-            }));
+
+        if (numericAmount > selectedCategory.max_value) {
+            return {
+                valid: false,
+                message: `Amount exceeds maximum value (${selectedCategory.currency}${selectedCategory.max_value})`,
+                isAboveMax: true
+            };
         }
-    }
 
-
-    const handleCode = (e) => {
-        let value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
-        if (!selectedCard?.name || selectedCard?.name === `--Select Brand--`) return ErrorAlert('please select a giftcard brand')
-        const addhyphen = selectedCard?.regrex
-        const makeNum = Number(addhyphen)
-        if (isNaN(makeNum) || makeNum < 1) return;
-        const formattedValue = value.match(new RegExp(`.{1,${makeNum}}`, 'g'))?.join('-') || value;
-        setCards({
-            ...cards,
-            code: formattedValue
-        });
+        return { valid: true };
     };
 
-    const handlePin = (e) => {
-        let value = e.target.value.replace(/[^0-9]/g, '');
-        value = value.substring(0, 5);
-        setCards({
-            ...cards,
-            pin: value
-        });
-    }
+    // Handle amount input changes
+    const handleAmount = (e) => {
+        if (!cards.brand || cards.brand === '--Select Brand--') {
+            return ErrorAlert("Please select a card brand");
+        }
 
+        const rawValue = e.target.value ? e.target.value.replace(/,/g, '') : '0';
+
+        if (!isNaN(rawValue)) {
+            const numericValue = Number(rawValue);
+            const formattedValue = numericValue.toLocaleString();
+
+            // Validate amount
+            const validation = validateAmount(formattedValue);
+            setAmountError({
+                status: !validation.valid,
+                message: validation.message || '',
+                isInvalid: !validation.valid
+            });
+
+            // Calculate Naira equivalent
+            if (selectedCategory?.rate) {
+                const nairaValue = numericValue * selectedCategory.rate;
+                setInNaira(nairaValue.toLocaleString());
+            }
+
+            setCards(prev => ({
+                ...prev,
+                amount: formattedValue
+            }));
+        }
+    };
+
+    // Handle category selection
+    const selectOneCategory = (category) => {
+        setSelectedCategory(category);
+        setCards(prev => ({
+            ...prev,
+            category: category.id,
+            country: category.country
+        }));
+        setSelectCategory(false);
+        setAmountError({ status: false, message: '', isInvalid: false });
+    };
+
+    // Handle brand selection
+    const selectABrand = (brand) => {
+        setSelectedCard(brand);
+        setCards(prev => ({
+            ...prev,
+            brand: brand.name
+        }));
+        setSelectBrand(false);
+
+        // Reset related states when brand changes
+        setSelectedCategory(null);
+        setCards(prev => ({
+            ...prev,
+            category: '',
+            country: '',
+            amount: ''
+        }));
+        setInNaira('');
+        setAmountError({ status: false, message: '', isInvalid: false });
+    };
+
+    // Handle form submission
     const sellCard = (e) => {
-        e.preventDefault()
-        if (!cards.country) return ErrorAlert('country is required')
-        if (!cards.brand) return ErrorAlert('giftcard brand is required')
-        if (!cards.amount) return ErrorAlert('giftcard amount is required')
-        if (!cards.code) return ErrorAlert('giftcard code is missing, try again')
-        if (cards.has_pin === 'yes' && cards.pin === '') return ErrorAlert('giftcard pin is missing, try again')
-        setLoading({ status: true, param: 'check' })
-        return setTimeout(() => {
-            setLoading({ status: false, param: '' })
-            setScreen(2)
-        }, 2000)
+        e.preventDefault();
 
-    }
-
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setCards({
-            ...cards,
-            [name]: value
-        })
-    }
-
-    const selectABrand = (val) => {
-        setCards({ ...cards, brand: val.name })
-        setSelectBrand(false)
-        setSelectedCard(val)
-    }
-
-    const [inNaira, setInNaira] = useState('')
-    useEffect(() => {
-        if (cards.amount) {
-            const naira = parseInt(cards.amount.replace(/,/g, '')) * selectedCard?.rate
-            setInNaira(naira.toLocaleString())
+        // Basic validations
+        if (!cards.brand || cards.brand === '--Select Brand--') {
+            return ErrorAlert('Giftcard brand is required');
         }
-    }, [cards.amount, cards.brand])
 
-    const navigate = useNavigate()
-    const confirmSend = async () => {
-        setLoading({ status: true, param: 'confirmed' })
-        const amt = cards.amount.replace(/,/g, '');
-        const formdata = {
-            brand: cards.brand,
-            amount: amt,
-            code: cards.code,
-            pin: cards.pin,
-            rate: selectedCard?.rate,
-            country: cards.country
+        if (!cards.amount) {
+            return ErrorAlert('Giftcard amount is required');
         }
-        // return console.log(formdata)
+
+        if (amountError.status) {
+            return ErrorAlert(amountError.message);
+        }
+
+        // Conditional validations based on card type
+        if (selectedCategory?.card_pic !== 'true') {
+            // E-code validations
+            if (!cards.code) {
+                return ErrorAlert('Giftcard code is missing');
+            }
+            if (cards.has_pin === 'yes' && !cards.pin) {
+                return ErrorAlert('Giftcard pin is missing');
+            }
+        } else {
+            // Image validations
+            if (!cards.images || cards.images.length === 0) {
+                return ErrorAlert('Please upload at least one image of your gift card');
+            }
+
+            // Optional: Validate image sizes/types
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            for (const image of cards.images) {
+                if (image.size && image.size > maxSize) {
+                    return ErrorAlert(`Image ${image.name} exceeds 2MB limit`);
+                }
+            }
+        }
+        setLoading({ status: true, param: 'check' });
+        setTimeout(() => {
+            setLoading({ status: false, param: '' });
+            setScreen(2);
+        }, 2000);
+    };
+
+    // Confirm and send the order
+    const confirmSend = async (tag) => {
         try {
-            const res = await AuthPostApi(Apis.transaction.sell_giftcard, formdata)
-            if (res.status !== 201) return ErrorAlert(res.msg)
-            setCards({ ...cards, type: '', amount: '', code: '', pin: '', has_pin: 'no' })
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            SuccessAlert(res.msg)
+            // Validate tag
+            const validTags = ['image', 'code'];
+            if (!validTags.includes(tag)) {
+                return ErrorAlert('Invalid gift card type specified');
+            }
+
+            // Validate required fields
+            if (!cards.brand || cards.brand === '--Select Brand--') {
+                return ErrorAlert('Please select a gift card brand');
+            }
+
+            if (!cards.amount || isNaN(Number(cards.amount.replace(/,/g, '')))) {
+                return ErrorAlert('Please enter a valid amount');
+            }
+
+            // Type-specific validations
+            if (tag === 'code' && !cards.code) {
+                return ErrorAlert('Gift card code is required');
+            }
+
+            if (tag === 'image' && (!cards.images || cards.images.length === 0)) {
+                return ErrorAlert('Please upload at least one image of your gift card');
+            }
+
+            setLoading({ status: true, param: 'confirmed' });
+
+            // Prepare FormData
+            const formData = new FormData();
+            formData.append('brand', cards.brand);
+            formData.append('amount', cards.amount.replace(/,/g, ''));
+            formData.append('rate', selectedCategory?.rate || '');
+            formData.append('country', selectedCategory?.country || '');
+            formData.append('currency', selectedCategory?.currency || '');
+            formData.append('tag', tag);
+
+            // Handle files or codes based on type
+            if (tag === 'image') {
+                // Validate and append images
+                const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+                const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+                cards.images?.forEach((image) => {
+                    if (!(image instanceof File)) {
+                        throw new Error('Invalid file format');
+                    }
+
+                    if (image.size > MAX_SIZE) {
+                        throw new Error(`Image ${image.name} exceeds 2MB limit`);
+                    }
+
+                    if (!ALLOWED_TYPES.includes(image.type)) {
+                        throw new Error(`Unsupported image format: ${image.type}`);
+                    }
+
+                    formData.append('images', image);
+                });
+            } else {
+                // Append code details
+                formData.append('code', cards.code);
+                if (cards.has_pin === 'yes' && cards.pin) {
+                    formData.append('pin', cards.pin);
+                }
+            }
+
+            // Submit data
+            const res = await AuthPostApi(Apis.transaction.sell_giftcard, formData);
+
+            if (res.status !== 201) {
+                throw new Error(res.msg || 'Failed to process gift card');
+            }
+
+            // Reset form state
+            resetFormState();
+
+            // Show success and redirect
+            SuccessAlert(res.msg || 'Gift card submitted successfully');
             navigate('/user/giftcards/orders');
+
         } catch (error) {
-            ErrorAlert(error.message)
+            ErrorAlert(error.message || 'An error occurred while submitting your gift card');
         } finally {
-            setLoading({ status: false, param: '' })
+            setLoading({ status: false, param: '' });
         }
+    };
 
-    }
+    // Helper function to reset form state
+    const resetFormState = () => {
+        setCards({
+            brand: '--Select Brand--',
+            amount: '',
+            code: '',
+            pin: '',
+            has_pin: 'no',
+            country: '',
+            category: '',
+            images: []
+        });
+        setSelectedCard(null);
+        setSelectedCategory(null);
+        setInNaira('');
+    };
 
+    // Load categories when brand is selected
     useEffect(() => {
-        const handleOnline = () => {
-            setIsPageLoading(false);
-        };
-        const handleOffline = () => {
-            setIsPageLoading(true);
-        };
+        if (cards.brand && cards.brand !== '--Select Brand--') {
+            const brandCategories = giftcards.find(brand => brand.name === cards.brand)?.card_categories || [];
+            setCategories(brandCategories);
+        } else {
+            setCategories([]);
+        }
+    }, [cards.brand, giftcards]);
+
+    // Handle outside clicks for dropdowns
+    // 
+    useEffect(() => {
+
+
+        const handleOnline = () => setIsPageLoading(false);
+        const handleOffline = () => setIsPageLoading(true);
+
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
+
         return () => {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
         };
     }, []);
 
-    const chooseCountry = (val) => {
-        setCards({
-            ...cards,
-            country: val
-        })
 
-    }
+    handleOutsideClicks(brandRef, () => setSelectBrand(false));
+    handleOutsideClicks(categoryRef, () => setSelectCategory(false));
 
-    useEffect(()=>{
-        if(cards.has_pin !== 'Yes'){
+    useEffect(() => {
+        if (cards.has_pin === 'no') {
             setCards({
                 ...cards,
-                pin:''
+                pin: ''
             })
         }
-    },[cards.has_pin])
-
-    handleOutsideClicks(brandref, () => setSelectBrand(false))
-
+    }, [cards.has_pin])
 
     return (
         <Giftcards>
             <div className='w-11/12 mx-auto lg:w-8/12 mt-5 lg:mt-10'>
-                {loading.status && loading.param === 'check' &&
-                    <Loader title={`processing`} />
-                }
-                {loading.status && loading.param === 'confirmed' &&
-                    <Loader title={`submitting order`} />
-                }
-                {isPageLoading &&
-                    <div className="mt-10 w-11/12  lg:w-11/12 mx-auto">
-                        {new Array(4).fill(0).map((_, i) => {
-                            return (
-                                <div key={i} className="flex animate-pulse mb-5 items-start gap-1 flex-col">
-                                    <div className="w-32 h-8 rounded-sm bg-gray-500"></div>
-                                    <div className="w-full h-10 bg-gray-500 rounded-sm"></div>
-                                </div>
-                            )
-                        })}
-                    </div>
+                {/* Loading States */}
+                {loading.status && (
+                    <Loader title={loading.param === 'check' ? 'Processing' : 'Submitting order'} />
+                )}
 
-                }
-                {!isPageLoading && screen === 1 &&
-                    <div className="w-full flex items-start flex-col gap-4">
-                        <div className="flex items-start gap-2 flex-col w-full">
-                            <div className="font-bold">Country</div>
-                            <div className="relative w-full">
-                                <select
-                                    onClick={() => setSelectCountry(!selectCountry)}
-                                    className="border border-gray-600 text-white rounded-md px-4 py-2 cursor-pointer bg-dark w-full"
-                                    value={cards.country}
-                                    onChange={(e) => chooseCountry(e.target.value)}
-                                >
-                                    <option value="">-- Select Country --</option>
-                                    {countries.map((item, i) => (
-                                        <option key={i} value={item.name}>
-                                            {item.name}
-                                        </option>
-                                    ))}
-                                </select>
-
-
+                {/* Skeleton Loading */}
+                {isPageLoading && (
+                    <div className="mt-10 w-11/12 lg:w-11/12 mx-auto">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="flex animate-pulse mb-5 items-start gap-1 flex-col">
+                                <div className="w-32 h-8 rounded-sm bg-gray-500"></div>
+                                <div className="w-full h-10 bg-gray-500 rounded-sm"></div>
                             </div>
+                        ))}
+                    </div>
+                )}
 
-
-                        </div>
+                {/* Screen 1: Main Form */}
+                {!isPageLoading && screen === 1 && (
+                    <div className="w-full flex items-start flex-col gap-4">
+                        {/* Brand Selection */}
                         <div className="flex items-start gap-2 flex-col w-full">
                             <div className="font-bold">Gift-Card Brand</div>
-                            <div className='w-full relative bg-secondary  rounded-md cursor-pointer' id="">
-                                <input onClick={() => setSelectBrand(true)} className='outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 focus:border cursor-pointer  bg-transparent w-full h-fit py-3 text-lightgreen px-4 lg:text-sm text-base rounded-md'
-                                    type="text" name="brand" value={cards.brand} onChange={handleChange} />
-                                {selectBrand &&
+                            <div className='w-full relative bg-secondary rounded-md cursor-pointer'>
+                                <input
+                                    onClick={() => setSelectBrand(true)}
+                                    className='outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 focus:border cursor-pointer bg-transparent w-full h-fit py-3 text-lightgreen px-4 lg:text-sm text-base rounded-md'
+                                    type="text"
+                                    name="brand"
+                                    value={cards.brand}
+                                    onChange={(e) => setCards({ ...cards, brand: e.target.value })}
+                                    readOnly
+                                />
+                                {selectBrand && (
                                     <div
-                                        ref={brandref}
+                                        ref={brandRef}
                                         className="absolute h-96 w-full border rounded-md border-gray-600 px-10 top-1 overflow-y-auto scroll z-50 bg-dark">
-
-                                        {giftcards.length > 0 ? giftcards.map((gift, i) => {
-                                            return (
-                                                <div onClick={() => selectABrand(gift)} key={i}
-
-                                                    className="flex w-full py-2 border-b-gray-600 border-b  items-center justify-between ">
-                                                    <div className='w-2/3 text-base text-lightgreen' >{gift.name}</div>
-                                                    <div className="w-2/3 ">
-                                                        <img src={gift.image} className='h-16 w-fit bg-cover ' alt={`${gift.name} image`} />
+                                        {giftcards.length > 0 ? (
+                                            giftcards.map((gift, i) => (
+                                                <div
+                                                    onClick={() => selectABrand(gift)}
+                                                    key={i}
+                                                    className="flex w-full py-2 border-b-gray-600 border-b items-center justify-between"
+                                                >
+                                                    <div className='w-2/3 text-base text-lightgreen'>{gift.name}</div>
+                                                    <div className="w-2/3">
+                                                        <img
+                                                            src={gift.image}
+                                                            className='h-16 w-fit bg-cover'
+                                                            alt={`${gift.name} image`}
+                                                        />
                                                     </div>
                                                 </div>
-                                            )
-                                        }) :
-                                            <div className="">No giftcards available to trade</div>
-
-                                        }
+                                            ))
+                                        ) : (
+                                            <div className="py-4 text-center">No giftcards available to trade</div>
+                                        )}
                                     </div>
-                                }
+                                )}
                             </div>
                         </div>
-                        <div className="flex w-full items-start gap-2 flex-col  ">
-                            <div className="font-bold ">Amount ({currencySign[0]}):</div>
-                            <div className="w-full items-center flex px-2 justify-center py-1 gap-2 border border-gray-400 rounded-lg">
-                                <div className="w-full ">
-                                    <FormInput name={`amount`} border={false} value={cards.amount} onChange={handleAmount} placeholder={selectedCurr.symbol} />
+
+                        {/* Category Selection */}
+                        <div className="flex items-start gap-2 flex-col w-full">
+                            <div className="font-bold">Categories</div>
+                            <div className="relative w-full">
+                                <div
+                                    onClick={() => {
+                                        if (!cards.brand || cards.brand === '--Select Brand--') {
+                                            return ErrorAlert('Please select giftcard brand first');
+                                        }
+                                        setSelectCategory(true);
+                                    }}
+                                    className={`outline-none focus-within:outline-none focus:outline-none focus:ring-0 cursor-pointer bg-transparent w-full h-fit py-3 px-4 lg:text-sm text-base rounded-md border ${!selectedCategory
+                                        ? 'border-gray-400'
+                                        : amountError.isInvalid
+                                            ? 'border-red-500'
+                                            : 'border-green-500'
+                                        }`}
+                                >
+                                    {selectedCategory ? (
+                                        <div className="flex gap-2 items-center">
+                                            <div>{selectedCategory.country}</div>
+                                            <div>({selectedCategory.card_pic === 'true' ? 'Card-pic' : 'E-code'})</div>
+                                            <div className="text-sm">
+                                                {selectedCategory.currency} {selectedCategory.min_value} to {selectedCategory.currency} {selectedCategory.max_value}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        'Select Card Category'
+                                    )}
                                 </div>
-                                <div className="">{selectedCurr.name}</div>
+
+                                {selectCategory && (
+                                    <div
+                                        ref={categoryRef}
+                                        className="h-fit max-h-96 overflow-auto p-3 w-full rounded-md bg-secondary absolute top-full mt-1 z-50 border border-gray-600 shadow-lg"
+                                    >
+                                        {categories.length > 0 ? (
+                                            <div className="flex flex-col gap-2">
+                                                {categories.map((card, i) => (
+                                                    <div
+                                                        onClick={() => selectOneCategory(card)}
+                                                        className="flex w-full items-center p-2 rounded-md hover:bg-dark transition-colors cursor-pointer"
+                                                        key={i}
+                                                    >
+                                                        <div className="flex gap-2 items-center text-sm">
+                                                            <div className="font-medium">{card.country}</div>
+                                                            <div className="text-gray-400">({card.card_pic === 'true' ? 'Card-pic' : 'E-code'})</div>
+                                                            <div className="text-gray-400">
+                                                                {card.currency} {card.min_value} to {card.currency} {card.max_value}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center text-gray-400 py-4">No categories available</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Amount Input */}
+                        <div className="flex w-full items-start gap-2 flex-col">
+                            <div className="font-bold">Amount ({selectedCategory?.currency}):</div>
+                            <div className={`w-full items-center flex px-2 justify-center py-1 gap-2 rounded-lg ${amountError.isInvalid
+                                ? 'border-2 border-red-500'
+                                : 'border border-gray-400'
+                                }`}>
+                                <div className="w-full">
+                                    <FormInput
+                                        name="amount"
+                                        border={false}
+                                        value={cards.amount}
+                                        onChange={handleAmount}
+                                        className={`!h-9`}
+                                        placeholder={selectedCategory?.currency}
+                                    />
+                                </div>
+                                <div>{selectedCategory?.currency}</div>
                             </div>
 
+                            {amountError.status && (
+                                <div className="text-sm text-red-500">
+                                    {amountError.message}
+                                </div>
+                            )}
                         </div>
+
+                        {/* Naira Conversion */}
                         <div className="flex item-center justify-between w-full">
                             <div className="font-bold">Amount in Naira:</div>
-                            <div className="flex items-center gap-1 cursor-pointer">
-                                <div className="text-sm">{inNaira}</div>
+                            <div className="flex items-center gap-1">
+                                <div className="text-sm">
+                                    {currencies[1].symbol}{inNaira}
+                                    {selectedCategory?.rate && (
+                                        <span className="text-xs text-gray-500 ml-2">
+                                            (Rate: {selectedCategory.rate}/{selectedCategory?.currency})
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         </div>
+
+                        {/* Buying Rate */}
                         <div className="flex w-full item-center text-base lg:text-sm justify-between">
                             <div className="font-bold">Buying rate:</div>
-                            <div className="">{selectedCard?.rate}/$</div>
+                            <div>{selectedCategory?.rate || '--'}/{selectedCategory?.currency}</div>
                         </div>
-                        <div className="flex items-start gap-2 w-full flex-col">
-                            <div className="font-bold">Giftcard Code:</div>
-                            <div className="w-full">
-                                <input
-                                    className={`outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 uppercase focus:border ${carderror.status ? `border-2 border-${carderror.color}` : 'border border-gray-400'} bg-transparent w-full h-fit  px-4 lg:text-sm text-base rounded-md `}
-                                    placeholder={`XXXX-XXXX-XXXX-XXXX`}
-                                    onKeyUp={() => setProceed(false)}
-                                    type={`text`}
-                                    onChange={handleCode}
-                                    name='code'
-                                    value={cards.code}
-                                >
-                                </input>
-                                {carderror.status && <div className={`text-${carderror.color} text-sm`}>{carderror.msg}</div>}
-                            </div>
-                        </div>
-                        <div className="flex f w-full gap-2">
-                            <div className="">Has PIN?</div>
-                            <select onChange={handleChange}
-                                className='w-1/4 bg-secondary' name="has_pin" value={cards.has_pin} id="">
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
-                        </div>
-                        {cards.has_pin === 'yes' &&
-                            <div className="flex items-center gap-2 ">
-                                <div className="">Card PIN</div>
-                                <input type="text"
-                                    className={`outline-none  w-1/2 focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 bg-dark `}
-                                    placeholder={`XXXXX`}
-                                    onChange={handlePin}
-                                    name='pin'
-                                    value={cards.pin}
-                                />
-                            </div>
-                        }
+
+                        <>
+                            {/* Conditional Rendering based on card_pic */}
+                            {selectedCategory?.card_pic === 'true' ? (
+                                <>
+                                    {/* Image Upload Section */}
+                                    <div className="w-full">
+                                        {/* Upload Interface */}
+                                        <div className="border-2 cursor-pointer border-dashed border-gray-400 rounded-lg p-4 mb-4 text-center  hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                            <input
+                                                type="file"
+                                                id="giftcard-upload"
+                                                className="hidden"
+                                                accept="image/*"
+                                                multiple
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files || []);
+                                                    setCards({ ...cards, images: [...(cards.images || []), ...files] });
+                                                }}
+                                            />
+                                            <label htmlFor="giftcard-upload" className="flex flex-col items-center justify-center">
+                                                <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                </svg>
+                                                <p className="font-medium">Click to upload images</p>
+                                                <p className="text-sm text-gray-500">Upload clear pictures of your gift card</p>
+                                            </label>
+                                        </div>
+
+                                        {/* Uploaded Images Preview */}
+                                        {cards.images?.length > 0 && (
+                                            <div className="w-full mb-4">
+                                                <h4 className="font-bold mb-2">Uploaded Images ({cards.images.length})</h4>
+                                                <div className="flex flex-wrap gap-2 w-full overflow-x-auto p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                                                    {cards.images.map((image, index) => (
+                                                        <div key={index} className="relative w-24 h-24 flex-shrink-0">
+                                                            <img
+                                                                src={image instanceof File ? URL.createObjectURL(image) : image}
+                                                                alt={`Giftcard ${index + 1}`}
+                                                                className="w-full h-full object-cover rounded border border-gray-300"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                                                onClick={() => {
+                                                                    const updatedImages = [...cards.images];
+                                                                    updatedImages.splice(index, 1);
+                                                                    setCards({ ...cards, images: updatedImages });
+                                                                }}
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    {/* E-Code Input Section */}
+                                    <div className="flex items-start gap-2 w-full flex-col">
+                                        <div className="font-bold">Giftcard Code:</div>
+                                        <div className="w-full">
+                                            <input
+                                                className={`outline-none focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 uppercase focus:border ${cardError.status ? `border-2 border-${cardError.color}` : 'border border-gray-400'
+                                                    } bg-transparent w-full h-fit px-4 lg:text-sm text-base rounded-md`}
+                                                placeholder={`XXXX-XXXX-XXXX-XXXX`}
+                                                type="text"
+                                                onChange={(e) => {
+                                                    let value = e.target.value.replace(/[^A-Za-z0-9]/g, '');
+                                                    if (selectedCategory?.regrex) {
+                                                        const segmentSize = Number(selectedCategory.regrex);
+                                                        if (!isNaN(segmentSize) && segmentSize > 0) {
+                                                            value = value.match(new RegExp(`.{1,${segmentSize}}`, 'g'))?.join('-') || value;
+                                                        }
+                                                    }
+                                                    setCards({ ...cards, code: value });
+                                                }}
+                                                name="code"
+                                                value={cards.code}
+                                            />
+                                            {cardError.status && (
+                                                <div className={`text-${cardError.color} text-sm`}>
+                                                    {cardError.msg}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* PIN Selection - Only for e-codes */}
+                                    <div className="flex w-full gap-2">
+                                        <div>Has PIN?</div>
+                                        <select
+                                            onChange={(e) => setCards({ ...cards, has_pin: e.target.value })}
+                                            className='w-1/4 bg-secondary'
+                                            name="has_pin"
+                                            value={cards.has_pin}
+                                        >
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+
+                                    {/* PIN Input (conditionally shown) */}
+                                    {cards.has_pin === 'yes' && (
+                                        <div className="flex items-center gap-2">
+                                            <div>Card PIN</div>
+                                            <input
+                                                type="text"
+                                                className="outline-none w-1/2 focus-within:outline-none focus:outline-none focus:ring-0 focus:border-gray-400 bg-dark"
+                                                placeholder="XXXXX"
+                                                onChange={(e) => {
+                                                    const value = e.target.value.replace(/[^0-9]/g, '').substring(0, 5);
+                                                    setCards({ ...cards, pin: value });
+                                                }}
+                                                name="pin"
+                                                value={cards.pin}
+                                            />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </>
+
+                        {/* Continue Button */}
                         <div className="mt-5 w-full">
-                            <button onClick={sellCard } className={`w-full bg-ash  py-3 font-bold rounded-md`}>Continue</button>
+                            <button
+                                onClick={sellCard}
+                                className="w-full bg-ash py-3 font-bold rounded-md hover:bg-opacity-80 transition"
+                                disabled={amountError.status}
+                            >
+                                Continue
+                            </button>
                         </div>
                     </div>
-                }
-                {!isPageLoading && screen === 2 &&
-                    <div className="w-full">
-                        <div className='flex flex-col gap-7 items-center max-w-md mx-auto mt-10'>
-                            <MdRateReview className='text-8xl' />
+                )}
+
+                {/* Screen 2: Review Order */}
+                {!isPageLoading && screen === 2 && (
+                    <div className="w-full ">
+                        <div className='flex flex-col gap-7 items-center  mx-auto mt-10'>
+                            <MdRateReview className='text-8xl text-lightgreen' />
                             <div className='text-center mont font-bold text-2xl'>Review Your Order</div>
-                            <div className="w-full mx-auto  border border-gray-500 rounded-md p-5">
+
+                            <div className="w-full mx-auto border border-gray-500 rounded-md p-5">
                                 <div className="w-full flex-col gap-3 flex items-center justify-between">
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">GiftCard Brand</div>
-                                        <div className="text- font-bold text-lightgreen">{cards.brand}</div>
+                                        <div className="font-bold text-lightgreen">{cards.brand}</div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Country</div>
-                                        <div className="text- font-bold text-lightgreen">{cards.country}</div>
+                                        <div className="font-bold text-lightgreen">{cards.country}</div>
                                     </div>
-                                    <div className="flex items-center justify-between w-full">
-                                        <div className="text-base">GiftCard Code</div>
-                                        <div className="text- font-bold text-lightgreen uppercase">{cards.code}</div>
-                                    </div>
-                                    <div className="flex items-center justify-between w-full">
-                                        <div className="text-base">GiftCard Pin</div>
-                                        <div className="text- font-bold text-lightgreen">{cards.pin ? cards.pin : 'n/a'}</div>
-                                    </div>
+                                    {selectedCategory.card_pic === 'true' ?
+
+                                        <>
+                                            <div className="flex items-center justify-between w-full">
+                                                <div className="text-base">GiftCard Images</div>
+                                                <div className="font-bold text-lightgreen uppercase">({cards.images?.length})</div>
+                                            </div>
+                                        </> :
+                                        <>
+                                            <div className="flex items-center justify-between w-full">
+                                                <div className="text-base">GiftCard Code</div>
+                                                <div className="font-bold text-lightgreen uppercase">{cards.code}</div>
+                                            </div>
+                                            <div className="flex items-center justify-between w-full">
+                                                <div className="text-base">GiftCard Pin</div>
+                                                <div className="font-bold text-lightgreen">{cards.pin || 'n/a'}</div>
+                                            </div>
+                                        </>
+                                    }
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Buying Rate</div>
-                                        <div className="text- font-bold text-lightgreen">{currencies[1].symbol}{selectedCard?.rate}</div>
+                                        <div className="font-bold text-lightgreen">{currencies[1].symbol}{selectedCategory?.rate}</div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
-                                        <div className="text-base">Amount in (USD)</div>
-                                        <div className="text- font-bold text-lightgreen">
-                                            {currencies[0].symbol}{parseInt(inNaira.replace(/,/g, '')) / selectedCard?.rate}</div>
+                                        <div className="text-base">Amount in ({selectedCategory?.currency})</div>
+                                        <div className="font-bold text-lightgreen">
+                                            {selectedCategory?.currency}{cards.amount ? (parseInt(cards.amount.replace(/,/g, ''))).toFixed(2) : '0.00'}
+                                        </div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
                                         <div className="text-base">Amount in (NGN)</div>
-                                        <div className="text- font-bold text-lightgreen">{currencies[1].symbol}{inNaira}</div>
-                                    </div>  
+                                        <div className="font-bold text-lightgreen">
+                                            {currencies[1].symbol}{inNaira || '0.00'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div onClick={() => setScreen(1)} className="flex w-full items-center justify-between gap-4">
-                                <button className='w-1/2 bg-primary py-2 rounded-md'>back</button>
-                                <button type='button' onClick={confirmSend} className='w-1/2 py-2 rounded-md bg-ash'>Confirm & Sell</button>
+
+                            <div className="flex w-full items-center justify-between gap-4">
+                                <button
+                                    onClick={() => setScreen(1)}
+                                    className='w-1/2 bg-primary py-2 rounded-md hover:bg-opacity-80 transition'
+                                >
+                                    Back
+                                </button>
+                                <button
+                                    onClick={selectedCategory?.card_pic === 'true' ? () => confirmSend('image') : () => confirmSend('code')}
+                                    className='w-1/2 py-2 rounded-md bg-ash hover:bg-opacity-80 transition'
+                                >
+                                    Confirm & Sell
+                                </button>
                             </div>
                         </div>
-                    </div>}
-                {!isPageLoading && screen === 3 && <div className="w-full">
-                    <div className='flex flex-col gap-7 items-center max-w-md mx-auto mt-20'>
-                        <SlClock className='text-8xl' />
-                        <div className='text-center'>Thank you for choosing us! Please relax and keep an eye on your dashboard as we process your payment.</div>
-                        <Link to="/user/dashboard">
-                            <button className='bg-green-500 hover:bg-lightgreen text-white hover:text-ash w-fit h-fit py-3 px-16 rounded-lg outline-none uppercase font-bold'>go to dashboard</button>
-                        </Link>
-                        <button onClick={() => setScreen(1)} className='text-sm text-white px-4 py-2 rounded-md bg-red-600'>Sell another card</button>
                     </div>
-                </div>}
+                )}
 
+                {/* Screen 3: Success */}
+                {!isPageLoading && screen === 3 && (
+                    <div className="w-full">
+                        <div className='flex flex-col gap-7 items-center max-w-md mx-auto mt-20'>
+                            <SlClock className='text-8xl text-lightgreen' />
+                            <div className='text-center'>
+                                Thank you for choosing us! Please relax and keep an eye on your dashboard as we process your payment.
+                            </div>
+                            <Link to="/user/dashboard">
+                                <button className='bg-green-500 hover:bg-lightgreen text-white hover:text-ash w-fit h-fit py-3 px-16 rounded-lg outline-none uppercase font-bold transition'>
+                                    Go to Dashboard
+                                </button>
+                            </Link>
+                            <button
+                                onClick={() => setScreen(1)}
+                                className='text-sm text-white px-4 py-2 rounded-md bg-red-600 hover:bg-opacity-80 transition'
+                            >
+                                Sell another card
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </Giftcards>
-    )
-}
+    );
+};
 
-export default SellGiftcard
+export default SellGiftcard;

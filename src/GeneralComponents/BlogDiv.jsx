@@ -8,7 +8,7 @@ import moment from 'moment';
 const BlogDiv = ({ item, className }) => {
 
     return (
-        <div className={`w-full bg-black hover:bg-black/10 border border-black hover:border-bg-green rounded-xl p-2 min-h-24  ${className} `}>
+        <div className={`w-full h-full bg-black hover:bg-black/10 border border-black hover:border-bg-green rounded-xl p-2 ${className} `}>
             <Link className='h-full flex items-start flex-col justify-between' to={`/blogs/${item.feature}/${item.id}/${item.slug}`} onClick={MoveToTop} >
                 <div className="w-full">
                     <img src={item?.image} alt="blog image" className="w-full rounded-xl h-40 object-cover" />

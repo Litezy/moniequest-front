@@ -33,7 +33,7 @@ const AdminDashboard = () => {
                 <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
                     {data.length < 1 ?
                         <>
-                            {new Array(18).fill(0).map((_, i) => (
+                            {new Array(9).fill(0).map((_, i) => (
                                 <div key={i} className='h-32 w-full mb-5 bg-slate-400 animate-pulse rounded-e-xl rounded-tl-lg'>
                                     <div className='w-full h-1/2 bg-slate-500 animate-pulse rounded-lg'></div>
                                 </div>
