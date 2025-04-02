@@ -103,12 +103,14 @@ export default function Testimonials(props) {
                     className="w-24 h-24 lg:w-32 lg:h-32 object-cover border-4 border-white shadow-2xl rounded-full"
                   />
                 </div>
-                <div className="font-bold text-xl lg:text-2xl">{item.firstname} {item.lastname}</div>
+                <div className="font-bold text-xl lg:text-2xl text-white">{item.firstname} {item.lastname}</div>
+                <div className="font-bold text-lg italic">{item.title}</div>
                 <div className="mt-4 border-t pt-4 lg:text-lg text-sm w-full">{item.content}</div>
               </div>
             ))}
           </div>
         </div>
+       
       
         <div className="embla__controls text-white">
           <div className="embla__buttons">
