@@ -376,7 +376,7 @@ const AdminProfile = () => {
                         <div className='flex flex-col gap-5'>
                             <div className='text-xl capitalize font-medium text-lightgreen'>update settings</div>
                             <div className='w-fit h-fit bg-primary rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden'>
-                                {loading.sub2 && <Loading />}
+                                {loading.sub2 && <Loader title={`updating rates`} />}
                                 <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Exchange buy rate ($/₦)</div>
@@ -386,10 +386,7 @@ const AdminProfile = () => {
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Exchange sell rate ($/₦)</div>
                                         <FormInput placeholder='Enter rate amount' name='exchange_sell_rate' value={form.exchange_sell_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='font-medium text-gray-200 text-sm ml-2'>Giftcard rate ($/₦)</div>
-                                        <FormInput placeholder='Enter rate amount' name='giftcard_rate' value={form.giftcard_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
-                                    </div>
+                                    
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Bank withdrawal min (NGN)</div>
                                         <FormInput placeholder='Enter minimum withdrawal amount' name='bank_min' value={form.bank_min} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
