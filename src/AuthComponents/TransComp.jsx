@@ -39,13 +39,13 @@ const TransComp = ({ trans }) => {
                     <div className="w-fit px-4 py-4 rounded-full bg-primary">
                         {trans.type === 'buy' && <GoArrowDownLeft className='text-lightgreen' />}
                         {trans.type === 'sell' && <GoArrowUpRight className='text-red-600' />}
-                        {trans.bank_user && <GoArrowUpLeft className='text-blue-600' />}
+                        {trans.bank_holder && <GoArrowUpLeft className='text-blue-600' />}
                         {trans.brand && <GoArrowUpRight className='text-red-600' />}
                     </div>
                     <div className="flex items-start flex-col gap-1">
                         <div className="flex items-center gap-3">
                             {trans.crypto_currency && <div className={`text-zinc-200 capitalize font-bold`}>Crypto</div>}
-                            {trans.bank_user && <div className={`text-zinc-200 capitalize font-bold`}>Bank Withdrawal</div>}
+                            {trans.bank_holder && <div className={`text-zinc-200 capitalize font-bold`}>Bank Withdrawal</div>}
                             {trans.brand && <div className={`text-zinc-200 capitalize font-bold`}>Gift-Card</div>}
                             {trans.type && <div className="w-[0.5px] h-5 bg-gray-400"></div>}
                             {trans.type && <div className={` ${trans.type === 'buy' ? "text-lightgreen" : 'text-red-600'} capitalize`}> {trans.type}</div>}
@@ -60,18 +60,18 @@ const TransComp = ({ trans }) => {
                 </div>
                 {trans.crypto_currency && <div className={`${trans.crypto_currency && ['pending', 'unpaid'].includes(trans.status) ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
-                {trans.bank_user &&
-                    <div className={`${trans.bank_user && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>
+                {trans.bank_holder &&
+                    <div className={`${trans.bank_holder && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>
                 }
 
                 {trans.brand && <div className={`${trans.brand && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">
 
-                    {trans.bank_user && <div
+                    {trans.bank_holder && <div
                         className={`text-white`}>{currencies[1].symbol}{trans?.amount?.toLocaleString()}
                     </div>}
-                    {!trans?.bank_user && <div
+                    {!trans?.bank_holder && <div
                         className={` text-white`}>{currencies[1].symbol}{naira}
                     </div>}
                 </div>

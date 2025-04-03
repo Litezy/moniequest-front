@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout'
 import { Link, useParams } from 'react-router-dom'
 import FormInput from '../../utils/FormInput'
-import { FaRegCopy } from 'react-icons/fa'
 import { defaultOptions, ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
 import FormButton from '../../utils/FormButton'
-import SelectComp from '../../GeneralComponents/SelectComp'
 import Lottie from 'react-lottie'
 import Loader from '../../GeneralComponents/Loader'
 import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
@@ -14,7 +12,7 @@ import ModalLayout from '../../utils/ModalLayout'
 
 const AdminSingleWithdrawal = () => {
     const { id } = useParams()
-    const [forms, setForms] = useState({ sent_money: '', ref: '', msg: '' })
+    const [forms, setForms] = useState({ msg: '' })
     const [screen, setScreen] = useState(1)
     const [loading, setLoading] = useState({ status: false, val: "" })
     const [failed, setFailed] = useState(false)
@@ -38,35 +36,18 @@ const AdminSingleWithdrawal = () => {
     }, [])
 
     const handleChange = (e) => { setForms({ ...forms, [e.target.name]: e.target.value }) }
-    const options = [`Yes`, 'No']
+    const [memo, setMemo] = useState(false)
 
-    const submitOrder = async (e) => {
+    const makePayments = async (e) => {
         e.preventDefault()
-        if (forms.sent_money === 'No' || !forms.sent_money) return ErrorAlert(`Please confirm money have been paid`)
-        if (!forms.ref || forms.ref.length < 10) return ErrorAlert(`Please input a valid transaction number`)
-        const data = { tag: 'success', reference_id: forms.ref }
-        setLoading({ status: true, val: 'close' })
-        try {
-            const res = await AuthPostApi(`${Apis.admin.confirm_withdrawal}/${id}`, data)
-            if (res.status !== 200) return ErrorAlert(res.msg)
-            await new Promise((resolve) => setTimeout(resolve, 2000))
-            SuccessAlert(res.msg)
-            setForms({ ref: '', sent_money: '' })
-            setScreen(2)
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading({ status: false, val: '' })
+        if (!forms.msg || forms.msg.trim() === '') return ErrorAlert('Please provide payment memo/reason')
+        const data = {
+            id: id, reason: forms.msg
         }
-    }
-
-    const declineOrder = async () => {
-        if (!forms.msg) return ErrorAlert(`Please provide failed message to user`)
-        setFailed(false)
-        const data = { tag: 'failed', message: forms.msg }
-        setLoading({ status: true, val: 'close' })
+        setLoading({ status: true, val: 'paying' })
+        setMemo(false)
         try {
-            const res = await AuthPostApi(`${Apis.admin.confirm_withdrawal}/${id}`, data)
+            const res = await AuthPostApi(`${Apis.paystack.admin_transfer}`, data)
             if (res.status !== 200) return ErrorAlert(res.msg)
             await new Promise((resolve) => setTimeout(resolve, 2000))
             SuccessAlert(res.msg)
@@ -78,41 +59,34 @@ const AdminSingleWithdrawal = () => {
         }
     }
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(data?.account_number)
-            .then(() => { return SuccessAlert(`Bank account copied successfully`) })
-            .catch((error) => { console.log(`failed to copy account number`, error) })
+    const ProvideMsg = (e) => {
+        e.preventDefault()
+        setMemo(true)
     }
 
-    const prefillRef = async () => {
-        try {
-            const clipboardText = await navigator.clipboard.readText(); 
-            setForms((prevForms) => ({
-                ...prevForms,
-                ref: clipboardText, 
-            }));
-            SuccessAlert('Reference number pasted successfully');
-        } catch (error) {
-            console.error('Failed to read from clipboard:', error);
-            ErrorAlert('Failed to paste reference number');
+
+    useEffect(() => {
+        if (!memo) {
+            setForms({ msg: "" })
         }
-    };
+    }, [memo])
 
     return (
         <AdminPageLayout>
 
-            {loading.status && loading.val === 'load' && <Loader title={`...loading`} />}
+            {loading.status && loading.val === 'load' && <Loader title={`loading`} />}
             {loading.status && loading.val === 'close' && <Loader title={`closing order`} />}
+            {loading.status && loading.val === 'paying' && <Loader title={`making payments`} />}
 
-            {failed && <ModalLayout setModal={setFailed} clas={`w-11/12 mx-auto lg:w-1/2`}>
+            {memo && <ModalLayout setModal={setMemo} clas={`w-11/12 mx-auto lg:w-1/2`}>
                 <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
                     <div className="flex flex-col gap-4 w-full">
-                        <div className="font-semibold text-center">Please provide failed message</div>
+                        <div className="font-semibold text-center">Please provide transaction memo</div>
 
-                        <FormInput formtype='textarea' value={forms.msg} name={`msg`} onChange={handleChange} />
+                        <FormInput formtype='text' value={forms.msg} name={`msg`} onChange={handleChange} />
                         <div className="flex w-full items-center justify-between ">
-                            <button onClick={() => { setFailed(false); setForms({ ...forms, msg: "" }) }} className='px-4 py-1.5 rounded-md bg-red-600 text-white'>cancel</button>
-                            <button onClick={declineOrder} className='px-4 py-1.5 rounded-md bg-green-600 text-white'>confirm decline</button>
+                            <button onClick={() => { setMemo(false); setForms({ ...forms, msg: "" }) }} className='px-4 py-1.5 rounded-md bg-red-600 text-white'>cancel</button>
+                            <button onClick={makePayments} className='px-4 py-1.5 rounded-md bg-green-600 text-white'>make payment</button>
                         </div>
                     </div>
                 </div>
@@ -123,7 +97,7 @@ const AdminSingleWithdrawal = () => {
                     <Link to={`/admin/bank_withdrawals  `} className="w-fit px-4 py-1.5 rounded-md bg-ash">back</Link>
                 </div>
                 <div className="mt-5 w-full text-center capitalize font-bold poppins">Withdrawal Review Number <span className={`${green}`}>{data?.trans_id}</span></div>
-                <form onSubmit={submitOrder} className="bg-primary p-5 rounded-md  mx-auto mt-5 md:mt-10 mb-5">
+                <form onSubmit={ProvideMsg} className="bg-primary p-5 rounded-md  mx-auto mt-5 md:mt-10 mb-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5   ">
                         <div className="flex flex-col gap-3 w-full">
                             <div className="w-full flex flex-col gap-2">
@@ -153,7 +127,7 @@ const AdminSingleWithdrawal = () => {
                         <div className=" flex flex-col gap-3 w-full">
                             <div className="w-full flex flex-col gap-2">
                                 <div className="text-sm">Beneficiary Name:</div>
-                                <FormInput read={true} value={data?.bank_user} className={`${green}`} />
+                                <FormInput read={true} value={data?.bank_holder} className={`${green}`} />
                             </div>
                             <div className="w-full flex flex-col gap-2">
                                 <div className="text-sm">Beneficiary Bank:</div>
@@ -165,27 +139,19 @@ const AdminSingleWithdrawal = () => {
                                     <div className="w-full">
                                         <FormInput read={true} value={data?.account_number} className={`${green}`} />
                                     </div>
-                                    <FaRegCopy onClick={handleCopy} className={`${green} cursor-pointer`} />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 mt-5 items-center">
-                        <div className="flex items-start flex-col w-full ">
-                            <div className=" lowercase">Confirm You have paid</div>
-                            <div className="">
-                                <SelectComp options={options} value={forms.sent_money} width={200} style={{ bg: '#212134', color: 'lightgreen', font: '0.8rem' }}
-                                    handleChange={(e) => setForms({ ...forms, sent_money: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                        <div className="">
-                            <button type='button' onClick={() => setFailed(true)} className='px-4 py-1.5 rounded-sm bg-red-600 text-sm'>Mark As Failed</button>
-                        </div>
-                    </div>
-                    <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                        <FormButton title={`Confirm & Close Order`} />
-                    </div>
+
+                    {data?.transfer_status === 'pending' ? <div className="w-11/12 mt-10 mx-auto md:w-5/6">
+                        <FormButton title={`Proceed to Pay`} />
+                    </div> :
+                        <>
+                            <div className="w-full text-ellipsis mt-5 text-yellow-300 font-bold">Transaction pending. Awaiting otp and verification for paystack.</div>
+                            <div className="w-full text-ellipsis  text-yellow-300 font-bold">Kindly login to your paystack and provide otp sent to your email or phone.</div>
+                        </>
+                    }
                 </form>
             </div>}
 

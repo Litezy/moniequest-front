@@ -56,7 +56,7 @@ const Blogs = () => {
                                 </div>
                                 <div className='w-20 h-3 rounded-full bg-slate-400 mx-4'></div>
                             </div>
-                            <div className='grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4'>
+                            <div className='grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
                                 {new Array(4).fill(0).map((_, i) => (
                                     <div key={i} className='w-full bg-black rounded-xl p-2'>
                                         <div className=" bg-gray-500 h-40 rounded-xl w-full"></div>

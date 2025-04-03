@@ -142,12 +142,18 @@ const products_urls = {
     place_product_order: products + 'place-product-order'
 }
 
+const paystack = 'api/paystack/'
+const paystack_urls = {
+    buy_crypto: paystack + 'initialize_buy_payment',
+    admin_transfer: paystack + "admin_transfer"
+}
 export const Apis = {
     user: user_urls,
     notification: notification_urls,
     transaction: trans_url,
     admin: admin_urls,
-    product: products_urls
+    product: products_urls,
+    paystack:paystack_urls
 }
 
 
@@ -185,6 +191,8 @@ export const AuthPostApi = async (endpoint, data) => {
     })
     return response.data
 }
+
+
 
 export const AuthPutApi = async (endpoint, data) => {
     const token = Cookies.get(CookieName)

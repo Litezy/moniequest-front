@@ -70,25 +70,35 @@ const OrderPage = () => {
         }).catch((error) => console.log(`failed to copy acount number, ${error}`))
     }
     const green = `text-lightgreen`
+    const [accessCode, setAccessCode] = useState('')
+    const [referenceCode, setReferenceCode] = useState('')
 
 
-    const GetAdminBank = async () => {
+    const InitiatePayment = async () => {
         setLoad(true)
+        const amt = naira.replace(/,/g, '')
+        const formdata = {
+            id: id, amount: parseFloat(amt)
+        }
         try {
-            const response = await GetApi(Apis.product.get_admin_bank)
-            if (response.status === 200) {
-                setAdminBank(response.msg)
-                await new Promise((resolve) => setTimeout(resolve, 2000))
-                setScreen(2)
-            } else {
-                ErrorAlert(response.msg)
-            }
+            const response = await AuthPostApi(Apis.paystack.buy_crypto, formdata)
+            if (response.status !== 200) return ErrorAlert(response.msg)
+            const data = response?.data?.data
+            console.log(response)
+            setAccessCode(data?.access_code)
+            setReferenceCode(data?.reference)
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            SuccessAlert(response.msg)
+    
+            // Redirect to Paystack checkout page
+            window.location.href = data?.authorization_url
         } catch (error) {
-            //
+            console.log(`error in initializing crypto buy payment`, error)
         } finally {
             setLoad(false)
         }
     }
+    
 
     const confirmAndPay = async () => {
         setConfirm(false)
@@ -232,7 +242,7 @@ const OrderPage = () => {
                             </div>
 
                             {data?.status === 'unpaid' ? <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                                <FormButton type='button' onClick={GetAdminBank} title={`Proceed to make payment`} />
+                                <FormButton type='button' onClick={InitiatePayment} title={`Proceed to make payment`} />
                             </div> :
 
                                 <>

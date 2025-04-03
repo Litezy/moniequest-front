@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { banksArr, currencies } from '../../AuthComponents/AuthUtils'
+import { currencies } from '../../AuthComponents/AuthUtils'
 import FormInput from '../../utils/FormInput'
 import FormButton from '../../utils/FormButton'
 import { defaultOptions, ErrorAlert } from '../../utils/pageUtils'
@@ -13,6 +13,7 @@ import { BANK, UTILS, WALLET } from '../../services/store'
 import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
 import WithdrawComp from '../../AuthComponents/WithdrawComp'
 import { Link } from 'react-router-dom'
+import { NigerianBanks } from '../../utils/banks'
 
 
 const formsal = () => {
@@ -23,6 +24,7 @@ const formsal = () => {
     const [dataLoading, setDataLoading] = useState(true)
     const [records, setRecords] = useState([])
     const [confirm, setConfirm] = useState(false)
+    const [selectedBank, setSelectedBank] = useState({})
     const [forms, setForms] = useState({
         bank: '', amount: '', accountNumber: '', accountName: '',
     })
@@ -102,16 +104,26 @@ const formsal = () => {
         setConfirm(true)
     }
 
+    useEffect(() => {
+        if (forms.bank) {
+            const findBank = NigerianBanks.filter((name) => name.name === forms.bank)
+            setSelectedBank(findBank[0])
+        }
+    }, [forms.bank])
+
     const submitRequest = async (e) => {
         e.preventDefault()
+        // return console.log(selectedBank)
         setConfirm(false)
         const convertAmt = forms.amount.replace(/,/g, '')
         const formdata = {
-            bank_name: forms.bank,
+            bank_name: selectedBank?.name,
             account_number: forms.accountNumber,
-            bank_user: forms.accountName,
-            amount: convertAmt
+            bank_holder: forms.accountName,
+            amount: convertAmt,
+            bank_code: selectedBank?.code
         }
+        // return console.log(formdata)
         setLoading(true)
         try {
             const res = await AuthPostApi(Apis.transaction.request_withdrawal, formdata)
@@ -133,6 +145,20 @@ const formsal = () => {
         }
     }
 
+    const [bankNames, setBankNames] = useState([]);
+
+    useEffect(() => {
+        if (NigerianBanks && NigerianBanks.length > 0) {
+            // Extract just the names and sort alphabetically
+            const names = NigerianBanks
+                .map(bank => bank.name)
+                .sort((a, b) => a.localeCompare(b));
+
+            setBankNames(names);
+        }
+    }, []);
+
+   
 
     return (
         <AuthPageLayout>
@@ -223,7 +249,7 @@ const formsal = () => {
                                         <div className="w-full">
                                             <SelectComp
                                                 value={forms.bank}
-                                                options={banksArr}
+                                                options={bankNames}
                                                 width={450} size={false}
                                                 style={{ bg: '#212134', color: 'lightgrey', font: '0.8rem' }} handleChange={(e) => setForms({ ...forms, bank: e.target.value })} />
 
