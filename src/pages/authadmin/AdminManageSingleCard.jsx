@@ -340,7 +340,7 @@ const AdminManageSingleCard = () => {
 
                     <div className="w-full  text-white rounded-md">
                         <div className="w-full flex items-center flex-col gap-5">
-                            <div className="capitalize font-semibold">Update {data?.name} Giftcardt</div>
+                            <div className="capitalize font-semibold">Update {data?.name} Giftcard</div>
                             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <FormInput label={`Giftcard Name`} name={`name`} value={forms.name} onChange={handleChange} />
                                 <label className='cursor-pointer w-full'>

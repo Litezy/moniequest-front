@@ -190,7 +190,7 @@ const SingleBlog = () => {
                         <div className="w-full flex items-start lg:gap-6 gap-10 flex-col lg:flex-row">
                             <div className="lg:w-[30%] w-full">
                                 <div className="flex items-start flex-col gap-12">
-                                    <img src={singleBlog?.image} alt="blog image" className="w-full rounded-xl max-h-52 object-cover object-center " />
+                                    <img src={singleBlog?.image} alt="blog image" className="w-full rounded-xl  object-cover object-center " />
                                     <div className="w-full flex items-start flex-col gap-2">
                                         <div className="poppins font-bold text-2xl">Table of contents</div>
                                         {parapgraphs.map((item, i) => {

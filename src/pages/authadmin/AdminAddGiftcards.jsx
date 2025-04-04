@@ -147,12 +147,13 @@ const AdminAddGiftcards = () => {
             {loading.status && loading.val === 'delete' &&
                 <Loader title={`deleting gitfcard`} />
             }
+            
 
             {add &&
                 <ModalLayout setModal={setAdd} clas={`w-11/12 mx-auto lg:w-1/2`}>
                     <div className="w-full p-5 bg-white text-dark rounded-md">
                         <div className="w-full flex items-center flex-col gap-5">
-                            <div className="capitalize font-semibold">Add below new crypto</div>
+                            <div className="capitalize font-semibold">Add below new giftcard</div>
                             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <FormInput label={`Giftcard Name`} name={`name`} value={forms.name} onChange={handleChange} />
                             </div>
