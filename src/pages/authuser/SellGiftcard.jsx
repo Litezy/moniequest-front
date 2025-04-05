@@ -197,13 +197,11 @@ const SellGiftcard = () => {
     // Confirm and send the order
     const confirmSend = async (tag) => {
         try {
-            // Validate tag
             const validTags = ['image', 'code'];
             if (!validTags.includes(tag)) {
                 return ErrorAlert('Invalid gift card type specified');
             }
 
-            // Validate required fields
             if (!cards.brand || cards.brand === '--Select Brand--') {
                 return ErrorAlert('Please select a gift card brand');
             }
@@ -212,20 +210,20 @@ const SellGiftcard = () => {
                 return ErrorAlert('Please enter a valid amount');
             }
 
-            // Type-specific validations
             if (tag === 'code' && !cards.code) {
                 return ErrorAlert('Gift card code is required');
             }
+
             if (tag === 'code' && cards.has_pin === 'yes' && !cards.pin) {
                 return ErrorAlert('Gift card pin is required');
             }
+
             if (!cards.images || cards.images.length === 0) {
                 return ErrorAlert('Please upload at least one image of your gift card');
             }
 
             setLoading({ status: true, param: 'confirmed' });
 
-            // Prepare FormData
             const formData = new FormData();
             formData.append('brand', cards.brand);
             formData.append('amount', cards.amount.replace(/,/g, ''));
@@ -234,46 +232,42 @@ const SellGiftcard = () => {
             formData.append('currency', selectedCategory?.currency || '');
             formData.append('tag', tag);
 
-            // Handle files or codes based on type
-            if (tag === 'image') {
-                // Validate and append images
-                const MAX_SIZE = 2 * 1024 * 1024; // 2MB
-                const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+            const MAX_SIZE = 2 * 1024 * 1024;
+            const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-                cards.images?.forEach((image) => {
-                    if (!(image instanceof File)) {
-                        throw new Error('Invalid file format');
-                    }
+            // Wrap in array if only one file exists
+            const imageArray = Array.isArray(cards.images) ? cards.images : [cards.images];
 
-                    if (image.size > MAX_SIZE) {
-                        throw new Error(`Image ${image.name} exceeds 2MB limit`);
-                    }
+            imageArray.forEach((image) => {
+                if (!(image instanceof File)) {
+                    throw new Error('Invalid file format');
+                }
 
-                    if (!ALLOWED_TYPES.includes(image.type)) {
-                        throw new Error(`Unsupported image format: ${image.type}`);
-                    }
+                if (image.size > MAX_SIZE) {
+                    throw new Error(`Image ${image.name} exceeds 2MB limit`);
+                }
 
-                    formData.append('images', image);
-                });
-            } else {
-                // Append code details
+                if (!ALLOWED_TYPES.includes(image.type)) {
+                    throw new Error(`Unsupported image format: ${image.type}`);
+                }
+
+                formData.append('images', image); 
+
+            });
+            if (tag === 'code') {
                 formData.append('code', cards.code);
                 if (cards.has_pin === 'yes' && cards.pin) {
                     formData.append('pin', cards.pin);
                 }
             }
 
-            // Submit data
             const res = await AuthPostApi(Apis.transaction.sell_giftcard, formData);
 
             if (res.status !== 201) {
                 throw new Error(res.msg || 'Failed to process gift card');
             }
 
-            // Reset form state
             resetFormState();
-
-            // Show success and redirect
             SuccessAlert(res.msg || 'Gift card submitted successfully');
             navigate('/user/giftcards/orders');
 
@@ -283,6 +277,7 @@ const SellGiftcard = () => {
             setLoading({ status: false, param: '' });
         }
     };
+
 
     // Helper function to reset form state
     const resetFormState = () => {

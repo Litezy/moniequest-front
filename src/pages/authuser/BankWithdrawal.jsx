@@ -136,6 +136,7 @@ const formsal = () => {
             FetchLatestTrans()
             await new Promise((resolve) => setTimeout(resolve, 2000))
             setShowModal(true)
+            setShow(false)
             setLoading(false)
         } catch (error) {
             ErrorAlert(`failed to place withdrawal, try again!`)
@@ -158,7 +159,7 @@ const formsal = () => {
         }
     }, []);
 
-   
+
 
     return (
         <AuthPageLayout>

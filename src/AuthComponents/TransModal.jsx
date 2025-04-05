@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { currencies } from './AuthUtils'
 import moment from 'moment'
+import { FaRegCopy } from "react-icons/fa6";
+import { SuccessAlert } from '../utils/pageUtils';
 
 const TransModal = ({ trans }) => {
     const [inNaira, setInNaira] = useState('')
@@ -16,6 +18,12 @@ const TransModal = ({ trans }) => {
         setInNaira(naira.toLocaleString())
     }, [trans])
 
+
+    const copyToClipBoard = () => {
+        navigator.clipboard.writeText(trans.trans_hash).then(() => {
+            SuccessAlert(`transaction ID copied successfully`)
+        }).catch((error) => console.log(`failed to copy transaction ID, ${error}`))
+    }
     return (
         <div className="flex w-full items-start gap-2 flex-col poppins">
             <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">
@@ -67,6 +75,14 @@ const TransModal = ({ trans }) => {
             {trans.order_no && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">
                 <div className="">Order ID</div>
                 <div className="capitalize ">{trans?.order_no}</div>
+            </div>}
+            {trans.crypto_currency && trans.trans_hash !== null && 
+            <div className="flex md:items-center flex-col md:flex-row border-b pb-2 border-zinc-600 w-full justify-between">
+                <div className="">Txn ID/hash</div>
+                <div className="flex items-center gap-2">
+                    <div className=" truncate text-sm">{trans?.trans_hash}</div>
+                    <FaRegCopy onClick={copyToClipBoard} className='text-lightgreen text-xl cursor-pointer' />
+                </div>
             </div>}
             {trans?.bank_holder && <div className="flex items-center border-b pb-2 border-zinc-600 w-full justify-between">
                 <div className="">Transaction Reference</div>

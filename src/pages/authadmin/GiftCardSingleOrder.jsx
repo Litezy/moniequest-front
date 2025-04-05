@@ -151,6 +151,7 @@ const GiftCardSingleOrder = () => {
 
 
     const imagesArray = data?.images ? JSON.parse(data.images) : []
+    console.log(imagesArray)
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageClick = (image) => {
@@ -283,33 +284,30 @@ const GiftCardSingleOrder = () => {
 
                                 </div>
 
+                                <div className="mt-5 mb-2">Images of giftcards submitted:</div>
+                                <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
 
-                                {imagesArray.length > 0 && (
-                                    <>
-                                        <div className="mt-5 mb-2">Images of giftcards submitted:</div>
-                                        <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
-
-                                            {imagesArray.map((image, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="relative cursor-pointer rounded-md overflow-hidden group"
-                                                    onClick={() => handleImageClick(image)}
-                                                >
-                                                    <img
-                                                        src={image}
-                                                        alt={`Gift Card ${index + 1}`}
-                                                        className="w-full h-40 object-cover"
-                                                    />
-                                                    {/* Hover Overlay */}
-                                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="text-white font-semibold">View Image</span>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                    {imagesArray.map((image, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative cursor-pointer rounded-md overflow-hidden group"
+                                            onClick={() => handleImageClick(image)}
+                                        >
+                                            <img
+                                                src={image}
+                                                alt={`Gift Card ${index + 1}`}
+                                                className="w-full h-40 object-cover"
+                                            />
+                                            {/* Hover Overlay */}
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="text-white font-semibold">View Image</span>
+                                            </div>
                                         </div>
-                                    </>
+                                    ))}
+                                </div>
 
-                                )}
+
+
 
                                 {/* Modal */}
                                 {selectedImage && (

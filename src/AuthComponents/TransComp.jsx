@@ -24,8 +24,8 @@ const TransComp = ({ trans }) => {
     return (
         <div className='w-full mb-5'>
             {modal &&
-                <ModalLayout clas={`w-11/12 mx-auto lg:w-1/2 scroll rounded-md`} setModal={setModal}>
-                    <div className="w-full p-5 lg:p-10 bg-primary ">
+                <ModalLayout clas={`w-11/12 mx-auto lg:w-1/2 scroll overflow-hidden rounded-md`} setModal={setModal}>
+                    <div className="w-full p-5  bg-primary  ">
                         <div className="text-center">More Details</div>
                         <div className="flex mt-5 items-center justify-between">
                             <TransModal trans={trans} />

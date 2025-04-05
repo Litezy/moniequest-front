@@ -21,11 +21,13 @@ const SingleBuyOrder = () => {
     const [forms, setForms] = useState({
         confirmed: '',
         sent_crypto: '',
-        msg: ""
+        msg: "",
+        trans_hash: ''
     })
     const statuses = ["Yes", "No"]
     const [screen, setScreen] = useState(1)
     const [failed, setFailed] = useState(false)
+    const [transmsg, setTransMsg] = useState(false)
 
     const fetchBuyID = async () => {
         setLoading({ status: true, val: 'fetching order' })
@@ -61,13 +63,15 @@ const SingleBuyOrder = () => {
     }
 
     const handleChange = (e) => {
-        setForms({ ...forms, msg: e.target.value })
+        setForms({ ...forms, trans_hash: e.target.value })
     }
 
     const submitOrder = async (e) => {
         e.preventDefault()
         if (forms.confirmed !== 'Yes' || forms.sent_crypto !== 'Yes') return ErrorAlert('Please confirm that you have received the funds and sent crypto')
-        const data = { tag: 'success' }
+        if (!forms.trans_hash) return ErrorAlert('Please provide transaction ID')
+        const data = { tag: 'success', trans_hash: forms.trans_hash }
+        setTransMsg(false)
         setLoading({ status: true, val: 'closing order' })
         try {
             const res = await AuthPostApi(`${Apis.admin.confirm_buy}/${id}`, data)
@@ -121,6 +125,19 @@ const SingleBuyOrder = () => {
                     </div>
                 </div>
             </ModalLayout>}
+            {transmsg && <ModalLayout setModal={setTransMsg} clas={`w-11/12 mx-auto lg:w-1/2`}>
+                <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="font-semibold text-center">Please Transaction ID</div>
+
+                        <FormInput value={forms.trans_hash} name={`trans_hash`} onChange={handleChange} />
+                        <div className="flex w-full items-center justify-between ">
+                            <button onClick={() => { setTransMsg(false); setForms({ ...forms, trans_hash: "" }) }} className='px-4 py-1.5 rounded-md bg-red-600 text-white'>cancel</button>
+                            <button onClick={submitOrder} className='px-4 py-1.5 rounded-md bg-green-600 text-white'>proceed</button>
+                        </div>
+                    </div>
+                </div>
+            </ModalLayout>}
 
             {screen === 1 &&
                 <>
@@ -137,31 +154,31 @@ const SingleBuyOrder = () => {
                                     <div className="flex flex-col gap-2">
                                         <div className="text-sm">Customer ID:</div>
                                         <div className="w-full">
-                                            <FormInput value={data?.crypto_buyer?.id} className={`${green}`} />
+                                            <FormInput read={true} value={data?.crypto_buyer?.id} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount Bought:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${data?.amount?.toLocaleString()}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Gas Fee:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${data?.gas_fee}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid:</div>
                                         <div className="w-full">
-                                            <FormInput value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Crypto Currency:</div>
                                         <div className="w-full">
-                                            <FormInput value={data?.crypto_currency} className={`${green}`} />
+                                            <FormInput read={true} value={data?.crypto_currency} className={`${green}`} />
                                         </div>
                                     </div>
 
@@ -169,13 +186,13 @@ const SingleBuyOrder = () => {
                                 <div className=" flex flex-col gap-3 w-full">
                                     <div className="flex flex-col gap-2">
                                         <div className="text-sm">FullName:</div>
-                                        <FormInput value={`${data?.crypto_buyer?.first_name} ${data?.crypto_buyer?.surname}`} className={`${green}`} />
+                                        <FormInput read={true} value={`${data?.crypto_buyer?.first_name} ${data?.crypto_buyer?.surname}`} className={`${green}`} />
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Wallet Address:</div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-full">
-                                                <FormInput value={data?.wallet_address} className={`${green}`} />
+                                                <FormInput read={true} value={data?.wallet_address} className={`${green}`} />
                                             </div>
                                             <FaRegCopy onClick={() => handleCopy(data?.wallet_address, 'wallet address')} className={`${green} cursor-pointer`} />
                                         </div>
@@ -183,7 +200,7 @@ const SingleBuyOrder = () => {
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Crypto Network:</div>
                                         <div className="w-full">
-                                            <FormInput value={data?.network} className={`${green}`} />
+                                            <FormInput read={true} value={data?.network} className={`${green}`} />
 
                                         </div>
                                     </div>
@@ -191,13 +208,13 @@ const SingleBuyOrder = () => {
                                         <div className="text-sm">Wallet Expiry:</div>
                                         <div className="flex items-center gap-2">
                                             <div className="w-full">
-                                                <FormInput value={data?.wallet_exp} className={`${green}`} />
+                                                <FormInput read={true} value={data?.wallet_exp} className={`${green}`} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Status:</div>
-                                        <FormInput value={data?.status} className={`${data?.status === 'unpaid' ? 'text-red-600' : green}`} />
+                                        <FormInput read={true} value={data?.status} className={`${data?.status === 'unpaid' ? 'text-red-600' : green}`} />
                                     </div>
 
                                 </div>
@@ -223,13 +240,15 @@ const SingleBuyOrder = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="">
-                                            <button type='button' onClick={() => setFailed(true)} className='px-4 py-1.5 rounded-sm bg-red-600 text-sm'>Mark As Failed</button>
-                                        </div>
+                                        {forms.confirmed === 'No' &&
+                                            forms.sent_crypto === 'No'
+                                            && <div className="">
+                                                <button type='button' onClick={() => setFailed(true)} className='px-4 py-1.5 rounded-sm bg-red-600 text-sm'>Mark As Failed</button>
+                                            </div>}
                                     </div>
-                                    <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                                        <FormButton title={`Confirm & Close Order`} />
-                                    </div>
+                                    {forms.confirmed === 'Yes' && forms.sent_crypto === 'Yes' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+                                        <button type='button' onClick={() => setTransMsg(true)} className='w-full py-4 rounded-md bg-ash text-white hover:bg-lightgreen'>Confirm & Close Order</button>
+                                    </div>}
                                 </>
                             }
                         </form>
