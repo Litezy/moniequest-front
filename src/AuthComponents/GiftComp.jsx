@@ -32,7 +32,7 @@ const GiftComp = ({ trans }) => {
                     </div>
                 </div>
                 <div
-                    className={` flex items-center text-sm justify-center lg:w-full rounded-md text-yellow-300   `}>
+                    className={` flex items-center text-sm justify-center lg:w-full rounded-md ${trans.status === 'pending' ? 'text-yellow-300 ' : 'text-lightgreen'} `}>
                     {trans.status}</div>
 
                 <div className=" gap-1 font-bold lg:w-full flex items-center justify-center">

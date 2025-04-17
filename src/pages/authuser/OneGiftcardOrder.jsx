@@ -45,7 +45,13 @@ const OneGiftcardOrder = () => {
     }, [rate, data?.amount]) // Correct dependencies
 
     const green = 'text-lightgreen text-base lg:text-lg'
-    const imagesArray = data?.images ? JSON.parse(data.images) : [] 
+    const imagesArray = data?.images ? JSON.parse(data.images) : []
+    const [selectedImage, setSelectedImage] = useState(null);
+    
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+    };
+
 
     return (
         <AuthPageLayout>
@@ -89,12 +95,6 @@ const OneGiftcardOrder = () => {
                                             <FormInput read={true} value={data.code} className={`${green} uppercase`} />
                                         </div>
                                     )}
-                                    {imagesArray.length > 0 && (
-                                        <div className="w-full">
-                                            <div className="text-sm">Images Submitted:</div>
-                                            <FormInput read={true} value={imagesArray.length} className={`${green} uppercase`} />
-                                        </div>
-                                    )}
                                     <div className="w-full">
                                         <div className="text-sm">Rate:</div>
                                         <FormInput read={true} value={`${data?.rate || 0}/${data?.currency || ''}`} className={`${green}`} />
@@ -121,10 +121,44 @@ const OneGiftcardOrder = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="mt-5 w-full text-center text-base">
-                                We're processing your Giftcard transaction. Kindly hold on!
+                            <div className='flex flex-col gap-2 mt-5'>
+                                <div>Images of giftcards submitted:</div>
+                                <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {imagesArray.map((image, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative cursor-pointer rounded-md overflow-hidden group"
+                                            onClick={() => handleImageClick(image)}
+                                        >
+                                            <img
+                                                src={image}
+                                                alt={`Gift Card ${index + 1}`}
+                                                className="w-full h-40 object-cover"
+                                            />
+                                            {/* Hover Overlay */}
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span className="text-white font-semibold">View Image</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+                            {selectedImage && (
+                                <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+                                    <div className="relative p-4 bg-white rounded-lg">
+                                        <button
+                                            className="absolute top-2 right-2 text-black font-bold"
+                                            onClick={() => setSelectedImage(null)}
+                                        >
+                                            ✕
+                                        </button>
+                                        <img src={selectedImage} alt="Full View" className="max-w-full max-h-[80vh] rounded-md" />
+                                    </div>
+                                </div>
+                            )}
+                            {data?.status === 'pending' && <div className="mt-5 w-full text-center text-base">
+                                We're processing your Giftcard transaction. Kindly hold on!
+                            </div>}
                             <div className="mt-5 w-full flex items-center justify-center">
                                 <Link to={`/user/dashboard`} className='w-1/2 py-2 rounded-md bg-lightgreen text-dark mx-auto text-center text-base'>
                                     Go to Dashboard

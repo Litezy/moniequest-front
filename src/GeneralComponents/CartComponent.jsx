@@ -6,6 +6,7 @@ import { MdContentCopy } from "react-icons/md";
 import { SlClock } from "react-icons/sl";
 import Loading from './Loading';
 import { Apis, GetApi, imageurl, PostApi } from '../services/API';
+import Loader from './Loader';
 
 const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
     const [adminBank, setAdminBank] = useState({})
@@ -68,13 +69,16 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
 
         setLoading(true)
         try {
-            const response = await PostApi(Apis.product.place_product_order, formbody)
-            if (response.status === 200) {
-                await new Promise((resolve) => setTimeout(resolve, 2000))
-                setScreen(3)
-            } else {
-                ErrorAlert(response.msg)
-            }
+            const response = await PostApi(Apis.paystack.purchase_products, formbody)
+            if (response.status !== 200) return ErrorAlert(response.msg)
+            const data = response?.data?.data
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            SuccessAlert(response.msg)
+            // Redirect to Paystack checkout page
+            window.location.href = data?.authorization_url
+            localStorage.setItem('products', JSON.stringify([]))
+            setCartItems([])
+            setScreen(3)
         } catch (error) {
             ErrorAlert(`${error.message}`)
         } finally {
@@ -147,7 +151,7 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
                     <div className='col-span-1'>
                         {cartItems.length > 0 &&
                             <div className='w-full h-fit bg-primary py-6 px-4 text-sm rounded-[3px] relative'>
-                                {loading && <Loading />}
+                                {loading && <Loader />}
                                 {screen === 1 &&
                                     <div className='flex flex-col gap-8'>
                                         <div className='flex flex-col gap-4'>
@@ -173,30 +177,14 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
                                 {screen === 2 &&
                                     <div className='flex flex-col gap-4 items-center'>
                                         <div className='flex flex-col gap-1'>
-                                            <span className='text-3xl font-bold text-lightgreen'>₦{totalPriceAfterDiscount.toLocaleString()}</span>
-                                            <span className='text-xs capitalize text-gray-300 text-center'>bank transfer</span>
-                                        </div>
-                                        <div className='text-center'>Kindly pay the above exact amount to the payment details below</div>
-                                        <div className='bg-secondary rounded-md w-full h-fit p-4 flex flex-col gap-4'>
-                                            <div className='flex justify-between gap-4'>
-                                                <span>Bank name</span>
-                                                <span className='capitalize'>{adminBank?.bank_name}</span>
-                                            </div>
-                                            <div className='flex justify-between gap-4'>
-                                                <span>Account number</span>
-                                                <div className='flex gap-2 items-center'>
-                                                    <span>{adminBank?.account_number}</span>
-                                                    <div className='cursor-pointer text-lightgreen' onClick={() => copyFunction(adminBank?.account_number)}>
-                                                        <MdContentCopy />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='flex justify-between gap-4'>
-                                                <span>Account name</span>
-                                                <span className='uppercase'>{adminBank?.account_name}</span>
+                                            <div className="flex items-center flex-col gap-1">
+                                                <div className="">total amount to pay</div>
+                                                <span className='text-3xl font-bold text-lightgreen'>₦{totalPriceAfterDiscount.toLocaleString()}</span>
                                             </div>
                                         </div>
-                                        <button className='bg-lightgreen text-ash font-extrabold w-full h-fit py-3 rounded-[4px]' onClick={ConfirmPaymentAndPlaceAnOrder}>I have made my payment</button>
+                                        <div className='text-center'>Kindly click the button below to checkout</div>
+
+                                        <button className='bg-lightgreen text-ash font-extrabold w-full h-fit py-3 rounded-[4px]' onClick={ConfirmPaymentAndPlaceAnOrder}>Proceed to make payments</button>
                                     </div>
                                 }
                                 {screen === 3 &&

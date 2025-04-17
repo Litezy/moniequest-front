@@ -27,8 +27,6 @@ const GiftCardSingleOrder = () => {
     const [data, setData] = useState({})
     const green = `text-lightgreen`
     const statuses = [`select`, `Yes`, `No`]
-    const [hideBadButton, setHideBadButton] = useState(false)
-
 
     const fetchGiftCardOrder = async () => {
         setLoading({ status: true, param: 'fetch' })
@@ -37,7 +35,8 @@ const GiftCardSingleOrder = () => {
             if (res.status !== 200) return ErrorAlert(res.msg)
             const data = res.data
             setData(data)
-            // console.log(data)
+            console.log(data)
+
         } catch (error) {
             console.log(error)
         } finally {
@@ -78,21 +77,14 @@ const GiftCardSingleOrder = () => {
         try {
             const res = await AuthPostApi(`${Apis.admin.credit_gift_customer}/${id}`, formdata)
             if (res.status !== 200) return ErrorAlert(res.msg)
-            fetchGiftCardOrder()
             await new Promise((resolve) => setTimeout(resolve, 2000))
-            setLoading({ status: false, param: '' })
+            fetchGiftCardOrder()
             setForms({ ...forms, amount: '' })
         } catch (error) {
             console.log(error)
         } finally {
             setLoading({ status: false, param: '' })
         }
-    }
-
-    const afterLoad = () => {
-        setLoading({ status: false, param: '' })
-        SuccessAlert(`Order closed successfully`)
-        setScreen(2)
     }
 
     const handleErr = (e) => {
@@ -103,55 +95,39 @@ const GiftCardSingleOrder = () => {
         e.preventDefault()
         const formdata = { message: forms.error, tag: 'failed' }
         setLoading({ status: true, param: 'exit' })
-        setConfirmMsg(true)
         try {
             const res = await AuthPostApi(`${Apis.admin.credit_gift_customer}/${id}`, formdata)
-            console.log(res)
             if (res.status !== 200) return ErrorAlert(res.msg)
-            setLoading({ status: true, param: 'exit' })
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            fetchGiftCardOrder()
             setConfirmBad(false)
             setConfirmMsg(false)
-            setCredited(false)
-            setApplyAmt(false)
-            fetchGiftCardOrder()
-            await new Promise((resolve) => setTimeout(resolve, 2000))
-            setLoading({ status: false, param: '' })
             setForms({ ...forms, amount: '', error: '', valid: '' })
         } catch (error) {
             console.log(error)
         } finally {
             setLoading({ status: false, param: '' })
-
         }
     }
 
     const submitErrorMsg = (e) => {
         e.preventDefault()
-        if (forms.error.length < 1) return ErrorAlert(`Please enter an error message to customer`)
+        if (!forms.error) return ErrorAlert(`Please enter an error message to customer`)
         setConfirmMsg(true)
     }
 
-    const closeOrder = (e, tag) => {
-        if (tag === 'success') {
-            e.preventDefault()
-            setLoading({ status: true, param: 'close' })
-            return setTimeout(() => {
-                afterLoad()
-            }, 2000)
-        } else {
-            e.preventDefault()
-            setLoading({ status: true, param: 'close' })
-            return setTimeout(() => {
-                setLoading({ status: false, param: '' })
-                SuccessAlert(`Order marked failed & closed successfully`)
-                setScreen(2)
-            }, 2000)
-        }
+    const closeOrder = (e) => {
+        e.preventDefault()
+        if (data.status === 'pending') return ErrorAlert('Confirm valid card, credit customer or confirm card is bad')
+        setLoading({ status: true, param: 'close' })
+        return setTimeout(() => {
+            setLoading({ status: false, param: '' })
+            SuccessAlert(data?.status === 'completed' ? `Order completed & closed successfully` : `Order marked failed & closed successfully`)
+            setScreen(2)
+        }, 2000)
     }
 
-
     const imagesArray = data?.images ? JSON.parse(data.images) : []
-    console.log(imagesArray)
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageClick = (image) => {
@@ -159,29 +135,29 @@ const GiftCardSingleOrder = () => {
     };
 
 
-
     return (
         <AdminPageLayout>
             {
                 confirmBad &&
                 <ModalLayout clas={`w-11/12 md:w-1/2 mx-auto`} setModal={setConfirmBad}>
-                    <div className="w-full rounded-xl bg-dark relative p-5 text-white">
-
+                    <div className="w-full rounded-xl bg-white relative p-5 text-dark">
                         {confirmMsg &&
-                            <div className="w-11/12 px-5 py-4 bg-primary/80 h-1/2 backdrop-blur-md left-1/2 -translate-x-1/2 rounded-md absolute top-1 flex items-center flex-col ">
-                                <div className="w-full text-center">Are you sure you to proceed</div>
-                                <div className="mt-5 justify-between flex items-center w-11/12 lg:w-2/4">
-                                    <button onClick={() => setConfirmMsg(false)} className='px-4 rounded-md bg-red-600 py-1.5'>cancel</button>
-                                    <button onClick={declineOrder} className='px-4 rounded-md bg-green-600 py-1.5'>proceed</button>
+                            <ModalLayout setModal={confirmMsg} clas={`lg:w-[50%] w-10/12 mx-auto`}>
+                                <div className="p-5 bg-white text-dark rounded-md">
+                                    <div className="text-base text-center mb-3">Are you sure you want to fail this transaction?</div>
+                                    <div className="flex items-center justify-between">
+                                        <button onClick={() => setConfirmMsg(false)} className='px-4 py-2 bg-red-600 text-white rounded-md' type='button'>Cancel</button>
+                                        <button className='px-4 py-2 bg-green-600 text-white rounded-md' type='button' onClick={declineOrder}>Proceed</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </ModalLayout>
                         }
                         <div className="w-full text-center font-bold">Enter message to customer</div>
                         <div className="mt-3 flex items-center flex-col gap-3">
                             <div className="w-full">
                                 <FormInput read={true} formtype='textarea' name={`error`} value={forms.error} onChange={handleErr} />
                             </div>
-                            <button disabled={confirmMsg ? true : false} type='button' onClick={submitErrorMsg} className='px-4 rounded-md bg-red-600 py-1.5'>confirm message</button>
+                            <button disabled={confirmMsg ? true : false} type='button' onClick={submitErrorMsg} className='px-4 rounded-md bg-red-600 py-1.5 text-white'>confirm message</button>
                         </div>
                     </div>
                 </ModalLayout>
@@ -281,7 +257,6 @@ const GiftCardSingleOrder = () => {
                                             Card confirmed bad
                                         </div>
                                     }
-
                                 </div>
 
                                 <div className="mt-5 mb-2">Images of giftcards submitted:</div>
@@ -306,9 +281,6 @@ const GiftCardSingleOrder = () => {
                                     ))}
                                 </div>
 
-
-
-
                                 {/* Modal */}
                                 {selectedImage && (
                                     <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
@@ -323,13 +295,9 @@ const GiftCardSingleOrder = () => {
                                         </div>
                                     </div>
                                 )}
-
-                                {data?.status !== 'completed' && data?.status !== 'pending' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                                    <FormButton type='button' onClick={(e) => closeOrder(e, 'failed')} title={` Close Order`} />
-                                </div>}
-                                {data?.status === 'completed' && <div className="w-11/12 mt-5 mx-auto md:w-5/6">
-                                    <FormButton type='button' onClick={(e) => closeOrder(e, 'success')} title={`Confirm & Close Order`} />
-                                </div>}
+                                <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+                                    <FormButton type='button' onClick={closeOrder} title={`Close Order`} />
+                                </div>
                             </form>
 
 

@@ -4,34 +4,33 @@ import { currencies } from '../../AuthComponents/AuthUtils'
 import { Apis, AuthGetApi } from '../../services/API'
 import AdminGiftcardLayout from '../../AdminComponents/AdminGiftcardLayout'
 
-const AdminGiftCards = () => {
+const AdminCompletedGiftcards = () => {
     const Topheaders = ['FullName', 'Gift-Brand', 'Type', 'Pin', `Amount`, 'Details']
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const fetchGiftOrders = async () => {
-        setLoading(true)
-        try {
-            const res = await AuthGetApi(Apis.admin.get_giftcard_orders)
-            if (res.status === 200) {
-                const data = res.data
-                setData(data)
-            }
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
     useEffect(() => {
+        const fetchGiftOrders = async () => {
+            setLoading(true)
+            try {
+                const res = await AuthGetApi(Apis.admin.completed_giftcard_orders)
+                if (res.status === 200) {
+                    const data = res.data
+                    setData(data)
+                }
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoading(false)
+            }
+        }
         fetchGiftOrders()
     }, [])
 
     return (
         <AdminGiftcardLayout>
             <div className='w-11/12 mx-auto'>
-                <div className=" text-lg font-bold w-full text-center my-5 capitalize">See Latest Giftcards Sell Orders below</div>
+                <div className=" text-lg font-bold w-full text-center my-5 capitalize">See Completed Giftcards Sell Orders below</div>
                 {!loading ?
                     <div className='relative overflow-x-auto rounded-md'>
                         <table className="w-full text-sm text-left rtl:text-right">
@@ -63,7 +62,7 @@ const AdminGiftCards = () => {
                                             {currencies[0].symbol}{item.amount?.toLocaleString()}
                                         </td>
                                         <td className="px-3 py-3">
-                                            <Link to={`${item.id}`}
+                                            <Link to={`/admin/giftcards/orders/${item.id}`}
                                                 className="bg-primary to-sec truncate text-white px-5 rounded-lg py-2">view details</Link>
                                         </td>
 
@@ -97,4 +96,4 @@ const AdminGiftCards = () => {
     )
 }
 
-export default AdminGiftCards
+export default AdminCompletedGiftcards

@@ -18,6 +18,8 @@ import { BANK, PROFILE, UTILS } from '../../services/store';
 import avatar from '../../assets/images/avatar.svg'
 import { Apis, AuthGetApi, AuthPostApi, AuthPutApi, imageurl } from '../../services/API';
 import { FiUploadCloud } from 'react-icons/fi';
+import SelectComp from '../../GeneralComponents/SelectComp';
+import { NigerianBanks } from '../../utils/banks';
 
 const AdminProfile = () => {
     const [user, setUser] = useAtom(PROFILE)
@@ -213,7 +215,6 @@ const AdminProfile = () => {
         const formbody = {
             exchange_buy_rate: parseFloat(form.exchange_buy_rate),
             exchange_sell_rate: parseFloat(form.exchange_sell_rate),
-            kyc_threshold: parseFloat(form.kyc_threshold),
             bank_withdraw_min: parseFloat(form.bank_min),
             giftcard_rate: parseFloat(form.giftcard_rate),
             leaderboard_reward: parseFloat(form.leaderboard_reward),
@@ -298,6 +299,19 @@ const AdminProfile = () => {
     };
 
 
+    const [bankNames, setBankNames] = useState([]);
+    
+      useEffect(() => {
+        if (NigerianBanks && NigerianBanks.length > 0) {
+          // Extract just the names and sort alphabetically
+          const names = NigerianBanks
+            .map(bank => bank.name)
+            .sort((a, b) => a.localeCompare(b));
+    
+          setBankNames(names);
+        }
+      }, []);
+
     return (
         <AdminPageLayout>
             <div>
@@ -365,11 +379,20 @@ const AdminProfile = () => {
                         </div>
                         <div className='flex flex-col gap-5'>
                             <div className='text-xl capitalize font-medium text-lightgreen'>add a bank account</div>
-                            <div className='w-fit h-fit bg-primary rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden'>
-                                {loading.sub1 && <Loading />}
+                            <div className='w-fit h-fit bg-primary rounded-2xl p-4 flex flex-col gap-3 relative'>
+                                {loading.sub && <Loader />}
                                 <FormInput placeholder='Account number' name='account_number' value={form.account_number} onChange={handleAccNum} className='!bg-secondary !w-64' border={false} />
-                                <FormInput placeholder='Account name' name='account_name' value={form.account_name} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
-                                <FormInput placeholder='Bank name' name='bank_name' value={form.bank_name} onChange={formHandler} className='!bg-secondary !w-64' border={false} />
+                                {form.account_name && <FormInput name={`account_name`} value={form.account_name} className='!bg-secondary !w-64' border={false} read={true} />}
+
+
+                                <SelectComp
+                                    value={form.bank_name}
+                                    title={`Select bank`}
+                                    options={bankNames}
+                                    width={450} size={false}
+                                    style={{ bg: '#212134', color: 'lightgrey', font: '0.8rem' }} handleChange={(e) => setForm({ ...form, bank_name: e.target.value })} />
+
+
                                 <FormButton title={Object.keys(bank).length !== 0 ? 'Update' : 'Save'} className='!py-3 !text-base' type='button' onClick={AddBankAccount} />
                             </div>
                         </div>
@@ -386,7 +409,7 @@ const AdminProfile = () => {
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Exchange sell rate ($/₦)</div>
                                         <FormInput placeholder='Enter rate amount' name='exchange_sell_rate' value={form.exchange_sell_rate} onChange={handleNums} className='!bg-secondary !w-64' border={false} />
                                     </div>
-                                    
+
                                     <div className='flex flex-col gap-2'>
                                         <div className='font-medium text-gray-200 text-sm ml-2'>Bank withdrawal min (NGN)</div>
                                         <FormInput placeholder='Enter minimum withdrawal amount' name='bank_min' value={form.bank_min} onChange={handleNums} className='!bg-secondary !w-64' border={false} />

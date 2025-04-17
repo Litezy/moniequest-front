@@ -38,7 +38,7 @@ const CategoryAirdropsPage = () => {
                                 <div className='w-6 h-6 rounded-full bg-slate-400'></div>
                                 <div className='w-52 h-4 rounded-full bg-slate-400'></div>
                             </div>
-                            <div className='flex flex-wrap gap-4'>
+                            <div className='flex flex-wrap gap-4 md:justify-normal justify-center'>
                                 {new Array(4).fill(0).map((_, i) => (
                                     <div className='w-72 h-40 rounded-md bg-slate-400' key={i}></div>
                                 ))}

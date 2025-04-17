@@ -82,7 +82,7 @@ const OrderPage = () => {
         }
         try {
             const response = await AuthPostApi(Apis.paystack.buy_crypto, formdata)
-            if (response.status !== 200) return ErrorAlert(response.msg)
+            if (response.status !== 200) return console.log(response)
             const data = response?.data?.data
             console.log(response)
             setAccessCode(data?.access_code)

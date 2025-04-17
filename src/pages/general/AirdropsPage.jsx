@@ -95,7 +95,7 @@ const AirdropsPage = () => {
 
   const SearchFilter = () => {
     const mainData = staticData
-    if (search.length > 1) {
+    if (search) {
       const filteredData = mainData.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
       setAirdrops(filteredData)
     } else {

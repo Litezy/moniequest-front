@@ -45,8 +45,8 @@ const HomePage = () => {
     <PageLayout>
       <div className="pb-20 w-full bg-dark">
         {/* Hero Section */}
-        <div className="pageBg min-h-96 overflow-hidden w-full">
-          <div className="w-full min-h-96 bg-dark/70 md:bg-dark/10 md:pt-16 pb-10 pt-12 px-4">
+        <div className="pageBg overflow-hidden w-full">
+          <div className="w-full h-full bg-dark/70 md:bg-dark/10 md:pt-16 md:pb-32 py-4 px-4">
             <div className="w-11/12 mx-auto text-center">
               <h1 className="md:text-4xl text-2xl capitalize md:mb-5 mb-3 font-extrabold text-white lg:w-3/5 mx-auto glowing-text">
                 <span className="text-gradient">Get paid</span> for participating in Airdrops

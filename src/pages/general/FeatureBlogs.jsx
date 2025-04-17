@@ -37,10 +37,10 @@ const FeatureBlogs = () => {
                                 <div className='w-5 h-5 rounded-full bg-slate-400'></div>
                                 <div className='w-56 h-4 rounded-full bg-slate-400'></div>
                             </div>
-                            <div className='grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4'>
+                            <div className='grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
                                 {new Array(4).fill(0).map((_, i) => (
-                                    <div key={i} className='w-full bg-black rounded-xl p-2'>
-                                        <div className=" bg-gray-500 h-40 rounded-xl w-full"></div>
+                                    <div key={i} className='md:w-full w-11/12 mx-auto bg-black rounded-xl p-2'>
+                                        <div className=" bg-gray-500 h-52 rounded-xl w-full"></div>
                                         <div className="mt-2 flex items-start flex-col gap-3  ">
                                             <div className=" rounded-sm h-3 w-1/2  bg-gray-500"></div>
                                             <div className="h-10 bg-gray-500 w-full"></div>
@@ -63,9 +63,9 @@ const FeatureBlogs = () => {
                                 <div className="text-lg capitalize">Latest articles on {feature === 'personal_finance' ? "Personal Finance" : feature}</div>
                             </div>
                             {featureBlogs.length > 0 ?
-                                <div className="w-full grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+                                <div className="w-full grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                     {featureBlogs.map((item, i) => (
-                                        <BlogDiv key={i} item={item} />
+                                        <BlogDiv key={i} item={item} className='md:!w-full !w-11/12 !mx-auto' />
                                     ))}
                                 </div>
                                 :

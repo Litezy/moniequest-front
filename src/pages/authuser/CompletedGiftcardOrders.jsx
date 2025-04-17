@@ -1,40 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import GiftComp from '../../AuthComponents/GiftComp'
 import { Apis, AuthGetApi } from '../../services/API'
-import { Link } from 'react-router-dom'
 import GiftcardLayout from '../../AuthComponents/GiftcardLayout'
 
-const GiftCardOrders = () => {
+const CompletedGiftcardOrders = () => {
     const [data, setData] = useState([])
     const [dataLoading, setDataLoading] = useState(true)
 
-    const fetchOrders = async () => {
-        try {
-            const res = await AuthGetApi(Apis.transaction.giftcard_orders)
-            if (res.status !== 200) {
-                console.log(res.msg)
-                return;
-            }
-            const data = res.data
-            setData(data)
-
-        } catch (error) {
-
-        } finally {
-            setDataLoading(false)
-        }
-    }
     useEffect(() => {
-        fetchOrders()
+        const FetchCompletedOrders = async () => {
+            try {
+                const res = await AuthGetApi(Apis.transaction.completed_giftcard_orders)
+                if (res.status === 200) {
+                    setData(res.data)
+                }
+            } catch (error) {
+                //
+            } finally {
+                setDataLoading(false)
+            }
+        }
+        FetchCompletedOrders()
     }, [])
 
 
     return (
         <GiftcardLayout>
             <div className="w-11/12 mx-auto">
-                <div className="my-5 text-2xl font-bold lg:text-center ">Recent Orders</div>
+                <div className="my-5 text-2xl font-bold lg:text-center ">Completed Orders</div>
                 <div className="mt-10">
-                    <div className="mb-5 text-sm ">NB: Completed Orders are found in the <Link to={`/user/transactions_history`} className='text-indigo-500'>Transactions history</Link></div>
                     {dataLoading ?
                         <div className='flex items-center lg:grid lg:grid-cols-3 justify-between border-b border-slate-400 pb-2 w-full animate-pulse'>
                             <div className='flex lg:gap-5 gap-2 items-start'>
@@ -72,4 +66,4 @@ const GiftCardOrders = () => {
     )
 }
 
-export default GiftCardOrders
+export default CompletedGiftcardOrders

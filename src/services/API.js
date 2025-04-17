@@ -59,6 +59,7 @@ const trans_url = {
     complete_payment: transaction + 'single_paid_order',
     cancel_order: transaction + 'cancel_order',
     giftcard_orders: transaction + 'giftcard_order_history',
+    completed_giftcard_orders: transaction + 'completed_giftcard_order',
     single_giftcard_order: transaction + 'single_giftcard_history',
     request_withdrawal: transaction + 'request_withdrawal',
     latest_withdrawals: transaction + 'latest_withdrawals',
@@ -102,6 +103,7 @@ const admin_urls = {
     confirm_buy: admin + 'confirm_buy',
     confirm_sell: admin + 'confirm_sell',
     get_giftcard_orders: admin + 'get_giftcard_orders',
+    completed_giftcard_orders: admin + 'completed_giftcard_orders',
     get_single_giftcard_order: admin + 'get_single_giftcard_order',
     credit_gift_customer: admin + 'credit_gift_customer',
     get_trans_history: admin + 'get_trans_history',
@@ -145,8 +147,10 @@ const products_urls = {
 const paystack = 'api/paystack/'
 const paystack_urls = {
     buy_crypto: paystack + 'initialize_buy_payment',
-    admin_transfer: paystack + "admin_transfer"
+    admin_transfer: paystack + "admin_transfer",
+    purchase_products: paystack + 'initialize_product_purchase',
 }
+
 export const Apis = {
     user: user_urls,
     notification: notification_urls,

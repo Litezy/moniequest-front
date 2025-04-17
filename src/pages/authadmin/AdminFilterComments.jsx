@@ -78,10 +78,14 @@ const AdminFilterComments = () => {
                         <div className="mt-5">
                             {comments.map((comment, index) => (
                                 <div key={index} className="bg-white text-dark shadow-md rounded-md p-5 mt-3">
-                                    <div className="flex items-start flex-col md:flex-row gap-2 justify-between">
-                                        <div className="w-full md:w-5/6">
-                                            <h1 className="text-lg font-bold">{comment.username}</h1>
-                                            <p className="text-sm">{comment.content}</p>
+                                    <div className="flex items-start flex-col md:flex-row gap-4 justify-between">
+                                        <div className="flex flex-col gap-4">
+                                            <div className='flex flex-col'>
+                                                <div className="text-lg font-bold">{comment?.username}</div>
+                                                <div className='font-medium text-sm'>{comment?.email_address}</div>
+                                                <div className='font-medium text-sm'>{comment?.phone_number}</div>
+                                            </div>
+                                            <div className="border p-1">{comment?.content}</div>
                                         </div>
                                         <button onClick={() => { setModal(true); setCommentId(comment.id) }} className='w-fit px-4 py-1.5 bg-red-600 text-white rounded-md'>Delete</button>
                                     </div>

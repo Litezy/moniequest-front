@@ -247,11 +247,11 @@ const formsal = () => {
                                         <div className="w-full">
                                             <FormInput read={true} value={bankAcc.bank_name} />
                                         </div> :
-                                        <div className="w-full">
+                                        <div className="w-11/12">
                                             <SelectComp
                                                 value={forms.bank}
                                                 options={bankNames}
-                                                width={450} size={false}
+                                                fullWidth size={false}
                                                 style={{ bg: '#212134', color: 'lightgrey', font: '0.8rem' }} handleChange={(e) => setForms({ ...forms, bank: e.target.value })} />
 
                                         </div>

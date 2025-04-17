@@ -7,10 +7,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../../GeneralComponents/Loader';
 import { MdRateReview } from "react-icons/md";
 import { Apis, AuthPostApi } from '../../services/API';
-import Giftcards from '../../AuthComponents/Giftcards';
 import { useAtom } from 'jotai';
 import { GIFTCARDS } from '../../services/store';
 import handleOutsideClicks from '../../utils/handleOutsideClicks';
+import GiftcardLayout from '../../AuthComponents/GiftcardLayout';
 
 const SellGiftcard = () => {
     // State definitions
@@ -338,7 +338,7 @@ const SellGiftcard = () => {
 
 
     return (
-        <Giftcards>
+        <GiftcardLayout>
             <div className='w-11/12 mx-auto lg:w-8/12 mt-5 lg:mt-10'>
                 {/* Loading States */}
                 {loading.status && (
@@ -745,7 +745,7 @@ const SellGiftcard = () => {
                     </div>
                 )}
             </div>
-        </Giftcards>
+        </GiftcardLayout>
     );
 };
 

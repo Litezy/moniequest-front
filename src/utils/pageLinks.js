@@ -74,6 +74,8 @@ import AdminAddTools from "../pages/authadmin/AdminAddTools";
 import AdminSubscribers from "../pages/authadmin/AdminSubscribers";
 import AdminAddGiftcards from "../pages/authadmin/AdminAddGiftcards";
 import AdminManageSingleCard from "../pages/authadmin/AdminManageSingleCard";
+import CompletedGiftcardOrders from "../pages/authuser/CompletedGiftcardOrders";
+import AdminCompletedGiftcards from "../pages/authadmin/AdminCompletedGiftcards";
 
 export const GeneralPagesLinks = [
     { path: '*', component: Notfound },
@@ -103,6 +105,7 @@ export const AuthPagesLinks = [
     { path: '/user/dashboard', component: Dashboard },
     { path: '/user/giftcards/sell', component: SellGiftcard },
     { path: '/user/giftcards/orders', component: GiftCardOrders },
+    { path: '/user/giftcards/completed_orders', component: CompletedGiftcardOrders },
     { path: '/user/giftcards/orders/:id', component: OneGiftcardOrder },
     { path: '/user/exchange/buy', component: BuyCrypto },
     { path: '/user/exchange/orders', component: BuyOrdersHistory },
@@ -132,6 +135,7 @@ export const AdminPagesLinks = [
     { path: '/admin/exchange/buy_orders', component: AdminCryptoBuyOrders },
     { path: '/admin/exchange/sell_orders', component: AdminCryptoSellOrders },
     { path: '/admin/giftcards/orders', component: AdminGiftCards },
+    { path: '/admin/giftcards/completed_orders', component: AdminCompletedGiftcards },
     { path: '/admin/giftcards/orders/:id', component: GiftCardSingleOrder },
     { path: '/admin/products/orders', component: AdminProductsOrders },
     { path: '/admin/products/all', component: AdminAllProducts },
@@ -152,10 +156,10 @@ export const AdminPagesLinks = [
     { path: '/admin/utilities/testimonials/:id', component: AdminEditTestimonial },
     { path: '/admin/utilities/testimonials/create', component: AdminCreateTestimonial },
     { path: '/admin/utilities', component: AdminUtils },
-    { path: '/admin/utilities/update_cryptos', component: AdminUpdateCryptos},
-    { path: '/admin/utilities/filter_blogs', component: AdminFilterBlogs},
-    { path: '/admin/utilities/filter_blogs/:id', component: AdminFilterComments},
-    { path: '/admin/utilities/create_tools', component: AdminAddTools},
-    { path: '/admin/utilities/manage_giftcards', component: AdminAddGiftcards},
-    { path: '/admin/utilities/manage_giftcards/:id', component: AdminManageSingleCard},
+    { path: '/admin/utilities/update_cryptos', component: AdminUpdateCryptos },
+    { path: '/admin/utilities/filter_blogs', component: AdminFilterBlogs },
+    { path: '/admin/utilities/filter_blogs/:id', component: AdminFilterComments },
+    { path: '/admin/utilities/create_tools', component: AdminAddTools },
+    { path: '/admin/utilities/manage_giftcards', component: AdminAddGiftcards },
+    { path: '/admin/utilities/manage_giftcards/:id', component: AdminManageSingleCard },
 ]

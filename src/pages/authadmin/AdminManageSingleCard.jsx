@@ -27,6 +27,7 @@ const AdminManageSingleCard = () => {
         image: null
     })
     const fetchSingleCard = async () => {
+        setLoading({ status: true, val: 'loading' })
         try {
             const res = await AuthGetApi(`${Apis.admin.get_single_card}/${id}`)
             if (res.status !== 200) return ErrorAlert(res.msg)
@@ -36,6 +37,8 @@ const AdminManageSingleCard = () => {
             setCardImage({ img: data?.image, image: null })
         } catch (error) {
             console.log(`error in fetching card`, error)
+        } finally {
+            setLoading({ status: false, val: '' })
         }
     }
 
@@ -368,7 +371,7 @@ const AdminManageSingleCard = () => {
                                     {Array.isArray(data?.card_categories) && data?.card_categories.length > 0 ?
 
                                         data?.card_categories.map((card, i) => (
-                                            <div className="flex justify-between items-center p-2 rounded-md border" key={i}>
+                                            <div className="flex md:justify-between md:flex-row flex-col gap-2 items-center p-2 rounded-md border" key={i}>
                                                 <div className="flex gap-1 items-center">
                                                     <div className="">{card?.country}</div>
                                                     <div className="">({card?.card_pic === 'true' ? 'card-pic' : 'E-code'})</div>
