@@ -40,6 +40,7 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
         if (!/\S+@\S+\.\S+/.test(email)) return ErrorAlert('Enter a valid email address')
         setLoading(true)
         await new Promise((resolve) => setTimeout(resolve, 2000))
+        setLoading(false)
         setScreen(2)
 
     }
