@@ -35,29 +35,17 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
         setCartItems(filteredData)
     }
 
-    const CheckOutAndGetAdminBank = async () => {
+    const checkOut = async () => {
         if (!email) return ErrorAlert('Enter your email address')
         if (!/\S+@\S+\.\S+/.test(email)) return ErrorAlert('Enter a valid email address')
         setLoading(true)
-        try {
-            const response = await GetApi(Apis.product.get_admin_bank)
-            if (response.status === 200) {
-                setAdminBank(response.msg)
-                await new Promise((resolve) => setTimeout(resolve, 2000))
-                setScreen(2)
-            } else {
-                ErrorAlert(response.msg)
-            }
-        } catch (error) {
-            //
-        } finally {
-            setLoading(false)
-        }
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        setScreen(2)
+
     }
 
     const ConfirmPaymentAndPlaceAnOrder = async () => {
         const formbody = {
-            bank_id: adminBank.id,
             email_address: email,
             total_price: parseFloat(totalPrice),
             total_discount: parseFloat(totalDiscountAmount),
@@ -167,8 +155,8 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
                                             <div>
                                                 <FormInput placeholder='Enter Email Address' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
                                             </div>
-                                            <button className='bg-lightgreen text-ash uppercase font-extrabold w-full h-fit py-3 rounded-[4px]' onClick={CheckOutAndGetAdminBank}>proceed to checkout</button>
-                                            
+                                            <button className='bg-lightgreen text-ash uppercase font-extrabold w-full h-fit py-3 rounded-[4px]' onClick={checkOut}>proceed to checkout</button>
+
                                         </div>
                                     </div>
                                 }
