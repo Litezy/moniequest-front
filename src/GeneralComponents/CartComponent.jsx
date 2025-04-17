@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 import emptybox from '../assets/images/emptybox.png'
 import FormInput from '../utils/FormInput'
 import { ErrorAlert, SuccessAlert } from '../utils/pageUtils'
-import { MdContentCopy } from "react-icons/md";
 import { SlClock } from "react-icons/sl";
-import Loading from './Loading';
 import { Apis, GetApi, imageurl, PostApi } from '../services/API';
 import Loader from './Loader';
 
@@ -170,7 +168,7 @@ const CartComponent = ({ cartItems, setCartItems, dataLoading }) => {
                                                 <FormInput placeholder='Enter Email Address' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
                                             </div>
                                             <button className='bg-lightgreen text-ash uppercase font-extrabold w-full h-fit py-3 rounded-[4px]' onClick={CheckOutAndGetAdminBank}>proceed to checkout</button>
-                                            <div className='capitalize text-xs text-center'>payment method: bank transfer only</div>
+                                            
                                         </div>
                                     </div>
                                 }
