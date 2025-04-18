@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import FormInput from '../../utils/FormInput'
 import FormButton from '../../utils/FormButton'
 import { currencies } from '../../AuthComponents/AuthUtils'
@@ -134,6 +134,16 @@ const GiftCardSingleOrder = () => {
         setSelectedImage(image);
     };
 
+    const location = useLocation()
+    const [isCompletedOrders, setIsCompletedOrders] = useState(false);
+    useEffect(() => {
+        // Check if 'completed_orders' is in the URL
+        if (location.pathname.includes('completed_orders')) {
+            setIsCompletedOrders(true);
+        } else {
+            setIsCompletedOrders(false);
+        }
+    }, [location.pathname]);
 
     return (
         <AdminPageLayout>
@@ -178,7 +188,9 @@ const GiftCardSingleOrder = () => {
                 {screen === 1 &&
                     <>
                         <div className="">
-                            <Link to={`/admin/giftcards/orders`} className="w-fit px-4 py-1.5 rounded-md bg-ash">back to orders</Link>
+                            <Link 
+                            to={isCompletedOrders? `/admin/giftcards/completed_orders`:`/admin/giftcards/orders`} 
+                            className="w-fit px-4 py-1.5 rounded-md bg-ash">back to orders</Link>
                         </div>
                         <div className="mt-5 md:mt-10 mont">
 

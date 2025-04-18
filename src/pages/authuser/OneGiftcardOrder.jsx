@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import AuthPageLayout from '../../AuthComponents/AuthPageLayout'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { ErrorAlert } from '../../utils/pageUtils'
 import { Apis, AuthGetApi } from '../../services/API'
 import FormInput from '../../utils/FormInput'
@@ -33,7 +33,7 @@ const OneGiftcardOrder = () => {
         fetchSingleOrder()
     }, [fetchSingleOrder])
 
-    const rate = utils?.giftcard_rate || 1
+    const rate = data?.rate || 1
 
     const [naira, setNaira] = useState('')
     useEffect(() => {
@@ -51,12 +51,22 @@ const OneGiftcardOrder = () => {
     const handleImageClick = (image) => {
         setSelectedImage(image);
     };
-
+     const location = useLocation()
+    const [isCompletedOrders, setIsCompletedOrders] = useState(false);
+    useEffect(() => {
+        // Check if 'completed_orders' is in the URL
+        if (location.pathname.includes('completed_orders')) {
+            setIsCompletedOrders(true);
+        } else {
+            setIsCompletedOrders(false);
+        }
+    }, [location.pathname]);
 
     return (
         <AuthPageLayout>
             <div className="w-11/12 mx-auto">
-                <Link to={`/user/giftcards/orders`} className='w-fit px-4 py-1.5 rounded-md bg-primary'>Back to Orders</Link>
+                <Link to={isCompletedOrders ?`/user/giftcards/completed_orders` :'/user/giftcards/orders'} 
+                className='w-fit px-4 py-1.5 rounded-md bg-primary'>Back to Orders</Link>
             </div>
             <div className='mt-5'>
                 {loading &&
@@ -113,7 +123,7 @@ const OneGiftcardOrder = () => {
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Status:</div>
-                                        <FormInput read={true} value={data?.status || 'Pending'} className={`${data?.status === 'paid' ? green : 'text-yellow-300'}`} />
+                                        <FormInput read={true} value={data?.status || 'Pending'} className={`${data?.status === 'pending' ? 'text-yellow-300' : green}`} />
                                     </div>
                                     <div className="w-full">
                                         <div className="text-sm">Country:</div>

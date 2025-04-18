@@ -15,7 +15,7 @@ const CompletedGiftcardOrders = () => {
                     setData(res.data)
                 }
             } catch (error) {
-                //
+                console.log(error)
             } finally {
                 setDataLoading(false)
             }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { currencies } from '../../AuthComponents/AuthUtils'
 import { Apis, AuthGetApi } from '../../services/API'
 import AdminGiftcardLayout from '../../AdminComponents/AdminGiftcardLayout'
@@ -26,6 +26,17 @@ const AdminCompletedGiftcards = () => {
         }
         fetchGiftOrders()
     }, [])
+
+    const location = useLocation()
+    const [isCompletedOrders, setIsCompletedOrders] = useState(false);
+    useEffect(() => {
+        // Check if 'completed_orders' is in the URL
+        if (location.pathname.includes('completed_orders')) {
+            setIsCompletedOrders(true);
+        } else {
+            setIsCompletedOrders(false);
+        }
+    }, [location.pathname]);
 
     return (
         <AdminGiftcardLayout>
@@ -62,7 +73,9 @@ const AdminCompletedGiftcards = () => {
                                             {currencies[0].symbol}{item.amount?.toLocaleString()}
                                         </td>
                                         <td className="px-3 py-3">
-                                            <Link to={`/admin/giftcards/orders/${item.id}`}
+                                            <Link
+                                                to={isCompletedOrders ? `/admin/giftcards/completed_orders/${item?.id}` :
+                                                    `/admin/giftcards/orders/${item.id}`}
                                                 className="bg-primary to-sec truncate text-white px-5 rounded-lg py-2">view details</Link>
                                         </td>
 
