@@ -78,18 +78,10 @@ const BuyCrypto = () => {
             //    const  newamt = amt / rate
             //     setForms({...forms,amount:newamt.toLocaleString()})
             } else {
-<<<<<<< HEAD
-                usd = parseFloat(forms.amount.replace(/,/g, '')) / rate
-                toPay = parseFloat(usd) + parseFloat(forms.gas_fee)
-                naira = toPay * rate
-            //    const newamt = amt * rate
-            //     setForms({...forms,amount:newamt.toLocaleString()})
-=======
                 gas = parseFloat(forms.gas_fee) * parseFloat(rate)
                 toPay = parseFloat(forms.amount.replace(/,/g, '')) + gas
                 usd = toPay / rate
                 naira = usd * rate
->>>>>>> 58e2df026766a5a587a2c93fbfad2d5de282bea9
             }
             setGasFee(gas.toLocaleString())
             setAmountToPay(toPay.toLocaleString())
