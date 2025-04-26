@@ -24,6 +24,8 @@ const UserDetails = () => {
     const [selectedUser, setSelectedUser] = useState({})
     const [modal, setModal] = useState(false)
     const [modal2, setModal2] = useState(false)
+    const [modal3, setModal3] = useState(false)
+    const [modal4, setModal4] = useState(false)
     const [filteredata, setFilteredData] = useState(data)
     const [form, setForm] = useState({
         airdrop_permit: '',
@@ -61,8 +63,11 @@ const UserDetails = () => {
         },
     ]
 
+    const [searchVal,setSearchVal] = useState('')
+
     const handleFilter = (e) => {
         const { value } = e.target;
+        setSearchVal(value)
         if (!value) {
             setFilteredData(data);
             return;
@@ -93,12 +98,11 @@ const UserDetails = () => {
     }
 
     const ChangeRole = async () => {
-        if (!selectedUser.id) return ErrorAlert(`User ID missing`)
-        const data = { id: selectedUser.id }
+        if (!selectedUser.id) return ErrorAlert(`User ID is missing`)
         setModal(false)
         setLoading(true)
         try {
-            const response = await AuthPostApi(Apis.admin.assign_role, data)
+            const response = await AuthPostApi(Apis.admin.assign_role, { id: selectedUser.id })
             if (response.status !== 200) return ErrorAlert(response.msg)
             setData(response.data)
             setFilteredData(response.data)
@@ -112,7 +116,7 @@ const UserDetails = () => {
     }
 
     const UpdatePermissions = async () => {
-        if (!selectedUser.id) return ErrorAlert(`User ID missing`)
+        if (!selectedUser.id) return ErrorAlert(`User ID is missing`)
         const data = {
             id: selectedUser.id,
             airdrop_permit: form.airdrop_permit,
@@ -137,6 +141,42 @@ const UserDetails = () => {
         }
     }
 
+    const SuspendUnsuspendAccount = async () => {
+        if (!selectedUser.id) return ErrorAlert(`User ID is missing`)
+        setModal3(false)
+        setLoading(true)
+        try {
+            const response = await AuthPostApi(Apis.admin.suspend_account, { id: selectedUser.id })
+            if (response.status !== 200) return ErrorAlert(response.msg)
+            setData(response.data)
+            setFilteredData(response.data)
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            SuccessAlert(response.msg)
+        } catch (error) {
+            ErrorAlert(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const DeleteAccount = async () => {
+        if (!selectedUser.id) return ErrorAlert(`User ID is missing`)
+        setModal4(false)
+        setLoading(true)
+        try {
+            const response = await AuthPostApi(Apis.admin.delete_account, { id: selectedUser.id })
+            if (response.status !== 200) return ErrorAlert(response.msg)
+            setData(response.data)
+            setFilteredData(response.data)
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            SuccessAlert(response.msg)
+        } catch (error) {
+            ErrorAlert(error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <AdminPageLayout>
 
@@ -145,8 +185,8 @@ const UserDetails = () => {
                     <div className="p-5  bg-white text-dark shadow-xl rounded-md">
                         <div className="text-base text-center mb-3 font-medium">Are you sure you want to change {selectedUser?.first_name} {selectedUser?.surname}'s role?</div>
                         <div className="flex items-center justify-between">
-                            <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
-                            <button onClick={ChangeRole} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm</button>
+                            <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-600 text-white rounded-md'>Cancel</button>
+                            <button onClick={ChangeRole} className='px-4 py-2 bg-green-600 text-white rounded-md'>Confirm</button>
                         </div>
                     </div>
                 </ModalLayout>
@@ -169,6 +209,29 @@ const UserDetails = () => {
                     </div>
                 </ModalLayout>
             }
+            {modal3 &&
+                <ModalLayout setModal={setModal} clas={`lg:w-1/2 w-10/12 mx-auto`}>
+                    <div className="p-5  bg-white text-dark shadow-xl rounded-md">
+                        <div className="text-base text-center mb-3 font-medium">Are you sure you want to {selectedUser.suspend === 'true' ? 'unsuspend' : 'suspend'} {selectedUser?.first_name} {selectedUser?.surname} account?</div>
+                        <div className="flex items-center justify-between">
+                            <button onClick={() => setModal3(false)} className='px-4 py-2 bg-red-600 text-white rounded-md'>Cancel</button>
+                            <button onClick={SuspendUnsuspendAccount} className='px-4 py-2 bg-green-600 text-white rounded-md'>Confirm</button>
+                        </div>
+                    </div>
+                </ModalLayout>
+            }
+            {modal4 &&
+                <ModalLayout setModal={setModal} clas={`lg:w-1/2 w-10/12 mx-auto`}>
+                    <div className="p-5  bg-white text-dark shadow-xl rounded-md">
+                        <div className="text-base text-center mb-1 font-medium">Are you sure you want to delete {selectedUser?.first_name} {selectedUser?.surname} account?</div>
+                        <div className='text-sm text-red-600 font-medium mb-3 border w-fit mx-auto py-1 px-2'>Action is irreversible and all user assets will be lost!</div>
+                        <div className="flex items-center justify-between">
+                            <button onClick={() => setModal4(false)} className='px-4 py-2 bg-red-600 text-white rounded-md'>Cancel</button>
+                            <button onClick={DeleteAccount} className='px-4 py-2 bg-green-600 text-white rounded-md'>Confirm</button>
+                        </div>
+                    </div>
+                </ModalLayout>
+            }
             {loading && <Loader title={`processing`} />}
             <div className='w-11/12 mx-auto '>
                 <div className="w-full flex items-center text-white justify-between">
@@ -179,7 +242,11 @@ const UserDetails = () => {
                 </div>
                 <div className="my-5 text-xl font-bold text-center">Below are Users Details on MonieQuest</div>
                 <div className="w-full lg:w-2/3 mx-auto relative">
-                    <FormInput placeholder='Search by FullName and Email' className="!rounded-lg" onChange={(e) => handleFilter(e)} />
+                    <FormInput
+                    value={searchVal} 
+                    placeholder='Search by FullName and Email' className="!rounded-lg" 
+                    onChange={(e) => handleFilter(e)} />
+                    
                     <div className="absolute top-3 right-3">
                         <CiSearch className='text-xl cursor-pointer text-white' />
                     </div>
@@ -217,7 +284,12 @@ const UserDetails = () => {
                                 {user.role === 'super admin' && <th scope="col" className="px-3 py-3 truncate">
                                     Permissions
                                 </th>}
-
+                                {user.role === 'super admin' && <th scope="col" className="px-3 py-3 truncate">
+                                    Suspend Account
+                                </th>}
+                                {user.role === 'super admin' && <th scope="col" className="px-3 py-3 truncate">
+                                    Delete Account
+                                </th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -250,6 +322,12 @@ const UserDetails = () => {
                                     </td>}
                                     {user.role === 'super admin' && <td className="px-3 py-3 truncate">
                                         <button onClick={() => ViewFunc(item)} className='text-center w-full bg-ash text-white rounded-md py-1.5'>View</button>
+                                    </td>}
+                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                        <button onClick={() => { setModal3(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>{item.suspend === 'true' ? 'Unsuspend' : 'Suspend'}</button>
+                                    </td>}
+                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                        <button onClick={() => { setModal4(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Delete</button>
                                     </td>}
                                 </tr>
                             )) :

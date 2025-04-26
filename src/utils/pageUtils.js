@@ -1,6 +1,7 @@
 import { toast } from 'sonner'
 import customer1 from '../assets/images/customer1.jfif'
 import animationData from '../utils/lottie.json'
+import failedData from '../utils/failed.json'
 
 
 
@@ -61,6 +62,14 @@ export const defaultOptions = {
     loop: true,
     autoplay: true,
     animationData: animationData,
+    rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+    },
+};
+export const defaultOptionsFailed = {
+    loop: true,
+    autoplay: true,
+    animationData: failedData,
     rendererSettings: {
         preserveAspectRatio: 'xMidYMid slice',
     },

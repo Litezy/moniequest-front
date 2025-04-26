@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { TbSwitch2 } from "react-icons/tb";
 import { ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
 import FormInput from '../../utils/FormInput';
-import { coinDetails, currencies, sellInstruction } from '../../AuthComponents/AuthUtils';
+import { currencies, sellInstruction } from '../../AuthComponents/AuthUtils';
 import ModalLayout from '../../utils/ModalLayout';
 import { BsInfoCircleFill } from "react-icons/bs";
 import { FaCopy } from 'react-icons/fa';
@@ -13,6 +12,7 @@ import ExchangeLayout from '../../AuthComponents/ExchangeLayout';
 import { Apis, AuthPostApi } from '../../services/API';
 import { useAtom } from 'jotai';
 import { CRYPTOS, PROFILE, UTILS } from '../../services/store';
+import { GoArrowSwitch } from 'react-icons/go';
 
 
 const SellCrypto = () => {
@@ -62,22 +62,30 @@ const SellCrypto = () => {
         name: currencies[0].name,
         symbol: currencies[0].symbol
     })
-
     const [inNaira, setInNaira] = useState('')
+    const [inUSD, setInUSD] = useState('')
     useEffect(() => {
-        if (forms.amount) {
-            const toPay = parseFloat(forms.amount.replace(/,/g, ''))
-            const naira = toPay * rate
+        if (forms.amount && rate) {
+            let usd;
+            let naira;
+            if (selectedCurr.name === 'USD') {
+                usd = parseFloat(forms.amount.replace(/,/g, ''))
+                naira = usd * rate
+            } else {
+                usd = parseFloat(forms.amount.replace(/,/g, '')) / rate
+                naira = usd * rate
+            }
+            setInUSD(Number(usd).toFixed(2).toLocaleString())
             setInNaira(naira.toLocaleString())
         }
-    }, [forms.amount, rate])
+    }, [forms.amount, selectedCurr.name])
 
     const submit = (e) => {
         e.preventDefault()
-        const amt = forms.amount.replace(/,/g, '')
+        const amt = inUSD.replace(/,/g, '')
         if (!forms.amount) return ErrorAlert('Enter an amount')
         if (amt < forms.minimum) return ErrorAlert(`Minimum ${forms.crypto} sell amount is $${forms.minimum}`)
-        if (!forms.network) return ErrorAlert('Crypto network is required')
+        if (!forms.network) return ErrorAlert('Select a Cryptocurrency')
         if (verified === 'false') {
             if (amt > forms.limit) return ErrorAlert(`Please complete your KYC verification to be able to trade this amount`)
         } else {
@@ -104,8 +112,10 @@ const SellCrypto = () => {
         if (forms.trans_hash.length < 64) return ErrorAlert(`Please input a valid transaction hash.`)
         setConfirm(false)
         setLoading(true)
+
+        const amt = inUSD.replace(/,/g, '')
         const formdata = {
-            amount: parseFloat(forms.amount),
+            amount: parseFloat(amt),
             crypto_currency: forms.crypto,
             type: 'sell',
             trans_hash: forms.trans_hash,
@@ -255,16 +265,29 @@ const SellCrypto = () => {
                                         </div>
                                         <div className="">{selectedCurr.name}</div>
                                     </div>
-
                                 </div>
-
                                 <div className="flex item-center text-sm justify-between w-full">
-                                    <div>Amount in Naira</div>
-                                    <div>₦{inNaira}</div>
+                                    {selectedCurr.name === 'USD' ?
+                                        <div className='flex gap-2 items-center'>
+                                            <div>Amount in Naira</div>
+                                            {inNaira !== '' && <div>₦{inNaira}</div>}
+                                        </div>
+                                        :
+                                        <div className='flex gap-2 items-center'>
+                                            <div>Amount in USD</div>
+                                            {inUSD !== '' && <div>${inUSD}</div>}
+                                        </div>
+                                    }
+                                    <div className='flex gap-1.5 items-center cursor-pointer text-lightgreen'
+                                        onClick={() => setSelectedCurr(selectedCurr.name === 'USD' ? { name: currencies[1].name, symbol: currencies[1].symbol } : { name: currencies[0].name, symbol: currencies[0].symbol })}
+                                    >
+                                        <div className='capitalize'>{selectedCurr.name === 'USD' ? 'set by naira' : 'set by USD'}</div>
+                                        <div><GoArrowSwitch /></div>
+                                    </div>
                                 </div>
-                                <div className="flex w-full item-center text-base lg:text-sm justify-between">
-                                    <div className="text-sm">Selling rate</div>
-                                    <div className="">{rate}/$</div>
+                                <div className="flex w-full item-center text-sm justify-between">
+                                    <div>Selling rate</div>
+                                    <div>₦{rate}/$</div>
                                 </div>
                                 <button onClick={submit} className={`bg-red-600 hover:bg-lightgreen text-white hover:text-ash w-full h-fit py-3.5 text-lg rounded-xl`}>Sell Crypto</button>
 
@@ -276,7 +299,7 @@ const SellCrypto = () => {
                             <div className="flex w-11/12 lg:w-2/3  mx-auto mt-5 items-start gap-5 flex-col">
 
                                 <div className="flex items-start gap-2 flex-col w-full">
-                                    <div className="text-center  w-full text-2xl">Selling <span className='text-red-600 font-bold'>{currencies[0].symbol}{forms.amount.toLocaleString()}</span> worth of {forms.crypto} at <br /> <span className='text-red-600 font-bold'>{currencies[1].symbol}{inNaira}</span></div>
+                                    <div className="text-center  w-full text-2xl">Selling <span className='text-red-600 font-bold'>{currencies[0].symbol}{inUSD}</span> worth of {forms.crypto} at <br /> <span className='text-red-600 font-bold'>{currencies[1].symbol}{inNaira}</span></div>
                                 </div>
                                 <div className="text-sm text-center w-full">kindly send tokens to the wallet address below</div>
 

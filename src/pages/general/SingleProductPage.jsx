@@ -8,6 +8,7 @@ import Rating from '@mui/material/Rating';
 import { Apis, GetApi, imageurl, PutApi } from '../../services/API';
 import moment from 'moment'
 import ButtonLoader from '../../GeneralComponents/ButtonLoader';
+import { FaLongArrowAltLeft } from 'react-icons/fa';
 
 
 const SingleProductPage = () => {
@@ -111,8 +112,13 @@ const SingleProductPage = () => {
 
     return (
         <PageLayout>
-            <div className='w-full bg-dark pb-10 pt-5'>
+            <div className='w-full bg-dark py-10'>
                 <div className='w-11/12 mx-auto text-gray-200'>
+                    <Link to={`/products`}
+                        className="flex mb-10 w-fit px-4 py-1 rounded-2xl items-center gap-2 bg-ash">
+                        <FaLongArrowAltLeft className='text-white text-2xl' />
+                        <div>back to all</div>
+                    </Link>
                     {dataLoading ?
                         <div className='flex flex-col gap-6'>
                             <div className='flex md:flex-row md:justify-between flex-col gap-6 md:items-end'>
@@ -140,8 +146,6 @@ const SingleProductPage = () => {
                         </div>
                         :
                         <div className='flex flex-col gap-6'>
-                            <Link className='px-3 py-1.5 w-fit rounded-md bg-ash text-white'
-                                to={`/products`}>back to products</Link>
                             <div className='flex md:flex-row md:justify-between flex-col gap-6 md:items-end'>
                                 <div className='flex flex-col gap-2'>
                                     <div className='capitalize text-3xl font-extrabold'>{singleProduct?.title}</div>

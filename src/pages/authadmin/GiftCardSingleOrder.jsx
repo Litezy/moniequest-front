@@ -80,6 +80,7 @@ const GiftCardSingleOrder = () => {
             await new Promise((resolve) => setTimeout(resolve, 2000))
             fetchGiftCardOrder()
             setForms({ ...forms, amount: '' })
+            SuccessAlert(res.msg)
         } catch (error) {
             console.log(error)
         } finally {
@@ -103,6 +104,7 @@ const GiftCardSingleOrder = () => {
             setConfirmBad(false)
             setConfirmMsg(false)
             setForms({ ...forms, amount: '', error: '', valid: '' })
+            SuccessAlert(res.msg)
         } catch (error) {
             console.log(error)
         } finally {

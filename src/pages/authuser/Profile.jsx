@@ -14,7 +14,6 @@ import FormButton from '../../utils/FormButton';
 import AuthPageLayout from '../../AuthComponents/AuthPageLayout';
 import { FaRegIdCard } from "react-icons/fa";
 import Loader from '../../GeneralComponents/Loader';
-import Loading from '../../GeneralComponents/Loading';
 import Cookies from 'js-cookie'
 import { useAtom } from 'jotai';
 import { BANK, PROFILE } from '../../services/store';
@@ -174,7 +173,6 @@ const Profile = () => {
 
 
   const [bankNames, setBankNames] = useState([]);
-
   useEffect(() => {
     if (NigerianBanks && NigerianBanks.length > 0) {
       // Extract just the names and sort alphabetically
@@ -294,13 +292,12 @@ const Profile = () => {
                 <FormInput placeholder='Account number' name='account_number' value={form.account_number} onChange={handleAccNum} className='!bg-secondary !w-64' border={false} />
                 {form.account_name && <FormInput name={`account_name`} value={form.account_name} className='!bg-secondary !w-64' border={false} read={true} />}
 
-
                 <SelectComp
                   value={form.bank_name}
-                  title={`Select bank`}
+                  title={`${form.bank_name ? '' : 'Select bank'}`}
                   options={bankNames}
-                  width={450} size={false}
-                  style={{ bg: '#212134', color: 'lightgrey', font: '0.8rem' }} handleChange={(e) => setForm({ ...form, bank_name: e.target.value })} />
+                  fullWidth size={false}
+                  style={{ bg: '#171828', color: 'lightgrey', font: '0.8rem' }} handleChange={(e) => setForm({ ...form, bank_name: e.target.value })} />
 
 
                 <FormButton title={Object.keys(bank).length !== 0 ? 'Update' : 'Save'} className='!py-3 !text-base' type='button' onClick={AddBankAccount} />

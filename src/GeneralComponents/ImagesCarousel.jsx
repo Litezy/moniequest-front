@@ -1,15 +1,12 @@
 "use client";
-import React from 'react'
-import { Carousel } from "flowbite-react";
+import React, { useRef } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const theme = {
-    "control": {
-        "base": "inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70 sm:h-10 sm:w-10",
-    },
-    "scrollContainer": {
-        "base": "flex h-full snap-mandatory overflow-y-hidden overflow-x-scroll scroll-smooth",
-    }
-}
 const optimizeImageUrl = (url) => {
     if (!url || !url.includes('cloudinary.com')) return url;
     const parts = url.split('/upload/');
@@ -17,19 +14,59 @@ const optimizeImageUrl = (url) => {
 };
 
 const ImagesCarousel = ({ array }) => {
-    return (
-        <div className="w-full h-full">
-            {array.length > 0 ?
-                <Carousel loop theme={theme}>
-                    {array.map((item, i) => (
-                        <img key={`${item.id}-${i}`} src={optimizeImageUrl(item.image)} alt="carousel image" className='w-full h-full object-cover' />
-                    ))}
-                </Carousel>
-                :
-                <div className='bg-primary w-full h-full animate-pulse'></div>
-            }
-        </div>
-    )
-}
+    const prevButtonRef = useRef(null);
+    const nextButtonRef = useRef(null);
 
-export default ImagesCarousel
+    return (
+        <div className="relative w-full h-52">
+            {array.length > 0 ? (
+                <>
+                    <Swiper
+                        key={array.length}
+                        modules={[Navigation, Pagination, Autoplay]}
+                        loop={true}
+                        autoplay={{
+                            delay: 3000,
+                            disableOnInteraction: false,
+                        }}
+                        navigation={{
+                            prevEl: prevButtonRef.current,
+                            nextEl: nextButtonRef.current,
+                        }}
+                        pagination={{ clickable: true }}
+                        className="w-full h-full"
+                    >
+                        {array.map((item, i) => (
+                            <SwiperSlide key={`${item.id}-${i}`}>
+                                <img
+                                    src={optimizeImageUrl(item.image)}
+                                    alt="carousel"
+                                    className="w-full h-full object-cover"
+                                />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+
+                    <button
+                        ref={prevButtonRef}
+                        className="custom-prev absolute top-1/2 left-3 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all focus:outline-none focus:ring-4 focus:ring-white dark:bg-gray-800/30 dark:hover:bg-gray-800/60 dark:focus:ring-gray-800/70"
+                        aria-label="Previous"
+                    >
+                        <FaChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                        ref={nextButtonRef}
+                        className="custom-next absolute top-1/2 right-3 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all focus:outline-none focus:ring-4 focus:ring-white dark:bg-gray-800/30 dark:hover:bg-gray-800/60 dark:focus:ring-gray-800/70"
+                        aria-label="Next"
+                    >
+                        <FaChevronRight className="w-5 h-5" />
+                    </button>
+                </>
+            ) : (
+                <div className="bg-primary w-full h-full animate-pulse"></div>
+            )}
+        </div>
+    );
+};
+
+export default ImagesCarousel;

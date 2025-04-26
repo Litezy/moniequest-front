@@ -105,7 +105,7 @@ const AdminProductsOrders = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className={`flex items-center text-sm justify-center lg:w-full rounded-md text-lightgreen/90`}>{item?.status}</div>
+                                                <div className={`flex items-center text-sm justify-center lg:w-full rounded-md ${item.status === 'paid' ? 'text-lightgreen/90' : 'text-yellow-300'} `}>{item?.status}</div>
                                                 <div className=" font-bold lg:w-full flex items-center justify-center">
                                                     {currencySign[1]}{item?.amount_paid && item.amount_paid.toLocaleString()}
                                                 </div>

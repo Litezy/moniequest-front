@@ -47,7 +47,7 @@ const Dashboard = () => {
         <div className='grid md:grid-cols-6 grid-cols-1 gap-6 h-fit'>
           <div className='md:col-span-4 col-span-1 bg-primary w-full h-fit md:px-6 px-4 pt-4 pb-6 xl:pt-0 xl:pb-4 overflow-hidden'>
             <div className='grid grid-cols-3 md:gap-4 gap-2 items-center'>
-              <div className='flex flex-col gap-3 col-span-2'>
+              <div className='flex flex-col gap-3 col-span-2 z-20'>
                 <div className='text-lightgreen capitalize'>current balance</div>
                 <div className='md:text-5xl text-4xl font-bold'>{currencies[1].symbol}{Object.values(wallet).length !== 0 ? <span>{wallet.balance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span> : <span>0.00</span>}</div>
                 <div className='flex md:gap-10 gap-4 items-center mt-2'>
@@ -72,8 +72,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className='md:col-span-2 col-span-1 md:h-full h-52'>
-            <ImagesCarousel array={allCarouselImages} />
+          <div className='md:col-span-2 col-span-1'>
+            <ImagesCarousel array={allCarouselImages}/>
           </div>
         </div>
         <div className='grid lg:grid-cols-2 grid-cols-1 gap-6 mt-12 lg:h-[25rem] overflow-hidden'>

@@ -49,12 +49,12 @@ const Blogs = () => {
                 <div className='w-11/12 mx-auto py-10'>
                     {dataLoading ?
                         <div className='flex flex-col gap-4 animate-pulse'>
-                            <div className='flex gap-5 items-center'>
+                            <div className='flex justify-between items-center'>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-5 h-5 rounded-full bg-slate-400'></div>
                                     <div className='w-56 h-4 rounded-full bg-slate-400'></div>
                                 </div>
-                                <div className='w-20 h-3 rounded-full bg-slate-400 mx-4'></div>
+                                <div className='w-16 h-9 rounded-md bg-slate-400 mx-4'></div>
                             </div>
                             <div className='grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
                                 {new Array(4).fill(0).map((_, i) => (
@@ -88,7 +88,7 @@ const Blogs = () => {
                                                 </div>
                                                 <Link
                                                     to={`/blogs/airdrop`} onClick={MoveToTop}
-                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center">view all</Link>
+                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center text-white hover:text-lightgreen">view all</Link>
                                             </div>
                                             <div className="w-full grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                                 {airdropBlogs.slice(0, 10).map((item, i) => (
@@ -106,7 +106,7 @@ const Blogs = () => {
                                                 </div>
                                                 <Link
                                                     to={`/blogs/trading`} onClick={MoveToTop}
-                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center">view all</Link>
+                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center text-white hover:text-lightgreen">view all</Link>
                                             </div>
                                             <div className="w-full grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                                 {tradingBlogs.slice(0, 10).map((item, i) => (
@@ -124,7 +124,7 @@ const Blogs = () => {
                                                 </div>
                                                 <Link
                                                     to={`/blogs/personal_finance`} onClick={MoveToTop}
-                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center">view all</Link>
+                                                    className="w-fit px-2 text-sm py-2 rounded-md border border-gray-700 text-center text-white hover:text-lightgreen">view all</Link>
                                             </div>
                                             <div className="w-full grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                                 {personalFinanceBlogs.slice(0, 10).map((item, i) => (

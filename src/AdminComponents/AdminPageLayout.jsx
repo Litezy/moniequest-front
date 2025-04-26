@@ -102,8 +102,8 @@ const AdminPageLayout = ({ children }) => {
                             <div className="p-5  bg-white shadow-xl rounded-md">
                                 <div className="text-base text-center mb-3">Are you sure you want to logout?</div>
                                 <div className="flex items-center justify-between">
-                                    <button onClick={() => setLogOutModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
-                                    <button onClick={LogoutAdmin} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm</button>
+                                    <button onClick={() => setLogOutModal(false)} className='px-4 py-2 bg-red-600 text-white rounded-md'>Cancel</button>
+                                    <button onClick={LogoutAdmin} className='px-4 py-2 bg-green-600 text-white rounded-md'>Confirm</button>
                                 </div>
 
                             </div>

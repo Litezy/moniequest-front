@@ -12,7 +12,7 @@ const SelectComp = ({ title, options, style, name, value, handleChange, width = 
         sx={{ m: 1,  minWidth: fullWidth ? '100%' : width, bgcolor: style?.bg, borderRadius: style?.rounded }}
         size={size ? 'small' : 'medium'}
       >
-        <InputLabel>{title}</InputLabel>
+        <InputLabel sx={{ color: style?.color }}>{title}</InputLabel>
         <Select
           name={name}
           value={options.includes(value) ? value : ""}

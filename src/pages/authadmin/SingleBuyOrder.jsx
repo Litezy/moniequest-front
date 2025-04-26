@@ -6,7 +6,6 @@ import FormInput from '../../utils/FormInput'
 import { currencies } from '../../AuthComponents/AuthUtils'
 import { defaultOptions, ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
 import SelectComp from '../../GeneralComponents/SelectComp';
-import FormButton from '../../utils/FormButton';
 import ModalLayout from '../../utils/ModalLayout';
 import Loader from '../../GeneralComponents/Loader';
 import Lottie from 'react-lottie';
@@ -65,6 +64,17 @@ const SingleBuyOrder = () => {
     const handleChange = (e) => {
         setForms({ ...forms, trans_hash: e.target.value })
     }
+
+    const [naira, setNaira] = useState('')
+    const [amountToPay, setAmountToPay] = useState('')
+    useEffect(() => {
+        if (data?.amount) {
+            const newAmount = parseFloat(data.amount) + parseFloat(data.gas_fee)
+            setAmountToPay(newAmount)
+            const naira = newAmount * data.rate
+            setNaira(naira.toLocaleString())
+        }
+    }, [data?.amount])
 
     const submitOrder = async (e) => {
         e.preventDefault()
@@ -157,6 +167,10 @@ const SingleBuyOrder = () => {
                                             <FormInput read={true} value={data?.crypto_buyer?.id} className={`${green}`} />
                                         </div>
                                     </div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-sm">FullName:</div>
+                                        <FormInput read={true} value={`${data?.crypto_buyer?.first_name} ${data?.crypto_buyer?.surname}`} className={`${green}`} />
+                                    </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Amount Bought:</div>
                                         <div className="w-full">
@@ -170,9 +184,23 @@ const SingleBuyOrder = () => {
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
-                                        <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid:</div>
+                                        <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid (USD):</div>
                                         <div className="w-full">
-                                            <FormInput read={true} value={`${currencies[0].symbol}${parseFloat(data?.amount) + parseFloat(data?.gas_fee)}`} className={`${green}`} />
+                                            <FormInput read={true} value={`${currencies[0].symbol}${amountToPay}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Amount {data?.status == 'unpaid' && 'to be'} paid (NGN):</div>
+                                        <div className="w-full">
+                                            <FormInput read={true} value={`${currencies[1].symbol}${naira}`} className={`${green}`} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className=" flex flex-col gap-3 w-full">
+                                    <div className="w-full flex flex-col gap-2">
+                                        <div className="text-sm">Rate:</div>
+                                        <div className="w-full">
+                                            <FormInput read={true} value={`${currencies[1].symbol}${data?.rate}`} className={`${green}`} />
                                         </div>
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
@@ -180,13 +208,6 @@ const SingleBuyOrder = () => {
                                         <div className="w-full">
                                             <FormInput read={true} value={data?.crypto_currency} className={`${green}`} />
                                         </div>
-                                    </div>
-
-                                </div>
-                                <div className=" flex flex-col gap-3 w-full">
-                                    <div className="flex flex-col gap-2">
-                                        <div className="text-sm">FullName:</div>
-                                        <FormInput read={true} value={`${data?.crypto_buyer?.first_name} ${data?.crypto_buyer?.surname}`} className={`${green}`} />
                                     </div>
                                     <div className="w-full flex flex-col gap-2">
                                         <div className="text-sm">Wallet Address:</div>
@@ -216,7 +237,6 @@ const SingleBuyOrder = () => {
                                         <div className="text-sm">Status:</div>
                                         <FormInput read={true} value={data?.status} className={`${data?.status === 'unpaid' ? 'text-red-600' : green}`} />
                                     </div>
-
                                 </div>
 
                             </div>

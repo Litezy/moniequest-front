@@ -76,6 +76,12 @@ import AdminAddGiftcards from "../pages/authadmin/AdminAddGiftcards";
 import AdminManageSingleCard from "../pages/authadmin/AdminManageSingleCard";
 import CompletedGiftcardOrders from "../pages/authuser/CompletedGiftcardOrders";
 import AdminCompletedGiftcards from "../pages/authadmin/AdminCompletedGiftcards";
+import CheckoutSuccess from "../pages/general/CheckoutSuccess";
+import CheckoutFailure from "../pages/general/CheckoutFailure";
+import PaymentStatus from "../pages/general/PaymentStatus";
+import AuthChekoutSuccess from "../pages/authuser/AuthChekoutSuccess";
+import AuthCheckoutFailure from "../pages/authuser/AuthCheckoutFailure";
+import AuthPaymentStatus from "../pages/authuser/AuthPaymentStatus";
 
 export const GeneralPagesLinks = [
     { path: '*', component: Notfound },
@@ -99,6 +105,9 @@ export const GeneralPagesLinks = [
     { path: '/blogs/:feature/:id/:slug', component: SingleBlog },
     { path: '/blogs/:feature/:id/:slug/comments', component: BlogComments },
     { path: '/blogs/:feature', component: FeatureBlogs },
+    { path: '/checkout_success', component: CheckoutSuccess },
+    { path: '/checkout_failure', component: CheckoutFailure },
+    { path: '/payment_status', component: PaymentStatus },
 ]
 
 export const AuthPagesLinks = [
@@ -109,6 +118,9 @@ export const AuthPagesLinks = [
     { path: '/user/giftcards/completed_orders/:id', component: OneGiftcardOrder },
     { path: '/user/giftcards/orders/:id', component: OneGiftcardOrder },
     { path: '/user/exchange/buy', component: BuyCrypto },
+    { path: '/user/exchange/buy/checkout_success', component: AuthChekoutSuccess },
+    { path: '/user/exchange/buy/checkout_failure', component: AuthCheckoutFailure },
+    { path: '/user/exchange/buy/verify_payment', component: AuthPaymentStatus },
     { path: '/user/exchange/orders', component: BuyOrdersHistory },
     { path: '/user/exchange/orders/:id/:tag', component: OrderPage },
     { path: '/user/exchange/sell', component: SellCrypto },

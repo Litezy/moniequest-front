@@ -70,35 +70,37 @@ const OrderPage = () => {
         }).catch((error) => console.log(`failed to copy acount number, ${error}`))
     }
     const green = `text-lightgreen`
-    const [accessCode, setAccessCode] = useState('')
-    const [referenceCode, setReferenceCode] = useState('')
+
 
 
     const InitiatePayment = async () => {
-        setLoad(true)
-        const amt = naira.replace(/,/g, '')
-        const formdata = {
-            id: id, amount: parseFloat(amt)
+        if (data?.status === 'initialized') {
+          return  window.location.href = data?.url
         }
-        try {
-            const response = await AuthPostApi(Apis.paystack.buy_crypto, formdata)
-            if (response.status !== 200) return console.log(response)
-            const data = response?.data?.data
-            console.log(response)
-            setAccessCode(data?.access_code)
-            setReferenceCode(data?.reference)
-            await new Promise((resolve) => setTimeout(resolve, 2000))
-            SuccessAlert(response.msg)
-    
-            // Redirect to Paystack checkout page
-            window.location.href = data?.authorization_url
-        } catch (error) {
-            console.log(`error in initializing crypto buy payment`, error)
-        } finally {
-            setLoad(false)
+        else {
+            setLoad(true)
+            const amt = naira.replace(/,/g, '')
+            const formdata = {
+                id: id, amount: parseFloat(amt)
+            }
+            try {
+                const response = await AuthPostApi(Apis.paystack.buy_crypto, formdata)
+                if (response.status !== 200) return console.log(response)
+                const data = response?.data?.data
+
+                await new Promise((resolve) => setTimeout(resolve, 2000))
+                SuccessAlert(response.msg)
+
+                // Redirect to Paystack checkout page
+                window.location.href = data?.authorization_url
+            } catch (error) {
+                console.log(`error in initializing crypto buy payment`, error)
+            } finally {
+                setLoad(false)
+            }
         }
     }
-    
+
 
     const confirmAndPay = async () => {
         setConfirm(false)
@@ -165,7 +167,7 @@ const OrderPage = () => {
                         )
                     })
                 }
-                <div className="w-full text-center capitalize font-bold poppins">Order Number  <span className={`${green}`}> {data.order_no}</span></div>
+                {!loading && <div className="w-full text-center capitalize font-bold poppins">Order Number  <span className={`${green}`}> {data.order_no}</span></div>}
 
                 {!loading && screen === 1 && tag === 'buy' &&
 
@@ -241,7 +243,7 @@ const OrderPage = () => {
                                 </div>
                             </div>
 
-                            {data?.status === 'unpaid' ? <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+                            {data?.status !== 'paid' ? <div className="w-11/12 mt-5 mx-auto md:w-5/6">
                                 <FormButton type='button' onClick={InitiatePayment} title={`Proceed to make payment`} />
                             </div> :
 
