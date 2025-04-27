@@ -49,8 +49,8 @@ const TransComp = ({ trans }) => {
                             {trans.brand && <div className={`text-zinc-200 capitalize font-bold`}>Gift-Card</div>}
                             {trans.type && <div className="w-[0.5px] h-5 bg-gray-400"></div>}
                             {trans.type && <div className={` ${trans.type === 'buy' ? "text-lightgreen" : 'text-red-600'} capitalize`}> {trans.type}</div>}
-                            {trans.brand && <div className="w-[0.5px] h-5 bg-gray-400"></div>}
-                            {trans.brand && <div className={`text-red-600 capitalize`}>sell</div>}
+                            {/* {trans.brand && <div className="w-[0.5px] h-5 bg-gray-400"></div>}
+                            {trans.brand && <div className={`text-red-600 capitalize`}>sell</div>} */}
                         </div>
                         <div className="flex flex-col items-start gap-1 text-sm">
                             <div className="">{moment(trans.createdAt).format('ddd')} {moment(trans.createdAt).format('DD-MM-YYYY')}</div>
