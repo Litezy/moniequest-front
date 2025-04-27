@@ -309,9 +309,9 @@ const GiftCardSingleOrder = () => {
                                         </div>
                                     </div>
                                 )}
-                                <div className="w-11/12 mt-5 mx-auto md:w-5/6">
+                               {!isCompletedOrders &&  <div className="w-11/12 mt-5 mx-auto md:w-5/6">
                                     <FormButton type='button' onClick={closeOrder} title={`Close Order`} />
-                                </div>
+                                </div>}
                             </form>
 
 

@@ -195,7 +195,7 @@ const Profile = () => {
             <FaRegUserCircle className='text-lightgreen' />
           </div>
         </div>
-        <div className="w-11/12 mx-auto">
+        <div className="w-11/12 mx-auto ">
           <div className='flex md:flex-row flex-col justify-between'>
             <div className='flex flex-col gap-4 -mt-20'>
               <div className='relative w-fit'>

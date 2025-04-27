@@ -126,9 +126,9 @@ const AuthPageLayout = ({ children }) => {
           <div>
             <img src={logo} alt='moniequest-logo' className='h-14 w-auto mx-auto'></img>
           </div>
-          <div onClick={() => navigate(`/user/profile`)} className='flex cursor-pointer gap-2 items-center justify-center mt-6 bg-primary p-4 rounded-lg w-11/12 h-fit mx-auto'>
+          <div onClick={() => navigate(`/user/profile`)} className='flex cursor-pointer gap-2 items-center justify-start mt-6 bg-primary px-4 py-4 rounded-lg w-11/12 h-fit mx-auto'>
             <img src={user.image ? user?.image : avatar} alt='user_profile' className='size-14 object-cover rounded-full border-2 border-ash'></img>
-            <div className='text-base text-center font-bold capitalize text-gray-200'>{user?.surname} {user?.first_name}</div>
+            <div className='text-sm text-center  capitalize text-gray-200'> {user?.first_name} {user?.surname}</div>
           </div>
           <div className="flex mt-10 pb-10 flex-col items-start px-5 gap-4 h-[65vh] overflow-y-auto scroll">
             {links.slice(0, -1).map((link, i) => {
