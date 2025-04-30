@@ -85,12 +85,7 @@ const formsal = () => {
                 ...forms,
                 amount: formattedValue,
             });
-            // Restore the cursor position
-            setTimeout(() => {
-                const commasBeforeCursor = (input.value.slice(0, cursorPosition).match(/,/g) || []).length;
-                const newCursorPosition = cursorPosition + (formattedValue.split(',').length - 1) - commasBeforeCursor;
-                input.setSelectionRange(newCursorPosition, newCursorPosition);
-            }, 0);
+           
         }
     };
 

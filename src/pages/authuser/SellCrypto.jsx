@@ -75,10 +75,24 @@ const SellCrypto = () => {
                 usd = parseFloat(forms.amount.replace(/,/g, '')) / rate
                 naira = usd * rate
             }
-            setInUSD(Number(usd).toFixed(2).toLocaleString())
+            setInUSD(usd.toLocaleString())
             setInNaira(naira.toLocaleString())
         }
     }, [forms.amount, selectedCurr.name])
+
+    const ChangeCurrency = () => {
+        setSelectedCurr(selectedCurr.name === 'USD' ? { name: currencies[1].name, symbol: currencies[1].symbol } : { name: currencies[0].name, symbol: currencies[0].symbol })
+        const amt = parseFloat(forms.amount.replace(/,/g, ''))
+        let convertedAmt;
+        if (forms.amount) {
+            if (selectedCurr.name === 'USD') {
+                convertedAmt = amt * rate
+            } else {
+                convertedAmt = amt / rate
+            }
+            setForms({ ...forms, amount: convertedAmt.toLocaleString() })
+        }
+    }
 
     const submit = (e) => {
         e.preventDefault()
@@ -279,7 +293,7 @@ const SellCrypto = () => {
                                         </div>
                                     }
                                     <div className='flex gap-1.5 items-center cursor-pointer text-lightgreen'
-                                        onClick={() => setSelectedCurr(selectedCurr.name === 'USD' ? { name: currencies[1].name, symbol: currencies[1].symbol } : { name: currencies[0].name, symbol: currencies[0].symbol })}
+                                        onClick={ChangeCurrency}
                                     >
                                         <div className='capitalize'>{selectedCurr.name === 'USD' ? 'set by naira' : 'set by USD'}</div>
                                         <div><GoArrowSwitch /></div>

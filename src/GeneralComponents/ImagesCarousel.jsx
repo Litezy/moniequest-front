@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -14,8 +14,18 @@ const optimizeImageUrl = (url) => {
 };
 
 const ImagesCarousel = ({ array }) => {
-    const prevButtonRef = useRef(null);
-    const nextButtonRef = useRef(null);
+    const prevButtonRef = useRef(null)
+    const nextButtonRef = useRef(null)
+    const swiperRef = useRef(null)
+
+    useEffect(() => {
+        if (swiperRef.current && prevButtonRef.current && nextButtonRef.current) {
+            swiperRef.current.params.navigation.prevEl = prevButtonRef.current
+            swiperRef.current.params.navigation.nextEl = nextButtonRef.current
+            swiperRef.current.navigation.init()
+            swiperRef.current.navigation.update()
+        }
+    }, [array])
 
     return (
         <div className="relative w-full h-52">
@@ -29,11 +39,8 @@ const ImagesCarousel = ({ array }) => {
                             delay: 3000,
                             disableOnInteraction: false,
                         }}
-                        navigation={{
-                            prevEl: prevButtonRef.current,
-                            nextEl: nextButtonRef.current,
-                        }}
                         pagination={{ clickable: true }}
+                        onSwiper={(swiper) => (swiperRef.current = swiper)}
                         className="w-full h-full"
                     >
                         {array.map((item, i) => (
@@ -47,6 +54,7 @@ const ImagesCarousel = ({ array }) => {
                         ))}
                     </Swiper>
 
+                    {/* Custom Nav Buttons */}
                     <button
                         ref={prevButtonRef}
                         className="custom-prev absolute top-1/2 left-3 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white hover:bg-white hover:text-black transition-all focus:outline-none focus:ring-4 focus:ring-white dark:bg-gray-800/30 dark:hover:bg-gray-800/60 dark:focus:ring-gray-800/70"
@@ -66,7 +74,7 @@ const ImagesCarousel = ({ array }) => {
                 <div className="bg-primary w-full h-full animate-pulse"></div>
             )}
         </div>
-    );
+    )
 };
 
 export default ImagesCarousel;

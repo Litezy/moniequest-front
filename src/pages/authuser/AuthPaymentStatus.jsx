@@ -14,7 +14,7 @@ const AuthPaymentStatus = () => {
     useEffect(() => {
         const checkPayment = async () => {
             const response = await AuthPostApi(Apis.paystack.check_crypto_payment_status, { reference });
-            if (response.status === 200) {
+            if (response.prodstatus === true) {
                 // Payment successful
                 navigate('/user/exchange/buy/checkout_success');
             } else {
@@ -24,7 +24,10 @@ const AuthPaymentStatus = () => {
         };
 
         if (reference) {
-            checkPayment();
+            // Wait for 10 seconds before checking the payment status
+            setTimeout(() => {
+                checkPayment();
+            }, 10000); // 10000ms = 10 seconds
         }
     }, [reference, navigate]);
 
