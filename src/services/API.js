@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { CookieName } from '../utils/pageUtils'
-
+// backupcode for hostafriva = 95ea 601f 6b16 34b1
 
 export let URL;
 export let imageurl;

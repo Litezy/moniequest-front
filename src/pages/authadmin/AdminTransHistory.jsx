@@ -34,10 +34,11 @@ const AdminTransHistory = () => {
   const filterTrans = () => {
     const mainData = dynamicData
     if (searchValue.length > 1) {
-      const filtered = mainData.filter(trans => String(trans.tag).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.type).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.trans_id).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()))
-      if (filtered) {
-        setTransactions(filtered)
-      }
+      const filtered = mainData.filter(trans => String(trans.amount).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.type).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.trans_id).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.tag).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
+        String(trans.order_no).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()))
+      setTransactions(filtered)
     } else {
       setTransactions(mainData)
     }
