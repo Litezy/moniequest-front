@@ -21,6 +21,7 @@ import avatar from '../../assets/images/avatar.svg'
 import { Apis, AuthPostApi, AuthPutApi, imageurl } from '../../services/API';
 import { NigerianBanks } from '../../utils/banks';
 import SelectComp from '../../GeneralComponents/SelectComp';
+import axios from 'axios';
 
 const Profile = () => {
   const [user, setUser] = useAtom(PROFILE)
@@ -138,33 +139,94 @@ const Profile = () => {
     }
   }
 
-  const AddBankAccount = async () => {
-    if (!form.account_number || !form.bank_name) return ErrorAlert('Enter all fields')
-    const formbody = {
-      bank_name: form.bank_name,
-      account_number: form.account_number,
-    }
+  // const AddBankAccount = async () => {
+  //   if (!form.account_number || !form.bank_name) return ErrorAlert('Enter all fields')
+  //   const formbody = {
+  //     bank_name: form.bank_name,
+  //     account_number: form.account_number,
+  //   }
 
-    setLoading({
-      sub: true
-    })
+  //   setLoading({
+  //     sub: true
+  //   })
+  //    finally {
+  //     setLoading({
+  //       sub: false
+  //     })
+  //   }
+  // }
+
+
+  const secret = import.meta.env.VITE_PAYSTACK_SECRET
+  const AddBankAccount = async () => {
+    if (!form.account_number || !form.bank_name) return ErrorAlert('Enter all fields');
+  
+    setLoading({ sub: true });
+  
     try {
-      const response = await AuthPostApi(Apis.user.create_update_bank, formbody)
-      if (response.status === 200) {
-        setBank(response.bank)
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        SuccessAlert(response.msg)
-      } else {
-        ErrorAlert(response.msg)
+      const banksResponse = await axios.get("https://api.paystack.co/bank", {
+        headers: {
+          Authorization: `Bearer ${secret}`,
+          "Content-Type": "application/json"
+        }
+      });
+  
+      const banks = banksResponse.data.data;
+      const userBank = banks.find(b => b.name.toLowerCase() === (form.bank_name || '').toLowerCase());
+  
+      if (!userBank) {
+        return { success: false, status: 400, msg: "Bank not supported" };
       }
+  
+      const verifyResponse = await axios.get("https://api.paystack.co/bank/resolve", {
+        params: {
+          account_number: form.account_number,
+          bank_code: userBank.code
+        },
+        headers: {
+          Authorization: `Bearer ${secret}`
+        }
+      });
+  
+      const responseData = verifyResponse.data;
+      if (responseData.status) {
+        const data = responseData.data;
+  
+        const formdata = {
+          account_number: data?.account_number,
+          account_name: data?.account_name,
+          bank_name: form.bank_name
+        };
+  
+        try {
+          const response = await AuthPostApi(Apis.user.create_update_bank, formdata);
+          if (response.status === 200) {
+            setBank(response.bank);
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            SuccessAlert(response.msg);
+          } else {
+            ErrorAlert(response.msg);
+          }
+        } catch (error) {
+          ErrorAlert(`${error.message}`);
+        }
+      }
+  
+      return { success: true, status: 200, msg: "Account verified",  };
+  
     } catch (error) {
-      ErrorAlert(`${error.message}`)
+      const message = error.response?.data?.message || error.response?.data || error.message;
+      ErrorAlert(message)
+      return { success: false, msg: "Account verification failed", error: message };
     } finally {
-      setLoading({
-        sub: false
-      })
+      setLoading({ sub: false });
     }
-  }
+  };
+  
+
+
+
+
   const optimizeImageUrl = (url) => {
     if (!url || !url.includes('cloudinary.com')) return url; // Return unchanged if not Cloudinary
     const parts = url.split('/upload/');
