@@ -6,43 +6,63 @@ import { useNavigate } from 'react-router-dom'
 import { PROFILE } from './store'
 import { Apis, AuthGetApi } from './API'
 import { CookieName, ErrorAlert } from '../utils/pageUtils'
-
+import ModalLayout from '../utils/ModalLayout'
+import Loader from '../GeneralComponents/Loader'
 
 const AuthRoutes = ({ children }) => {
-    const [, setProfile] = useAtom(PROFILE)
-    const [login, setLogin] = useState(false)
-    const navigate = useNavigate()
+  const [, setProfile] = useAtom(PROFILE)
+  const [loading, setLoading] = useState(true)
+  const [login, setLogin] = useState(false)
+  const navigate = useNavigate()
 
-    useEffect(() => {
-        const ValidateEntrance = async () => {
-            try {
-                const token = Cookies.get(CookieName)
-                const isinValid = isExpired(token)
-                if (!token) {
-                    return navigate('/login')
-                }
-                if (isinValid) {
-                    return navigate('/login')
-                }
-                const unauthorized = decodeToken(token)
-                if (unauthorized.role !== 'user') {
-                    return navigate('/login')
-                }
-                const response = await AuthGetApi(Apis.user.profile)
-                if (response.status === 200) {
-                    setLogin(true)
-                    setProfile(response.msg)
-                }
-            } catch (error) {
-                ErrorAlert(`${error.message}`)
-            }
+  useEffect(() => {
+    const ValidateEntrance = async () => {
+      try {
+        const token = Cookies.get(CookieName)
+
+        if (!token || isExpired(token)) {
+          navigate('/login')
+          return
         }
 
-        ValidateEntrance()
+        const decoded = decodeToken(token)
+        if (decoded?.role !== 'user') {
+          navigate('/login')
+          return
+        }
 
-    }, [])
+        const response = await AuthGetApi(Apis.user.profile)
 
-    if (login) return children
+        if (response.status === 200) {
+          setProfile(response.msg)
+          setLogin(true)
+        } else {
+          navigate('/login')
+        }
+      } catch (error) {
+        ErrorAlert(`${error.message}`)
+        navigate('/login')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    ValidateEntrance()
+  }, [])
+
+  // Show a loading spinner or nothing while verifying auth
+  if (loading) {
+    return <ModalLayout setModal={setLoading}>
+             <Loader title={`loading`}/>
+    </ModalLayout>
+  }
+
+  // If not logged in, children should not render
+  if (!login) {
+    return null
+  }
+
+  return children
 }
 
 export default AuthRoutes
