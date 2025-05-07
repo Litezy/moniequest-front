@@ -11,6 +11,7 @@ import moment from 'moment';
 import { ErrorAlert, MoveToSection, MoveToTop, SuccessAlert, } from '../../utils/pageUtils';
 import BlogDiv from '../../GeneralComponents/BlogDiv';
 import Loader from '../../GeneralComponents/Loader';
+import { FaLongArrowAltLeft } from 'react-icons/fa';
 
 
 const SingleBlog = () => {
@@ -136,8 +137,13 @@ const SingleBlog = () => {
     return (
         <PageLayout>
             <div className='w-full bg-dark py-10 text-white'>
-                {dataLoading ?
-                    <div className='w-11/12 mx-auto'>
+                <div className='w-11/12 mx-auto'>
+                    <Link to={`/blogs`}
+                        className="flex mb-10 w-fit px-4 py-1 rounded-2xl items-center gap-2 bg-ash">
+                        <FaLongArrowAltLeft className='text-white text-2xl' />
+                        <div>back to all</div>
+                    </Link>
+                    {dataLoading ?
                         <div className='flex items-start lg:gap-6 gap-10 flex-col lg:flex-row animate-pulse'>
                             <div className='flex flex-col gap-12 lg:w-[30%] w-full p-2'>
                                 <div className='w-full h-52 bg-slate-500 rounded-xl'></div>
@@ -184,139 +190,138 @@ const SingleBlog = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    :
-                    <div className="w-11/12 mx-auto">
-                        <div className="w-full flex items-start lg:gap-6 gap-10 flex-col lg:flex-row">
-                            <div className="lg:w-[30%] w-full">
-                                <div className="flex items-start flex-col gap-12">
-                                    <img src={singleBlog?.image} alt="blog image" className="w-full rounded-xl  object-cover object-center " />
-                                    <div className="w-full flex items-start flex-col gap-2">
-                                        <div className="poppins font-bold text-2xl">Table of contents</div>
-                                        {parapgraphs.map((item, i) => {
-                                            return (
-                                                <div onClick={() => MoveToSection(item.sectionID, 100)} key={i} className={`cursor-pointer capitalize hover:text-lightgreen poppins `}>{item.title}</div>
-                                            )
-                                        })}
+                        :
+                        <>
+                            <div className="w-full flex items-start lg:gap-6 gap-10 flex-col lg:flex-row">
+                                <div className="lg:w-[30%] w-full">
+                                    <div className="flex items-start flex-col gap-12">
+                                        <img src={singleBlog?.image} alt="blog image" className="w-full rounded-xl  object-cover object-center " />
+                                        <div className="w-full flex items-start flex-col gap-2">
+                                            <div className="poppins font-bold text-2xl">Table of contents</div>
+                                            {parapgraphs.map((item, i) => {
+                                                return (
+                                                    <div onClick={() => MoveToSection(item.sectionID, 100)} key={i} className={`cursor-pointer capitalize hover:text-lightgreen poppins `}>{item.title}</div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="lg:w-[70%] w-full">
+                                    <div className="flex items-start w-full justify-between">
+                                        <div className="flex items-start gap-2">
+                                            <img src={singleBlog?.blog_user?.image ? singleBlog?.blog_user?.image : avatar} loading='lazy' alt="blog" className=" rounded-full h-10 w-10 object-cover " />
+                                            <div className="flex items-start flex-col gap-1 text-sm">
+                                                <div className="poppins capitalize">{singleBlog?.blog_user?.first_name} {singleBlog?.blog_user?.surname}</div>
+                                                <div className="text-xs poppins text-gray-400">Updated on {moment(singleBlog?.updatedAt).format('D MMM YYYY hh:mm a')}</div>
+                                                <div className="text-xs poppins text-gray-400">Written on {moment(singleBlog?.createdAt).format('D MMM YYYY  hh:mm a')}</div>
+                                            </div>
+                                        </div>
+                                        <div className="">
+                                            <CiLink className='text-3xl text-sky-400' />
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col gap-3 mt-5'>
+                                        <div className="text-[1.8rem] leading-[33px] font-bold max-w-3/4">{singleBlog?.title}</div>
+                                        <div className="text-sky-400 text-sm flex items-center gap-2">
+                                            <div className="">blogs</div>
+                                            <div className=""><IoChevronForwardSharp /></div>
+                                            <div className=" lowercase">{singleBlog?.feature === 'personal_finance' ? 'personal finance' : singleBlog.feature}</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start poppins flex-col gap-12 mt-10 text-gray-400">
+                                        <div className='flex flex-col gap-2 items-start' id='main'>
+                                            <div className="text-[1.8rem] leading-[33px] capitalize font-bold poppins text-white"> {singleBlog?.main_header_title}</div>
+                                            <p className="whitespace-pre-line">{singleBlog?.main_header_content.replace(/\\n|\/n/g, '\n')}</p>
+                                        </div>
+                                        <div className="flex items-start gap-2 flex-col " id='first'>
+                                            <div className="text-white font-bold capitalize leading-[33px] text-2xl poppins ">{singleBlog?.first_paragraph_title}</div>
+                                            <div className="whitespace-pre-line">{singleBlog?.first_paragraph_content.replace(/\\n|\/n/g, '\n')}</div>
+                                        </div>
+                                        <div className='flex flex-col gap-8'>
+                                            <div className="flex items-start gap-2 flex-col" id='second'>
+                                                <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.second_paragraph_title}</div>
+                                                <p className="whitespace-pre-line">{singleBlog?.second_paragraph_content.replace(/\\n|\/n/g, '\n')}</p>
+                                            </div>
+                                            {singleBlog?.second_paragraph_image && <div className="flex items-center justify-center" id='second'>
+                                                <img src={singleBlog?.second_paragraph_image} alt="second image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center" />
+                                            </div>}
+                                        </div>
+                                        <div className='flex flex-col gap-8'>
+                                            <div className="flex items-start gap-2 flex-col" id='extras'>
+                                                <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.extras_title}</div>
+                                                <div className="whitespace-pre-line">{singleBlog?.extras_content.replace(/\\n|\/n/g, '\n')}</div>
+                                            </div>
+                                            {singleBlog?.extras_image && <div className="flex items-center justify-center" id='second'>
+                                                <img src={singleBlog?.extras_image} alt="extras image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center " />
+                                            </div>}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="lg:w-[70%] w-full">
-                                <div className="flex items-start w-full justify-between">
-                                    <div className="flex items-start gap-2">
-                                        <img src={singleBlog?.blog_user?.image ? singleBlog?.blog_user?.image : avatar} loading='lazy' alt="blog" className=" rounded-full h-10 w-10 object-cover " />
-                                        <div className="flex items-start flex-col gap-1 text-sm">
-                                            <div className="poppins capitalize">{singleBlog?.blog_user?.first_name} {singleBlog?.blog_user?.surname}</div>
-                                            <div className="text-xs poppins text-gray-400">Updated on {moment(singleBlog?.updatedAt).format('D MMM YYYY hh:mm a')}</div>
-                                            <div className="text-xs poppins text-gray-400">Written on {moment(singleBlog?.createdAt).format('D MMM YYYY  hh:mm a')}</div>
-                                        </div>
-                                    </div>
-                                    <div className="">
-                                        <CiLink className='text-3xl text-sky-400' />
-                                    </div>
-                                </div>
-                                <div className='flex flex-col gap-3 mt-5'>
-                                    <div className="text-[1.8rem] leading-[33px] font-bold max-w-3/4">{singleBlog?.title}</div>
-                                    <div className="text-sky-400 text-sm flex items-center gap-2">
-                                        <div className="">blogs</div>
-                                        <div className=""><IoChevronForwardSharp /></div>
-                                        <div className=" lowercase">{singleBlog?.feature === 'personal_finance' ? 'personal finance' : singleBlog.feature}</div>
-                                    </div>
-                                </div>
-                                <div className="flex items-start poppins flex-col gap-12 mt-10 text-gray-400">
-                                    <div className='flex flex-col gap-2 items-start' id='main'>
-                                        <div className="text-[1.8rem] leading-[33px] capitalize font-bold poppins text-white"> {singleBlog?.main_header_title}</div>
-                                        <p className="whitespace-pre-line">{singleBlog?.main_header_content.replace(/\\n|\/n/g, '\n')}</p>
-                                    </div>
-                                    <div className="flex items-start gap-2 flex-col " id='first'>
-                                        <div className="text-white font-bold capitalize leading-[33px] text-2xl poppins ">{singleBlog?.first_paragraph_title}</div>
-                                        <div className="whitespace-pre-line">{singleBlog?.first_paragraph_content.replace(/\\n|\/n/g, '\n')}</div>
-                                    </div>
-                                    <div className='flex flex-col gap-8'>
-                                        <div className="flex items-start gap-2 flex-col" id='second'>
-                                            <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.second_paragraph_title}</div>
-                                            <p className="whitespace-pre-line">{singleBlog?.second_paragraph_content.replace(/\\n|\/n/g, '\n')}</p>
-                                        </div>
-                                        {singleBlog?.second_paragraph_image && <div className="flex items-center justify-center" id='second'>
-                                            <img src={singleBlog?.second_paragraph_image} alt="second image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center" />
-                                        </div>}
-                                    </div>
-                                    <div className='flex flex-col gap-8'>
-                                        <div className="flex items-start gap-2 flex-col" id='extras'>
-                                            <div className="text-white font-bold capitalize leading-[33px] poppins  text-2xl">{singleBlog?.extras_title}</div>
-                                            <div className="whitespace-pre-line">{singleBlog?.extras_content.replace(/\\n|\/n/g, '\n')}</div>
-                                        </div>
-                                        {singleBlog?.extras_image && <div className="flex items-center justify-center" id='second'>
-                                            <img src={singleBlog?.extras_image} alt="extras image" className="w-auto rounded-xl md:max-h-[20rem] object-cover object-center " />
-                                        </div>}
-                                    </div>
-                                </div>
+                            <div className="flex items-start gap-2 flex-col mt-10 mb-5" id='conclusion'>
+                                <div className="text-white font-bold leading-[33px] text-2xl poppins ">Conclusion</div>
+                                <div className="text-gray-400 poppins whitespace-pre-line">{singleBlog?.conclusion.replace(/\\n|\/n/g, '\n')}</div>
                             </div>
-                        </div>
-                        <div className="flex items-start gap-2 flex-col mt-10 mb-5" id='conclusion'>
-                            <div className="text-white font-bold leading-[33px] text-2xl poppins ">Conclusion</div>
-                            <div className="text-gray-400 poppins whitespace-pre-line">{singleBlog?.conclusion.replace(/\\n|\/n/g, '\n')}</div>
-                        </div>
-
-                        <div className="w-full my-10">
-                            <div className="poppins text-lg font-bold mb-5">Comments</div>
-                            {Object.values(singleBlog).length !== 0 && singleBlog.blog_comments.length > 0 ?
-                                <div className='flex flex-col gap-5'>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-5">
-                                        {singleBlog.blog_comments.slice(0, 8).map((item, i) => (
-                                            <Comments key={i} item={item} />
+                            <div className="w-full my-10">
+                                <div className="poppins text-lg font-bold mb-5">Comments</div>
+                                {Object.values(singleBlog).length !== 0 && singleBlog.blog_comments.length > 0 ?
+                                    <div className='flex flex-col gap-5'>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-5">
+                                            {singleBlog.blog_comments.slice(0, 8).map((item, i) => (
+                                                <Comments key={i} item={item} />
+                                            ))}
+                                        </div>
+                                        {singleBlog.blog_comments.length > 1 &&
+                                            <Link to={`/blogs/${singleBlog.feature}/${singleBlog.id}/${singleBlog.slug}/comments`} onClick={MoveToTop}>
+                                                <button className="w-fit px-4 py-1 rounded-md bg-ash text-white">see all comments</button>
+                                            </Link>
+                                        }
+                                    </div>
+                                    :
+                                    <div>Be the first to comment on this blog!</div>
+                                }
+                            </div>
+                            <form className="lg:w-5/6 w-full p-4 rounded-md bg-primary relative" onSubmit={SubmitComment}>
+                                {loading && <Loader />}
+                                <div className="text-lg mont">Leave a comment</div>
+                                <div className="flex mt-4 flex-col gap-5 w-full lg:w-11/12">
+                                    <div className="flex items-center flex-col lg:flex-row gap-5">
+                                        <div className="w-full">
+                                            <FormInput label={`Username`} placeholder='Username' name='username' value={form.username} onChange={formHandler} />
+                                        </div>
+                                        <div className="w-full">
+                                            <FormInput label={`Email Address`} type='email' name='email' placeholder='Email address' value={form.email} onChange={formHandler} />
+                                        </div>
+                                        <div className="w-full">
+                                            <FormInput label={`Phone number (Optional)`} name='phone' placeholder='Phone number' value={form.phone} onChange={handlePhoneNum} />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex-col  flex items-start gap-2">
+                                        <div className="text-base">Comment</div>
+                                        <textarea
+                                            className='resize-y w-full max-h-52 min-h-24 p-2 rounded-md bg-primary' placeholder='enter your comment'
+                                            name="content" value={form.content} onChange={formHandler}></textarea>
+                                    </div>
+                                    <div className="w-1/2 flex items-center justify-center ml-auto">
+                                        <button className='w-full bg-ash hover:bg-ash/90 rounded-md py-2'>Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                            {relatedBlogs.length > 0 ?
+                                <div className="mt-10 flex flex-col gap-3">
+                                    <div className="text-lg">You may also like:</div>
+                                    <div className="w-full flex items-center gap-3 overflow-x-auto scroll">
+                                        {relatedBlogs.map((item, i) => (
+                                            <BlogDiv item={item} key={i} className={`!w-64 flex-none`} />
                                         ))}
                                     </div>
-                                    {singleBlog.blog_comments.length > 1 &&
-                                        <Link to={`/blogs/${singleBlog.feature}/${singleBlog.id}/${singleBlog.slug}/comments`} onClick={MoveToTop}>
-                                            <button className="w-fit px-4 py-1 rounded-md bg-ash text-white">see all comments</button>
-                                        </Link>
-                                    }
                                 </div>
                                 :
-                                <div>Be the first to comment on this blog!</div>
+                                <div className='mt-10'>No related blogs found...</div>
                             }
-                        </div>
-                        <form className="lg:w-5/6 w-full p-4 rounded-md bg-primary relative" onSubmit={SubmitComment}>
-                            {loading && <Loader />}
-                            <div className="text-lg mont">Leave a comment</div>
-                            <div className="flex mt-4 flex-col gap-5 w-full lg:w-11/12">
-                                <div className="flex items-center flex-col lg:flex-row gap-5">
-                                    <div className="w-full">
-                                        <FormInput label={`Username`} placeholder='Username' name='username' value={form.username} onChange={formHandler} />
-                                    </div>
-                                    <div className="w-full">
-                                        <FormInput label={`Email Address`} type='email' name='email' placeholder='Email address' value={form.email} onChange={formHandler} />
-                                    </div>
-                                    <div className="w-full">
-                                        <FormInput label={`Phone number (Optional)`} name='phone' placeholder='Phone number' value={form.phone} onChange={handlePhoneNum} />
-                                    </div>
-                                </div>
-                                <div className="w-full flex-col  flex items-start gap-2">
-                                    <div className="text-base">Comment</div>
-                                    <textarea
-                                        className='resize-y w-full max-h-52 min-h-24 p-2 rounded-md bg-primary' placeholder='enter your comment'
-                                        name="content" value={form.content} onChange={formHandler}></textarea>
-                                </div>
-                                <div className="w-1/2 flex items-center justify-center ml-auto">
-                                    <button className='w-full bg-ash hover:bg-ash/90 rounded-md py-2'>Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                        {relatedBlogs.length > 0 ?
-                            <div className="mt-10 flex flex-col gap-3">
-                                <div className="text-lg">You may also like:</div>
-                                <div className="w-full flex items-center gap-3 overflow-x-auto scroll">
-                                    {relatedBlogs.map((item, i) => (
-                                        <BlogDiv item={item} key={i} className={`!w-64 flex-none`} />
-                                    ))}
-                                </div>
-                            </div>
-                            :
-                            <div className='mt-10'>No related blogs found...</div>
-                        }
-                    </div>
-                }
+                        </>
+                    }
+                </div>
             </div>
 
         </PageLayout>

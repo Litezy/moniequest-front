@@ -48,7 +48,7 @@ const Blogs = () => {
                 </div>
                 <div className='w-11/12 mx-auto py-10'>
                     {dataLoading ?
-                        <div className='flex flex-col gap-4 animate-pulse'>
+                        <div className='flex flex-col gap-6 animate-pulse'>
                             <div className='flex justify-between items-center'>
                                 <div className='flex gap-3 items-center'>
                                     <div className='w-5 h-5 rounded-full bg-slate-400'></div>
@@ -80,7 +80,7 @@ const Blogs = () => {
                             {blogs.length > 0 ?
                                 <div className='flex flex-col gap-16 poppins'>
                                     {airdropBlogs.length > 0 &&
-                                        <div className="flex flex-col gap-10">
+                                        <div className="flex flex-col gap-6">
                                             <div className="flex items-center justify-between w-full">
                                                 <div className='flex gap-3 items-center'>
                                                     <div className="text-xl"><GiArrowScope /></div>
@@ -98,7 +98,7 @@ const Blogs = () => {
                                         </div>
                                     }
                                     {tradingBlogs.length > 0 &&
-                                        <div className="flex flex-col gap-10">
+                                        <div className="flex flex-col gap-6">
                                             <div className="flex items-center justify-between w-full">
                                                 <div className='flex gap-3 items-center'>
                                                     <div className="text-xl"><GiArrowScope /></div>
@@ -116,7 +116,7 @@ const Blogs = () => {
                                         </div>
                                     }
                                     {personalFinanceBlogs.length > 0 &&
-                                        <div className="flex flex-col gap-10">
+                                        <div className="flex flex-col gap-6">
                                             <div className="flex items-center justify-between w-full">
                                                 <div className='flex gap-3 items-center'>
                                                     <div className="text-xl"><GiArrowScope /></div>

@@ -71,7 +71,7 @@ const ImagesCarousel = ({ array }) => {
                     </button>
                 </>
             ) : (
-                <div className="bg-primary w-full h-full animate-pulse"></div>
+                <div className="bg-[#343452] w-full h-full animate-pulse"></div>
             )}
         </div>
     )

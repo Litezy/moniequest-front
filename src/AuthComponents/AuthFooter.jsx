@@ -74,7 +74,7 @@ const extraIcons = [
 
 const emailSupport = {
     symbol: IoMdHelp,
-    url: 'mailto:corporate@moniequest.com?subject=Contact%20support'
+    url: 'mailto:support@moniequest.com?subject=Contact%Support'
 }
 
 const AuthFooter = () => {

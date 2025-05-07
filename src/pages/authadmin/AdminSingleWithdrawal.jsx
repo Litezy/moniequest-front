@@ -6,18 +6,21 @@ import { defaultOptions, ErrorAlert, SuccessAlert } from '../../utils/pageUtils'
 import FormButton from '../../utils/FormButton'
 import Lottie from 'react-lottie'
 import Loader from '../../GeneralComponents/Loader'
-import { Apis, AuthGetApi, AuthPostApi } from '../../services/API'
+import { Apis, AuthGetApi, AuthPostApi, PostApi } from '../../services/API'
 import { currencies } from '../../AuthComponents/AuthUtils'
 import ModalLayout from '../../utils/ModalLayout'
+import { useAtom } from 'jotai'
+import { PROFILE } from '../../services/store'
 
 const AdminSingleWithdrawal = () => {
     const { id } = useParams()
-    const [forms, setForms] = useState({ msg: '' })
+    const [forms, setForms] = useState({ msg: '', failed: '' })
     const [screen, setScreen] = useState(1)
     const [loading, setLoading] = useState({ status: false, val: "" })
     const [failed, setFailed] = useState(false)
     const [data, setData] = useState({})
     const green = `text-lightgreen`
+    const [user] = useAtom(PROFILE)
 
     const fetchWithdrawal = async () => {
         setLoading({ status: true, val: "load" })
@@ -71,12 +74,36 @@ const AdminSingleWithdrawal = () => {
         }
     }, [memo])
 
+    const reversePayment = async () => {
+        if(user?.role !== 'super admin') return ErrorAlert(`You are not authorized to perform this action`)
+            // console.log(user)
+        if (!forms.failed) return ErrorAlert(`Please input a reverse message`)
+        const payload = {
+            id: id,
+            message: forms.failed
+        } 
+        setFailed(false)
+        setLoading({ status: true, val: 'reversing' })
+        try {
+            const res = await AuthPostApi(Apis.admin.reverse_transfers, payload)
+            if (res.status !== 200) return ErrorAlert(res.msg)
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            SuccessAlert(res.msg)
+            setForms({ ...forms, failed: "" })
+            setScreen(3)
+        } catch (error) {
+            console.log(`error in reversing transfer`, error)
+        } finally {
+            setLoading({ status: false, val: '' })
+        }
+    }
     return (
         <AdminPageLayout>
 
             {loading.status && loading.val === 'load' && <Loader title={`loading`} />}
             {loading.status && loading.val === 'close' && <Loader title={`closing order`} />}
-            {loading.status && loading.val === 'paying' && <Loader title={`making payments`} />}
+            {loading.status && loading.val === 'paying' && <Loader title={`making payment`} />}
+            {loading.status && loading.val === 'reversing' && <Loader title={`reversing payment`} />}
 
             {memo && <ModalLayout setModal={setMemo} clas={`w-11/12 mx-auto lg:w-1/2`}>
                 <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
@@ -91,6 +118,19 @@ const AdminSingleWithdrawal = () => {
                     </div>
                 </div>
             </ModalLayout>}
+            {failed && <ModalLayout setModal={setFailed} clas={`w-11/12 mx-auto lg:w-1/2`}>
+                <div className="w-full p-5 bg-white text-dark rounded-md flex items-center flex-col justify-center">
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="font-semibold text-center">Please provide reason for reverse transaction</div>
+
+                        <FormInput formtype='text' value={forms.failed} name={`failed`} onChange={handleChange} />
+                        <div className="flex w-full items-center justify-between ">
+                            <button onClick={() => { setFailed(false); setForms({ ...forms, failed: "" }) }} className='px-4 py-1.5 rounded-md bg-red-600 text-white'>cancel</button>
+                            <button onClick={reversePayment} className='px-4 py-1.5 rounded-md bg-green-600 text-white'>reverse payment</button>
+                        </div>
+                    </div>
+                </div>
+            </ModalLayout>}
 
             {screen === 1 && <div className="w-11/12 mx-auto">
                 <div className=" mt-2">
@@ -98,6 +138,9 @@ const AdminSingleWithdrawal = () => {
                 </div>
                 <div className="mt-5 w-full text-center capitalize font-bold poppins">Withdrawal Review Number <span className={`${green}`}>{data?.trans_id}</span></div>
                 <form onSubmit={ProvideMsg} className="bg-primary p-5 rounded-md  mx-auto mt-5 md:mt-10 mb-5">
+                    <div className="my-3 w-fit ml-auto">
+                        <button onClick={() => setFailed(true)} className='px-4 rounded-md bg-red-600 text-white text-sm py-2 '>Reverse</button>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5   ">
                         <div className="flex flex-col gap-3 w-full">
                             <div className="w-full flex flex-col gap-2">
@@ -161,6 +204,20 @@ const AdminSingleWithdrawal = () => {
                         <Lottie options={defaultOptions} height={250} width={300} />
                         <div className="mt-10 flex flex-col items-center ">
                             <div className="capitalize">Thank You for confirming this order.
+                            </div>
+                            <Link to={`/admin/bank_withdrawals`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
+                                Go back to orders
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>}
+            {screen === 3 && <div className="">
+                <div className="w-11/12 mx-auto min-h-[70dvh] flex items-center justify-center">
+                    <div className="w-full flex items-center  flex-col">
+                        <Lottie options={defaultOptions} height={250} width={300} />
+                        <div className="mt-10 flex flex-col items-center ">
+                            <div className="capitalize">Transfer request order was successfully reversed.
                             </div>
                             <Link to={`/admin/bank_withdrawals`} className={`bg-green-500  mt-10 hover:bg-lightgreen text-white hover:text-ash py-2 text-center rounded-md w-full`}>
                                 Go back to orders

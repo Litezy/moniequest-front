@@ -34,11 +34,25 @@ const AdminTransHistory = () => {
   const filterTrans = () => {
     const mainData = dynamicData
     if (searchValue.length > 1) {
-      const filtered = mainData.filter(trans => String(trans.amount).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) || String(trans.type).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
-        String(trans.trans_id).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
-        String(trans.tag).toLowerCase().startsWith(searchValue.toLocaleLowerCase()) ||
-        String(trans.order_no).toLocaleLowerCase().startsWith(searchValue.toLocaleLowerCase()))
-      setTransactions(filtered)
+      const filtered = mainData.filter(trans => {
+        const lowerSearch = searchValue.toLowerCase();
+
+        return (
+          String(trans.type).toLowerCase().startsWith(lowerSearch) ||
+          String(trans.trans_id).toLowerCase().startsWith(lowerSearch) ||
+          String(trans.tag).toLowerCase().startsWith(lowerSearch) ||
+          String(trans.order_no).toLowerCase().startsWith(lowerSearch) ||
+          String(trans.amount).startsWith(lowerSearch) ||
+          (
+            trans.tag === 'bank'
+              ? String(trans.amount).includes(searchValue)
+              : trans.type === 'buy'
+                ? String((trans.amount + trans.gas_fee) * trans.rate).includes(searchValue)
+                : String(trans.amount * trans.rate).includes(searchValue)
+          )
+        );
+      });
+      setTransactions(filtered);
     } else {
       setTransactions(mainData)
     }

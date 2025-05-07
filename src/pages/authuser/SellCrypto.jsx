@@ -269,7 +269,7 @@ const SellCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only sell a minimum of ${forms.minimum} and maximum of {user?.kyc_verified === 'false' ? `$${forms.limit.toLocaleString()}` : `$${forms.kyc_limit.toLocaleString()}`} of {forms.crypto}. {user?.kyc_verified === 'false' ? 'Verify your account to increase limit.' : ''}</div>}
+                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only sell a minimum of ${forms.minimum} and maximum of {verified === 'false' ? `$${forms.limit.toLocaleString()}` : `$${forms.kyc_limit.toLocaleString()}`} of {forms.crypto}. {verified === 'false' ? 'Verify your account to increase limit.' : ''}</div>}
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>

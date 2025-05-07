@@ -450,7 +450,7 @@ const SellGiftcard = () => {
                                                             <div className="font-medium">{card.country}</div>
                                                             <div className="text-gray-400">({card.card_pic === 'true' ? 'Card-pic' : 'E-code'})</div>
                                                             <div className="text-gray-400">
-                                                                {card.currency} {card.min_value} to {card.currency} {card.max_value}
+                                                                {card.currency}{card.min_value} to {card.currency}{card.max_value}
                                                             </div>
                                                         </div>
                                                     </div>

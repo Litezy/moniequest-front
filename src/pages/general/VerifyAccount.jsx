@@ -98,7 +98,7 @@ const VerifyAccount = () => {
                         <div className='text-3xl font-bold text-center text-zinc-200'>Verify Email</div>
                         {screen === 1 &&
                             <>
-                                <div className='text-lg font-bold text-center mt-6 text-lightgreen'>Enter the 6 digit code sent to {userEmail}</div>
+                                <div className='text-lg font-bold text-center mt-6 text-lightgreen'>Enter the 6 digit code sent to {userEmail}. Check spam folder also for the code.</div>
                                 <form className='mt-6 flex flex-col gap-8 items-center' onSubmit={VerifyEmail}>
                                     <PinForm
                                         pins={pins}

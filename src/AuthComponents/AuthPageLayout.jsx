@@ -10,6 +10,7 @@ import { useAtom } from 'jotai'
 import { BANK, CRYPTOS, GIFTCARDS, PROFILE, TOOLS, UTILS, WALLET } from '../services/store'
 import Cookies from 'js-cookie';
 import ModalLayout from '../utils/ModalLayout'
+import { MdVerified } from "react-icons/md";
 
 
 
@@ -126,7 +127,8 @@ const AuthPageLayout = ({ children }) => {
           <div>
             <img src={logo} alt='moniequest-logo' className='h-14 w-auto mx-auto'></img>
           </div>
-          <div onClick={() => navigate(`/user/profile`)} className='flex cursor-pointer gap-2 items-center justify-start mt-6 bg-primary px-4 py-4 rounded-lg w-11/12 h-fit mx-auto'>
+          <div onClick={() => navigate(`/user/profile`)} className='flex cursor-pointer gap-2 items-center justify-start mt-6 bg-primary px-4 py-4 rounded-lg w-11/12 h-fit mx-auto  relative'>
+            {user?.email_verified === 'true' && <div className="absolute top-2 right-2 "><MdVerified className='text-lightgreen font-bold text-lg'/></div>}
             <img src={user.image ? user?.image : avatar} alt='user_profile' className='size-14 object-cover rounded-full border-2 border-ash'></img>
             <div className='text-sm text-center  capitalize text-gray-200'> {user?.first_name} {user?.surname}</div>
           </div>
@@ -156,7 +158,7 @@ const AuthPageLayout = ({ children }) => {
             })}
             <a
               target="_blank"
-              href={`mailto:corporate@moniequest.com?subject=Contact%20support`}
+              href={`mailto:support@moniequest.com?subject=Contact%Support`}
               className="text-sm px-3 py-2 mb-2 rounded-md bg-ash text-white"
             >
               Not Seeing What You Need? Tap and Contact Support Now!

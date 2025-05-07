@@ -86,7 +86,7 @@ const Footer = () => {
                 <div className='font-[600] text-primary'>Please feel free to contact our Corporate team on:</div>
                 <div className='flex items-center gap-2'>
                   <AiOutlineMail />
-                  <span className='text-ash'>corporate@moniequest.com</span>
+                  <a href={`mailto:support@moniequest.com?subject=Contact%Support`} className='text-ash cursor-pointer'>support@moniequest.com</a>
                 </div>
                 <div className='flex items-center gap-2'>
                   <LuPhone />

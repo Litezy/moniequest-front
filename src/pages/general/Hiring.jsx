@@ -157,7 +157,7 @@ const Hiring = () => {
                                 <div key={i} className='flex flex-col gap-2'>
                                     <div className='font-bold capitalize'>{item}</div>
                                     <div className='capitalize text-gray-300'>global / remote</div>
-                                    <a href={`mailto:corporate@moniequest.com?subject=Job%20Application`}>
+                                    <a href={`mailto:support@moniequest.com?subject=Job%20Application`}>
                                         <button className='outline-none w-fit h-fit py-1.5 px-5 bg-ash rounded-md text-sm'>Apply</button>
                                     </a>
                                 </div>

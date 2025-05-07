@@ -362,23 +362,29 @@ const AdminSingleProduct = () => {
                                     <SelectComp options={listOptions} width={200} style={{ bg: '#212134', color: 'lightgrey', font: '0.85rem' }} value={form.listing} handleChange={(e) => setForm({ ...form, listing: e.target.value })} />
                                 </div>
                             </div>
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex gap-1 items-center text-lightgreen '>
-                                    <div className='capitalize font-medium'>add a discount</div>
-                                    <RiDiscountPercentFill />
-                                </div>
-                                <div className='grid md:grid-cols-2 grid-cols-1 gap-4 items-center'>
-                                    <div className='flex flex-col gap-2'>
-                                        <div className='text-lightgreen capitalize font-medium'>discount percentage (%):</div>
-                                        <FormInput placeholder='Discount' name='discount_percentage' value={form.discount_percentage} onChange={handleNums} />
+                            <div className='flex flex-col gap-6'>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex gap-1 items-center text-lightgreen '>
+                                        <div className='capitalize font-medium'>add a discount</div>
+                                        <RiDiscountPercentFill />
                                     </div>
-                                    <div className='flex flex-col gap-1'>
-                                        <div className='text-lightgreen capitalize font-medium'>duration:</div>
-                                        <div className='flex items-center'>
-                                            <FormInput name='discount_duration' value={form.discount_duration} onChange={handleNums} className='!w-14 !px-3' />
-                                            <SelectComp options={durationTypes} width={150} style={{ bg: '#212134', color: 'lightgrey', font: '0.85rem' }} value={form.discount_duration_type} handleChange={(e) => setForm({ ...form, discount_duration_type: e.target.value })} />
+                                    <div className='grid md:grid-cols-2 grid-cols-1 gap-4 items-center'>
+                                        <div className='flex flex-col gap-2'>
+                                            <div className='text-lightgreen capitalize font-medium'>discount percentage (%):</div>
+                                            <FormInput placeholder='Discount' name='discount_percentage' value={form.discount_percentage} onChange={handleNums} />
+                                        </div>
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='text-lightgreen capitalize font-medium'>duration:</div>
+                                            <div className='flex items-center'>
+                                                <FormInput name='discount_duration' value={form.discount_duration} onChange={handleNums} className='!w-14 !px-3' />
+                                                <SelectComp options={durationTypes} width={150} style={{ bg: '#212134', color: 'lightgrey', font: '0.85rem' }} value={form.discount_duration_type} handleChange={(e) => setForm({ ...form, discount_duration_type: e.target.value })} />
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='text-lightgreen capitalize font-medium'>product review:</div>
+                                    <div className='w-fit h-fit p-2 text-white bg-gray-600 rounded-xl text-sm'>A total of {singleProduct?.total_rate_persons || 0} review{singleProduct?.total_rate_persons > 1 && 's'} so far and a score of {singleProduct?.total_ratings > 0 && singleProduct?.total_rate_persons > 0 ? (singleProduct.total_ratings / singleProduct.total_rate_persons).toFixed(1) : 0} rating </div>
                                 </div>
                             </div>
                         </div>

@@ -34,6 +34,7 @@ const BuyCrypto = () => {
         gas_fee: '',
         kyc_limit: ''
     })
+    console.log(forms)
     const rate = utils?.exchange_buy_rate
     const verified = user?.kyc_verified
 
@@ -79,7 +80,7 @@ const BuyCrypto = () => {
                 gas = parseFloat(forms.gas_fee) * parseFloat(rate)
                 toPay = parseFloat(forms.amount.replace(/,/g, '')) + gas
                 usd = toPay / rate
-                naira = usd * rate
+                naira = toPay
             }
             setGasFee(gas.toLocaleString())
             setAmountToPay(toPay.toLocaleString())
@@ -251,7 +252,7 @@ const BuyCrypto = () => {
                                                 </option>
                                             ))}
                                     </select>
-                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only buy a minimum of ${forms.minimum} and maximum of {user?.kyc_verified === 'false' ? `$${forms.limit.toLocaleString()}` : `$${forms.kyc_limit.toLocaleString()}`} of {forms.crypto}. {user?.kyc_verified === 'false' ? 'Verify your account to increase limit.' : ''}</div>}
+                                    {forms.crypto && <div className="text-red-600 text-xs">Please Note: you can only buy a minimum of ${forms.minimum} and maximum of {verified === 'false' ? `$${forms.limit.toLocaleString()}` : `$${forms.kyc_limit.toLocaleString()}`} of {forms.crypto}. {verified === 'false' ? 'Verify your account to increase limit.' : ''}</div>}
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
                                     <div className="font-bold text-lg">Amount:</div>
@@ -335,9 +336,7 @@ const BuyCrypto = () => {
                                     <div className="font-bold text-lg">Network</div>
                                     <div className="w-full ">
                                         <FormInput read={true} value={forms.network} />
-
                                         <div className="text-red-600 mt-1 text-sm">Please ensure that the network you select matches the wallet address provided to prevent any loss of funds.</div>
-
                                     </div>
                                 </div>
                                 <div className="flex w-full items-start gap-2 flex-col  ">
@@ -377,10 +376,7 @@ const BuyCrypto = () => {
                             </div>
                         </div>
                     }
-
-
                 </div>}
-
             </div>
         </ExchangeLayout>
     )

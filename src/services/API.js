@@ -133,7 +133,8 @@ const admin_urls = {
     deletecard_category: admin + 'deletecard_category',
     update_permissions: admin + 'update_permissions',
     suspend_account: admin + 'suspend_account',
-    delete_account: admin + 'delete_account'
+    delete_account: admin + 'delete_account',
+    reverse_transfers: admin + 'reverse_transfers'
 }
 
 const products = 'api/product/'

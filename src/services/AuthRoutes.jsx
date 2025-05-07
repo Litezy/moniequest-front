@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import { PROFILE } from './store'
 import { Apis, AuthGetApi } from './API'
 import { CookieName, ErrorAlert } from '../utils/pageUtils'
-import ModalLayout from '../utils/ModalLayout'
 import Loader from '../GeneralComponents/Loader'
 
 const AuthRoutes = ({ children }) => {
@@ -19,20 +18,19 @@ const AuthRoutes = ({ children }) => {
     const ValidateEntrance = async () => {
       try {
         const token = Cookies.get(CookieName)
-
-        if (!token || isExpired(token)) {
-          navigate('/login')
-          return
+        const isinValid = isExpired(token)
+        if (!token) {
+          return navigate('/login')
         }
-
-        const decoded = decodeToken(token)
-        if (decoded?.role !== 'user') {
-          navigate('/login')
-          return
+        if (isinValid) {
+          return navigate('/login')
+        }
+        const unauthorized = decodeToken(token)
+        if (unauthorized.role !== 'user') {
+          return navigate('/login')
         }
 
         const response = await AuthGetApi(Apis.user.profile)
-
         if (response.status === 200) {
           setProfile(response.msg)
           setLogin(true)
@@ -50,19 +48,10 @@ const AuthRoutes = ({ children }) => {
     ValidateEntrance()
   }, [])
 
-  // Show a loading spinner or nothing while verifying auth
   if (loading) {
-    return <ModalLayout setModal={setLoading}>
-             <Loader title={`loading`}/>
-    </ModalLayout>
+    return <Loader title={`loading`} />
   }
-
-  // If not logged in, children should not render
-  if (!login) {
-    return null
-  }
-
-  return children
+  if (login) return children
 }
 
 export default AuthRoutes
