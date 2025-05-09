@@ -37,12 +37,14 @@ const user_urls = {
     add_carousel_image: user + 'add-carousel-image',
     get_carousel_images: user + 'get-carousel-images',
     delete_carousel_image: user + 'delete-carousel-image',
-    get_testimonials: user + 'get_testimonials'
+    get_testimonials: user + 'get_testimonials',
+    delete_profile_photo: user + 'delete-profile-image'
 }
 
 const notification = 'api/notification/'
 const notification_urls = {
     all_notis: notification + 'all-notis',
+    unread_notis: notification + 'unread-notis',
     update_all_notis: notification + 'update-all-notis',
     update_single_notis: notification + 'update-single-notis',
     delete_notis: notification + 'delete-notis'
@@ -151,8 +153,8 @@ const paystack_urls = {
     buy_crypto: paystack + 'initialize_buy_payment',
     admin_transfer: paystack + "admin_transfer",
     purchase_products: paystack + 'initialize_product_purchase',
-    check_product_payment_status: paystack +'check_product_payment_status',
-    check_crypto_payment_status: paystack +'check_crypto_payment_status'
+    check_product_payment_status: paystack + 'check_product_payment_status',
+    check_crypto_payment_status: paystack + 'check_crypto_payment_status'
 }
 
 export const Apis = {

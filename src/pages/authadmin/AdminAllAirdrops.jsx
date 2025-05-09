@@ -13,6 +13,8 @@ const AdminAllAirdrops = () => {
     const [dataLoading, setDataLoading] = useState(true)
     const [staticData, setStaticData] = useState([])
     const [airdrops, setAirdrops] = useState([])
+    const [visibleCount, setVisibleCount] = useState(10)
+    const [length, setLength] = useState(0)
 
     useEffect(() => {
         const FetchAllAirdrops = async () => {
@@ -21,8 +23,8 @@ const AdminAllAirdrops = () => {
                 if (response.status === 200) {
                     setStaticData(response.msg)
                     setAirdrops(response.msg)
+                    setLength(response.msg.length)
                 }
-
             } catch (error) {
                 //
             } finally {
@@ -32,7 +34,7 @@ const AdminAllAirdrops = () => {
         FetchAllAirdrops()
     }, [])
 
-   
+
     const featuredAirdrops = useMemo(() => {
         return airdrops.filter((ele) => ele.category === 'featured');
     }, [airdrops])
@@ -61,6 +63,12 @@ const AdminAllAirdrops = () => {
             setAirdrops(mainData)
         }
     }
+
+    useEffect(() => {
+        setVisibleCount(10)
+        const filtered = airdrops.filter((item) => active === tags[1] ? item.category === 'deFi' : active === tags[2] ? item.category === 'featured' : active === tags[3] ? item.category === 'new' : active === tags[4] ? item.category === 'NFT' : active === tags[5] ? item.category === 'potential' : active === tags[6] ? item.category === 'earn_crypto' : item)
+        setLength(filtered.length)
+    }, [active, airdrops])
 
     return (
         <AirdropsLayout>
@@ -97,7 +105,7 @@ const AdminAllAirdrops = () => {
                                     <div className='flex flex-col gap-4'>
                                         {active === 'all' &&
                                             <>
-                                                {airdrops.map((item, i) => (
+                                                {airdrops.slice(0, visibleCount).map((item, i) => (
                                                     <AdminAirdropComp key={i} item={item} />
                                                 ))}
                                             </>
@@ -106,7 +114,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {featuredAirdrops.length > 0 ?
                                                     <>
-                                                        {featuredAirdrops.map((item, i) => (
+                                                        {featuredAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -119,7 +127,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {deFiAirdrops.length > 0 ?
                                                     <>
-                                                        {deFiAirdrops.map((item, i) => (
+                                                        {deFiAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -132,7 +140,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {newAirdrops.length > 0 ?
                                                     <>
-                                                        {newAirdrops.map((item, i) => (
+                                                        {newAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -145,7 +153,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {NFTAirdrops.length > 0 ?
                                                     <>
-                                                        {NFTAirdrops.map((item, i) => (
+                                                        {NFTAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -158,7 +166,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {potentialAirdrops.length > 0 ?
                                                     <>
-                                                        {potentialAirdrops.map((item, i) => (
+                                                        {potentialAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -171,7 +179,7 @@ const AdminAllAirdrops = () => {
                                             <>
                                                 {earnCryptoAirdrops.length > 0 ?
                                                     <>
-                                                        {earnCryptoAirdrops.map((item, i) => (
+                                                        {earnCryptoAirdrops.slice(0, visibleCount).map((item, i) => (
                                                             <AdminAirdropComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -184,6 +192,9 @@ const AdminAllAirdrops = () => {
                                 </>
                                 :
                                 <div className="text-gray-400 text-center">No record found...</div>
+                            }
+                            {visibleCount < length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older airdrops</button>
                             }
                         </>
                     }

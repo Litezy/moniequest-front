@@ -17,6 +17,7 @@ const AdminAddGiftcards = () => {
     const [add, setAdd] = useState(false)
     const [data, setData] = useState([])
     const [dataloading, setDataLoading] = useState(true)
+    const [visibleCount, setVisibleCount] = useState(10)
     const [selected, setSelected] = useState({})
     const [del, setDel] = useState(false)
     const cardref = useRef(null)
@@ -66,7 +67,6 @@ const AdminAddGiftcards = () => {
             const res = await AuthGetApi(Apis.admin.get_giftcards)
             if (res.status !== 200) return;
             const data = res.data
-            // console.log(data)
             setData(data)
             setForms({ ...forms, name: data?.name, })
             setCardImage({ ...cardImage, img: data?.image })
@@ -80,8 +80,6 @@ const AdminAddGiftcards = () => {
     useEffect(() => {
         fetchCards()
     }, [])
-
-
 
     const crudCard = async (val) => {
         const tags = ['create', 'delete']
@@ -108,7 +106,6 @@ const AdminAddGiftcards = () => {
                 console.log(`error in creating giftcard`, error)
             } finally { setLoading({ status: false, val: '' }) }
         }
-
         else {
             // return console.log(selected)
             if (!selected?.id) return ErrorAlert('Card ID not found')
@@ -131,13 +128,8 @@ const AdminAddGiftcards = () => {
     const Topheaders = [`Name`, 'Image', 'Date Added', 'More', 'Delete']
 
 
-
-
-
-
     return (
         <AdminPageLayout>
-
             {loading.status && loading.val === 'create' &&
                 <Loader title={`creating gitfcard`} />
             }
@@ -147,7 +139,7 @@ const AdminAddGiftcards = () => {
             {loading.status && loading.val === 'delete' &&
                 <Loader title={`deleting gitfcard`} />
             }
-            
+
 
             {add &&
                 <ModalLayout setModal={setAdd} clas={`w-11/12 mx-auto lg:w-1/2`}>
@@ -197,7 +189,6 @@ const AdminAddGiftcards = () => {
             }
 
 
-
             <div className="w-11/12 mx-auto mb-10 ">
                 <div className=" text-center text-3xl mb-5 font-bold text-">Manage your Giftcards </div>
                 <div className="flex items-center justify-between w-full">
@@ -209,51 +200,54 @@ const AdminAddGiftcards = () => {
                     <button onClick={addCard} className="px-4 py-2 rounded-md text-sm text-dark bg-white">Add Giftcard</button>
                 </div>
                 {!dataloading ?
-                    <div className="relative overflow-x-auto rounded-md mt-10">
-                        <table className="w-full text-sm text-center rtl:text-right">
-                            <thead className=" bg-primary text-base poppins ">
-                                <tr>
-                                    {Topheaders.map((item, i) => (
-                                        <th key={i} scope="col" className="px-3 text-sm truncate text-white font-bold py-3">{item}</th>
-                                    ))}
-
-                                </tr>
-                            </thead>
-                            <tbody className='relative'>
-                                {data.length > 0 ? data.map((item, i) => (
-                                    <tr className=" border-b relative" key={i}>
-                                        <td scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
-                                            {item?.name}
-                                        </td>
-                                        <td className="px-3 py-3 truncate flex items-center justify-center">
-                                            <img src={item?.image} alt={`${item.name}  image`}
-                                                className='w-10 h-10 object-contain'
-                                            />
-                                        </td>
-                                        <td className="px-3 py-3">
-                                            {moment(item?.createdAt).format(`DD-MM-YYYY a`)}
-                                        </td>
-                                        <td
-                                            onClick={() => navigate(`/admin/utilities/manage_giftcards/${item?.id}`)}
-                                            className="px-1 text-dark relative">
-                                            <button
-                                                className="w-full h-fit bg-white rounded-md py-1.5">explore</button>
-                                        </td>
-                                        <td className="px-1 text-white relative">
-                                            <button
-                                                onClick={() => { setDel(true); setSelected(item) }} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
-                                        </td>
-
+                    <>
+                        <div className="relative overflow-x-auto rounded-md mt-10">
+                            <table className="w-full text-sm text-center rtl:text-right">
+                                <thead className=" bg-primary text-base poppins ">
+                                    <tr>
+                                        {Topheaders.map((item, i) => (
+                                            <th key={i} scope="col" className="px-3 text-sm truncate text-white font-bold py-3">{item}</th>
+                                        ))}
                                     </tr>
-                                )) :
-                                    <tr className=" w-full text-lg  font-semibold ">
-                                        <td colSpan='7' className='text-center py-2'>No giftcard  added  </td>
-                                    </tr>
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className='relative'>
+                                    {data.length > 0 ?
+                                        data.slice(0, visibleCount).map((item, i) => (
+                                            <tr className=" border-b relative" key={i}>
+                                                <td scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
+                                                    {item?.name}
+                                                </td>
+                                                <td className="px-3 py-3 truncate flex items-center justify-center">
+                                                    <img src={item?.image} alt={`${item.name}  image`}
+                                                        className='w-10 h-10 object-contain'
+                                                    />
+                                                </td>
+                                                <td className="px-3 py-3">
+                                                    {moment(item?.createdAt).format(`DD-MM-YYYY a`)}
+                                                </td>
+                                                <td
+                                                    onClick={() => navigate(`/admin/utilities/manage_giftcards/${item?.id}`)}
+                                                    className="px-1 text-dark relative">
+                                                    <button
+                                                        className="w-full h-fit bg-white rounded-md py-1.5">explore</button>
+                                                </td>
+                                                <td className="px-1 text-white relative">
+                                                    <button
+                                                        onClick={() => { setDel(true); setSelected(item) }} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
+                                                </td>
+                                            </tr>
+                                        )) :
+                                        <tr className=" w-full text-lg  font-semibold ">
+                                            <td colSpan='7' className='text-center py-2'>No giftcard  added  </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        {visibleCount < data.length &&
+                            <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older giftcards</button>
+                        }
+                    </>
                     :
                     <div className="w-full">
                         <div className="mt-10 w-11/12 mx-auto">

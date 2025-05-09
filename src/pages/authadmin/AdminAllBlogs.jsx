@@ -13,6 +13,8 @@ const AdminAllBlogs = () => {
     const [dataLoading, setDataLoading] = useState(true)
     const [staticData, setStaticData] = useState([])
     const [blogs, setBlogs] = useState([])
+    const [visibleCount, setVisibleCount] = useState(10)
+    const [length, setLength] = useState(0)
 
     useEffect(() => {
         const FetchAllBlogs = async () => {
@@ -21,8 +23,8 @@ const AdminAllBlogs = () => {
                 if (response.status === 200) {
                     setStaticData(response.msg)
                     setBlogs(response.msg)
+                    setLength(response.msg.length)
                 }
-
             } catch (error) {
                 //
             } finally {
@@ -51,6 +53,12 @@ const AdminAllBlogs = () => {
             setBlogs(mainData)
         }
     }
+
+    useEffect(() => {
+        setVisibleCount(10)
+        const filtered = blogs.filter((item) => active === tags[1] ? item.feature === 'airdrop' : active === tags[2] ? item.feature === 'trading' : active === tags[3] ? item.feature === 'personal_finance' : item)
+        setLength(filtered.length)
+    }, [active, blogs])
 
     return (
         <BlogsLayout>
@@ -87,7 +95,7 @@ const AdminAllBlogs = () => {
                                     <div className='flex flex-col gap-4'>
                                         {active === 'all' &&
                                             <>
-                                                {blogs.map((item, i) => (
+                                                {blogs.slice(0, visibleCount).map((item, i) => (
                                                     <BlogComp key={i} item={item} />
                                                 ))}
                                             </>
@@ -96,7 +104,7 @@ const AdminAllBlogs = () => {
                                             <>
                                                 {airdropBlogs.length > 0 ?
                                                     <>
-                                                        {airdropBlogs.map((item, i) => (
+                                                        {airdropBlogs.slice(0, visibleCount).map((item, i) => (
                                                             <BlogComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -109,7 +117,7 @@ const AdminAllBlogs = () => {
                                             <>
                                                 {tradingBlogs.length > 0 ?
                                                     <>
-                                                        {tradingBlogs.map((item, i) => (
+                                                        {tradingBlogs.slice(0, visibleCount).map((item, i) => (
                                                             <BlogComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -122,7 +130,7 @@ const AdminAllBlogs = () => {
                                             <>
                                                 {personalFinanceBlogs.length > 0 ?
                                                     <>
-                                                        {personalFinanceBlogs.map((item, i) => (
+                                                        {personalFinanceBlogs.slice(0, visibleCount).map((item, i) => (
                                                             <BlogComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -135,6 +143,9 @@ const AdminAllBlogs = () => {
                                 </>
                                 :
                                 <div className="w-full text-gray-400 text-center">No record found...</div>
+                            }
+                            {visibleCount < length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older blogs</button>
                             }
                         </>
                     }

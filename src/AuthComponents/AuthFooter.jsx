@@ -14,6 +14,8 @@ import { FiLogOut } from "react-icons/fi";
 import ModalLayout from '../utils/ModalLayout';
 import Cookies from 'js-cookie';
 import { IoMdHelp } from "react-icons/io";
+import { UNREADNOTIS } from '../services/store';
+import { useAtom } from 'jotai';
 
 const mainIcons = [
     {
@@ -78,6 +80,7 @@ const emailSupport = {
 }
 
 const AuthFooter = () => {
+    const [unreadNotis] = useAtom(UNREADNOTIS)
     const [view, setView] = useState(false)
     const location = useLocation()
     const pathName = location.pathname
@@ -144,7 +147,7 @@ const AuthFooter = () => {
                                 <Link to={item.url} onClick={MoveToTop}
                                     className={` group-hover:text-lightgreen px-2  ${pathName === item.url || pathName.includes(item.main) ? active : nonactive} cursor-pointer flex flex-col gap-1 items-center`}>
                                     <div className='relative'>
-                                        {item.name === 'notifications' && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
+                                        {item.name === 'notifications' && unreadNotis.length > 0 && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
                                         <div className="text-[1.5rem]">{<item.symbol />}</div>
                                     </div>
                                 </Link>

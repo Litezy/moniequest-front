@@ -26,7 +26,8 @@ const UserDetails = () => {
     const [modal2, setModal2] = useState(false)
     const [modal3, setModal3] = useState(false)
     const [modal4, setModal4] = useState(false)
-    const [filteredata, setFilteredData] = useState(data)
+    const [filteredData, setFilteredData] = useState(data)
+    const [visibleCount, setVisibleCount] = useState(10)
     const [form, setForm] = useState({
         airdrop_permit: '',
         blog_permit: '',
@@ -63,7 +64,7 @@ const UserDetails = () => {
         },
     ]
 
-    const [searchVal,setSearchVal] = useState('')
+    const [searchVal, setSearchVal] = useState('')
 
     const handleFilter = (e) => {
         const { value } = e.target;
@@ -243,10 +244,10 @@ const UserDetails = () => {
                 <div className="my-5 text-xl font-bold text-center">Below are Users Details on MonieQuest</div>
                 <div className="w-full lg:w-2/3 mx-auto relative">
                     <FormInput
-                    value={searchVal} 
-                    placeholder='Search by FullName and Email' className="!rounded-lg" 
-                    onChange={(e) => handleFilter(e)} />
-                    
+                        value={searchVal}
+                        placeholder='Search by FullName and Email' className="!rounded-lg"
+                        onChange={(e) => handleFilter(e)} />
+
                     <div className="absolute top-3 right-3">
                         <CiSearch className='text-xl cursor-pointer text-white' />
                     </div>
@@ -293,44 +294,45 @@ const UserDetails = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(filteredata) ? filteredata.map((item, i) => (
-                                <tr className=" border-b " key={i}>
-                                    <th scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
-                                        {item.id}
-                                    </th>
-                                    <td className="px-3 truncate capitalize text-lightgreen py-3">
-                                        {item?.first_name} {item?.surname}
-                                    </td>
-                                    <td className="px-3 py-3">
-                                        {item?.email}
-                                    </td>
-                                    <td className="px-3 py-3">
-                                        {item?.role}
-                                    </td>
-                                    <td className="px-3 py-3 truncate">
-                                        {item?.kyc_verified === 'false' ? 'Not Submitted' : item?.kyc_verified === 'processing' ? 'Submitted' : 'Verified'}
-                                    </td>
+                            {Array.isArray(filteredData) && filteredData.length > 0 ?
+                                filteredData.slice(0, visibleCount).map((item, i) => (
+                                    <tr className=" border-b " key={i}>
+                                        <th scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
+                                            {item.id}
+                                        </th>
+                                        <td className="px-3 truncate capitalize text-lightgreen py-3">
+                                            {item?.first_name} {item?.surname}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                            {item?.email}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                            {item?.role}
+                                        </td>
+                                        <td className="px-3 py-3 truncate">
+                                            {item?.kyc_verified === 'false' ? 'Not Submitted' : item?.kyc_verified === 'processing' ? 'Submitted' : 'Verified'}
+                                        </td>
 
-                                    <td className="px-3 py-3">
-                                        {currencies[1].symbol}{item?.user_wallets?.balance ? item?.user_wallets?.balance.toLocaleString() : 0}
-                                    </td>
-                                    <td className="px-3 py-3 truncate">
-                                        {moment(item.createdAt).format(`DD-MM-YYYY hh:mm a`)}
-                                    </td>
-                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
-                                        <button onClick={() => { setModal(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Proceed</button>
-                                    </td>}
-                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
-                                        <button onClick={() => ViewFunc(item)} className='text-center w-full bg-ash text-white rounded-md py-1.5'>View</button>
-                                    </td>}
-                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
-                                        <button onClick={() => { setModal3(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>{item.suspend === 'true' ? 'Unsuspend' : 'Suspend'}</button>
-                                    </td>}
-                                    {user.role === 'super admin' && <td className="px-3 py-3 truncate">
-                                        <button onClick={() => { setModal4(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Delete</button>
-                                    </td>}
-                                </tr>
-                            )) :
+                                        <td className="px-3 py-3">
+                                            {currencies[1].symbol}{item?.user_wallets?.balance ? item?.user_wallets?.balance.toLocaleString() : 0}
+                                        </td>
+                                        <td className="px-3 py-3 truncate">
+                                            {moment(item.createdAt).format(`DD-MM-YYYY hh:mm a`)}
+                                        </td>
+                                        {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                            <button onClick={() => { setModal(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Proceed</button>
+                                        </td>}
+                                        {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                            <button onClick={() => ViewFunc(item)} className='text-center w-full bg-ash text-white rounded-md py-1.5'>View</button>
+                                        </td>}
+                                        {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                            <button onClick={() => { setModal3(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>{item.suspend === 'true' ? 'Unsuspend' : 'Suspend'}</button>
+                                        </td>}
+                                        {user.role === 'super admin' && <td className="px-3 py-3 truncate">
+                                            <button onClick={() => { setModal4(true); setSelectedUser(item) }} className='text-center w-full bg-ash text-white rounded-md py-1.5'>Delete</button>
+                                        </td>}
+                                    </tr>
+                                )) :
                                 <tr className=" w-full truncate text-lg font-semibold">
                                     <td colSpan="7" className='text-center py-2'>No Users found</td>
                                 </tr>
@@ -338,6 +340,9 @@ const UserDetails = () => {
                         </tbody>
                     </table>
                 </div>
+                {visibleCount < filteredData.length &&
+                    <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older accounts</button>
+                }
             </div>
         </AdminPageLayout>
     )

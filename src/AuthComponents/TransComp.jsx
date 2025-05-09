@@ -61,7 +61,7 @@ const TransComp = ({ trans }) => {
                 {trans.crypto_currency && <div className={`${trans.crypto_currency && ['pending', 'unpaid'].includes(trans.status) ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}
 
                 {trans.bank_holder &&
-                    <div className={`${trans.bank_holder && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>
+                    <div className={`${trans.bank_holder && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : trans.status === 'reversed' ? 'text-gray-400': 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>
                 }
 
                 {trans.brand && <div className={`${trans.brand && trans.status === 'pending' ? "text-yellow-300" : trans.status === 'failed' ? 'text-red-600' : 'text-lightgreen'} flex items-center text-sm justify-center lg:w-full rounded-md `}>{trans.status}</div>}

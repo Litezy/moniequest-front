@@ -17,7 +17,7 @@ const AdminProductsOrders = () => {
     const [selected, setSelected] = useState({})
     const [search, setSearch] = useState('')
     const [datatLoading, setDataLoading] = useState(true)
-    const [visibleCount, setVisibleCount] = useState(5)
+    const [visibleCount, setVisibleCount] = useState(10)
 
     useEffect(() => {
         const FetchProductOrders = async () => {
@@ -114,7 +114,7 @@ const AdminProductsOrders = () => {
                                     ))}
                                 </div>
                                 {visibleCount < productOrders.length &&
-                                    <button onClick={() => setVisibleCount(visibleCount + 5)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>show older orders</button>
+                                    <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>show older orders</button>
                                 }
                             </div>
                             :

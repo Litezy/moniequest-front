@@ -7,9 +7,12 @@ import moment from 'moment';
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout';
 import { Link } from 'react-router-dom';
 import { Apis, AuthGetApi, AuthPostApi, AuthPutApi } from '../../services/API';
+import { useAtom } from 'jotai';
+import { UNREADNOTIS } from '../../services/store';
 
 const AdminNotification = () => {
     const [notifications, setNotifications] = useState([])
+    const [, setUnreadNotis] = useAtom(UNREADNOTIS)
     const [dataLoading, setDataLoading] = useState(true)
     const [visibleCount, setVisibleCount] = useState(10)
 
@@ -35,6 +38,7 @@ const AdminNotification = () => {
             const response = await AuthPutApi(Apis.notification.update_all_notis)
             if (response.status === 200) {
                 FetchNotifications()
+                setUnreadNotis(0)
             }
         } catch (error) {
         }

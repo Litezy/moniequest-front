@@ -12,6 +12,7 @@ const AdminUpdateCryptos = () => {
     const [loading, setLoading] = useState({ status: false, val: '' })
     const [dataLoading, setDataLoading] = useState(true)
     const [data, setData] = useState([])
+    const [visibleCount, setVisibleCount] = useState(10)
 
     const fetchCryptos = async () => {
         try {
@@ -171,7 +172,6 @@ const AdminUpdateCryptos = () => {
                 setLoading({ status: false, val: '' })
             }
         }
-
     }
 
 
@@ -263,53 +263,56 @@ const AdminUpdateCryptos = () => {
                     <button onClick={addCrypto} className="px-4 py-2 rounded-md text-sm text-dark bg-white">Add Crypto</button>
                 </div>
                 {!dataLoading ?
-                    <div className="relative overflow-x-auto rounded-md mt-10">
-                        <table className="w-full text-sm text-center rtl:text-right">
-                            <thead className=" bg-primary text-base poppins ">
-                                <tr>
-                                    {Topheaders.map((item, i) => (
-                                        <th key={i} scope="col" className="px-3 text-sm truncate text-white font-bold py-3">{item}</th>
-                                    ))}
-
-                                </tr>
-                            </thead>
-                            <tbody className='relative'>
-                                {data.length > 0 ? data.map((item, i) => (
-                                    <tr className=" border-b relative" key={i}>
-                                        <td scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
-                                            {item?.name}
-                                        </td>
-                                        <td className="px-3 py-3">
-                                            {item?.network}
-                                        </td>
-                                        <td className="px-3 py-3 truncate">
-                                            {item.wallet_add?.slice(0, 5)}.....{item.wallet_add?.slice(-10)}
-                                        </td>
-
-                                        <td className="px-3 py-3">
-                                            {item?.symbol}
-                                        </td>
-                                        <td
-                                            onClick={() => { setUpdate(true); setSelected(item) }}
-                                            className="px-1 text-dark relative">
-                                            <button
-                                                className="w-full h-fit bg-white rounded-md py-1.5">update</button>
-                                        </td>
-                                        <td className="px-1 text-white relative">
-                                            <button
-                                                onClick={() => { setDel(true); setSelected(item) }} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
-                                        </td>
-
+                    <>
+                        <div className="relative overflow-x-auto rounded-md mt-10">
+                            <table className="w-full text-sm text-center rtl:text-right">
+                                <thead className=" bg-primary text-base poppins ">
+                                    <tr>
+                                        {Topheaders.map((item, i) => (
+                                            <th key={i} scope="col" className="px-3 text-sm truncate text-white font-bold py-3">{item}</th>
+                                        ))}
                                     </tr>
-                                )) :
-                                    <tr className=" w-full text-lg  font-semibold ">
-                                        <td colSpan='5' className='text-center py-2'>No crypto token added  </td>
-                                    </tr>
-                                }
+                                </thead>
+                                <tbody className='relative'>
+                                    {data.length > 0 ?
+                                        data.slice(0, visibleCount).map((item, i) => (
+                                            <tr className=" border-b relative" key={i}>
+                                                <td scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
+                                                    {item?.name}
+                                                </td>
+                                                <td className="px-3 py-3">
+                                                    {item?.network}
+                                                </td>
+                                                <td className="px-3 py-3 truncate">
+                                                    {item.wallet_add?.slice(0, 5)}.....{item.wallet_add?.slice(-10)}
+                                                </td>
 
-                            </tbody>
-                        </table>
-                    </div>
+                                                <td className="px-3 py-3">
+                                                    {item?.symbol}
+                                                </td>
+                                                <td
+                                                    onClick={() => { setUpdate(true); setSelected(item) }}
+                                                    className="px-1 text-dark relative">
+                                                    <button
+                                                        className="w-full h-fit bg-white rounded-md py-1.5">update</button>
+                                                </td>
+                                                <td className="px-1 text-white relative">
+                                                    <button
+                                                        onClick={() => { setDel(true); setSelected(item) }} className="w-full h-fit bg-red-600 rounded-md py-1.5">delete</button>
+                                                </td>
+                                            </tr>
+                                        )) :
+                                        <tr className=" w-full text-lg  font-semibold ">
+                                            <td colSpan='5' className='text-center py-2'>No crypto token added  </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        {visibleCount < data.length &&
+                            <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older cryptos</button>
+                        }
+                    </>
                     :
                     <div className="w-full">
                         <div className="mt-10 w-11/12 mx-auto">

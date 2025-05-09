@@ -9,7 +9,7 @@ import moment from 'moment'
 const AdminBankWithdrawals = () => {
     const [loading, setLoading] = useState(false)
     const [records, setRecords] = useState([])
-
+    const [visibleCount, setVisibleCount] = useState(10)
 
     const fetchWithdrawals = async () => {
         setLoading(true)
@@ -34,46 +34,50 @@ const AdminBankWithdrawals = () => {
                 <div className='w-11/12 mx-auto'>
                     <div className="my-5 text-lg font-bold w-full text-center capitalize">See Latest withdrawal requests</div>
                     {!loading ?
-                        <div className="relative overflow-x-auto rounded-md">
-                            <table className="w-full text-sm text-center rtl:text-right">
-                                <thead className=" bg-primary text-base poppins ">
-                                    <tr>
-                                        {Topheaders.map((item, i) => (
-                                            <th key={i} scope="col" className="px-3 text-lightgreen py-3">{item}</th>
-                                        ))}
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records.length > 0 ? records.map((item, i) => (
-                                        <tr className=" border-b " key={i}>
-                                            <th scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
-                                                {item?.user_withdrawal?.id}
-                                            </th>
-                                            <td className="px-3 py-3">
-                                                {item?.user_withdrawal?.first_name} {item?.user_withdrawal?.surname}
-                                            </td>
-                                            <td className="px-3 py-3 truncate">
-                                                {moment(item?.createdAt).format(`DD/MM/yyyy hh:mm a`)}
-                                            </td>
-
-                                            <td className="px-3 py-3">
-                                                {currencies[1].symbol}{item.amount.toLocaleString()}
-                                            </td>
-                                            <td className="px-3 py-3">
-                                                <Link to={`${item.id}`}
-                                                    className="bg-primary to-sec truncate text-white px-5 rounded-lg py-2">view details</Link>
-                                            </td>
-
+                        <>
+                            <div className="relative overflow-x-auto rounded-md">
+                                <table className="w-full text-sm text-center rtl:text-right">
+                                    <thead className=" bg-primary text-base poppins ">
+                                        <tr>
+                                            {Topheaders.map((item, i) => (
+                                                <th key={i} scope="col" className="px-3 text-lightgreen py-3">{item}</th>
+                                            ))}
                                         </tr>
-                                    )) :
-                                        <tr className=" w-full text-lg  font-semibold ">
-                                            <td colSpan='5' className='text-center py-3'>No withdrawal requests  </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {records.length > 0 ?
+                                            records.slice(0, visibleCount).map((item, i) => (
+                                                <tr className=" border-b " key={i}>
+                                                    <th scope="row" className="px-6 text-white py-4 font-medium  whitespace-nowrap ">
+                                                        {item?.user_withdrawal?.id}
+                                                    </th>
+                                                    <td className="px-3 py-3">
+                                                        {item?.user_withdrawal?.first_name} {item?.user_withdrawal?.surname}
+                                                    </td>
+                                                    <td className="px-3 py-3 truncate">
+                                                        {moment(item?.createdAt).format(`DD/MM/yyyy hh:mm a`)}
+                                                    </td>
+
+                                                    <td className="px-3 py-3">
+                                                        {currencies[1].symbol}{item.amount.toLocaleString()}
+                                                    </td>
+                                                    <td className="px-3 py-3">
+                                                        <Link to={`${item.id}`}
+                                                            className="bg-primary to-sec truncate text-white px-5 rounded-lg py-2">view details</Link>
+                                                    </td>
+                                                </tr>
+                                            )) :
+                                            <tr className=" w-full text-lg  font-semibold ">
+                                                <td colSpan='5' className='text-center py-3'>No withdrawal requests  </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            {visibleCount < records.length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older withdrawals</button>
+                            }
+                        </>
                         :
                         <div className="w-full ">
                             <div className="mt-5 w-11/12 mx-auto">

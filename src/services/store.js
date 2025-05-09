@@ -14,4 +14,5 @@ export const CRYPTOS = atom([])
 export const TOOLS = atom([])
 export const SUBS = atom([])
 export const GIFTCARDS = atom([])
+export const UNREADNOTIS = atom([])
 

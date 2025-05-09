@@ -12,6 +12,8 @@ const AdminTransHistory = () => {
   const [dynamicData, setDynamicData] = useState([])
   const [transactions, setTransactions] = useState([])
   const [dataLoading, setDataLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(10)
+  const [length, setLength] = useState(0)
 
   const fetchTrans = async () => {
     try {
@@ -20,6 +22,7 @@ const AdminTransHistory = () => {
       const data = res.data
       setDynamicData(data)
       setTransactions(data)
+      setLength(data.length)
     } catch (error) {
       console.log(error)
     } finally {
@@ -57,6 +60,12 @@ const AdminTransHistory = () => {
       setTransactions(mainData)
     }
   }
+
+  useEffect(() => {
+    setVisibleCount(10)
+    const filtered = transactions.filter((trx) => active === tags[1] ? trx.tag === 'crypto' : active === tags[2] ? trx.tag === 'giftcard' : active === tags[3] ? trx.tag === 'bank' : trx)
+    setLength(filtered.length)
+  }, [active, transactions])
 
 
   return (
@@ -116,7 +125,7 @@ const AdminTransHistory = () => {
                 <>
                   {active === tags[0] &&
                     <>
-                      {transactions.length > 0 && transactions.map((trans, i) => {
+                      {transactions.slice(0, visibleCount).map((trans, i) => {
                         return (
                           <AdminTransComp key={i} trans={trans} />
                         )
@@ -125,7 +134,7 @@ const AdminTransHistory = () => {
                   }
                   {active === tags[1] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'crypto').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <AdminTransComp key={i} trans={trans} />
                         )
@@ -134,7 +143,7 @@ const AdminTransHistory = () => {
                   }
                   {active === tags[2] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'giftcard').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <AdminTransComp key={i} trans={trans} />
                         )
@@ -143,7 +152,7 @@ const AdminTransHistory = () => {
                   }
                   {active === tags[3] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'bank').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <AdminTransComp key={i} trans={trans} />
                         )
@@ -153,6 +162,9 @@ const AdminTransHistory = () => {
                 </>
                 :
                 <div className="w-full text-gray-400 text-center">No record found...</div>
+              }
+              {visibleCount < length &&
+                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>show older transactions</button>
               }
             </>
           }

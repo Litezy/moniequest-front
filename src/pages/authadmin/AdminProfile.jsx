@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { MdEmail, MdOutlineAdminPanelSettings } from "react-icons/md";
+import { MdEmail, MdOutlineAdminPanelSettings, MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import { FaEdit, FaRegUserCircle } from "react-icons/fa";
 import { HiUser } from "react-icons/hi2";
 import { BiSolidEditAlt, BiSolidPhoneCall } from "react-icons/bi";
@@ -11,7 +11,6 @@ import { CookieName, ErrorAlert, SuccessAlert } from '../../utils/pageUtils';
 import FormButton from '../../utils/FormButton';
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout';
 import Loader from '../../GeneralComponents/Loader';
-import Loading from '../../GeneralComponents/Loading';
 import Cookies from 'js-cookie'
 import { useAtom } from 'jotai';
 import { BANK, PROFILE, UTILS } from '../../services/store';
@@ -21,6 +20,7 @@ import { FiUploadCloud } from 'react-icons/fi';
 import SelectComp from '../../GeneralComponents/SelectComp';
 import { NigerianBanks } from '../../utils/banks';
 import axios from 'axios';
+import { RiDeleteBin2Line } from 'react-icons/ri';
 
 const AdminProfile = () => {
     const [user, setUser] = useAtom(PROFILE)
@@ -33,6 +33,7 @@ const AdminProfile = () => {
         sub2: false,
         sub3: false
     })
+    const [select, setSelect] = useState(false)
     const [form, setForm] = useState({
         first_name: user?.first_name || '',
         surname: user?.surname || '',
@@ -171,6 +172,7 @@ const AdminProfile = () => {
                     old_password: '',
                     new_password: ''
                 })
+                setSelect(false)
             } else {
                 ErrorAlert(response.msg)
             }
@@ -183,71 +185,70 @@ const AdminProfile = () => {
         }
     }
 
-   const secret = import.meta.env.VITE_PAYSTACK_SECRET
-     const AddBankAccount = async () => {
-       if (!form.account_number || !form.bank_name) return ErrorAlert('Enter all fields');
-     
-       setLoading({ sub1: true });
-     
-       try {
-         const banksResponse = await axios.get("https://api.paystack.co/bank", {
-           headers: {
-             Authorization: `Bearer ${secret}`,
-             "Content-Type": "application/json"
-           }
-         });
-     
-         const banks = banksResponse.data.data;
-         const userBank = banks.find(b => b.name.toLowerCase() === (form.bank_name || '').toLowerCase());
-     
-         if (!userBank) {
-           return { success: false, status: 400, msg: "Bank not supported" };
-         }
-     
-         const verifyResponse = await axios.get("https://api.paystack.co/bank/resolve", {
-           params: {
-             account_number: form.account_number,
-             bank_code: userBank.code
-           },
-           headers: {
-             Authorization: `Bearer ${secret}`
-           }
-         });
-     
-         const responseData = verifyResponse.data;
-         if (responseData.status) {
-           const data = responseData.data;
-     
-           const formdata = {
-             account_number: data?.account_number,
-             account_name: data?.account_name,
-             bank_name: form.bank_name
-           };
-     
-           try {
-             const response = await AuthPostApi(Apis.user.create_update_bank, formdata);
-             if (response.status === 200) {
-               setBank(response.bank);
-               await new Promise((resolve) => setTimeout(resolve, 2000));
-               SuccessAlert(response.msg);
-             } else {
-               ErrorAlert(response.msg);
-             }
-           } catch (error) {
-             ErrorAlert(`${error.message}`);
-           }
-         }
-     
-         return { success: true, status: 200, msg: "Account verified",  };
-     
-       } catch (error) {
-         const message = error.response?.data?.message || error.response?.data || error.message;
-         ErrorAlert(message)
-         return { success: false, msg: "Account verification failed", error: message };
-       } finally {
-         setLoading({ sub1: false });
-       }
-     };
+    const secret = import.meta.env.VITE_PAYSTACK_SECRET
+    const AddBankAccount = async () => {
+        if (!form.account_number || !form.bank_name) return ErrorAlert('Enter all fields');
+
+        setLoading({ sub1: true });
+        try {
+            const banksResponse = await axios.get("https://api.paystack.co/bank", {
+                headers: {
+                    Authorization: `Bearer ${secret}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const banks = banksResponse.data.data;
+            const userBank = banks.find(b => b.name.toLowerCase() === (form.bank_name || '').toLowerCase());
+
+            if (!userBank) {
+                return { success: false, status: 400, msg: "Bank not supported" };
+            }
+
+            const verifyResponse = await axios.get("https://api.paystack.co/bank/resolve", {
+                params: {
+                    account_number: form.account_number,
+                    bank_code: userBank.code
+                },
+                headers: {
+                    Authorization: `Bearer ${secret}`
+                }
+            });
+
+            const responseData = verifyResponse.data;
+            if (responseData.status) {
+                const data = responseData.data;
+
+                const formdata = {
+                    account_number: data?.account_number,
+                    account_name: data?.account_name,
+                    bank_name: form.bank_name
+                };
+
+                try {
+                    const response = await AuthPostApi(Apis.user.create_update_bank, formdata);
+                    if (response.status === 200) {
+                        setBank(response.bank);
+                        await new Promise((resolve) => setTimeout(resolve, 2000));
+                        SuccessAlert(response.msg);
+                    } else {
+                        ErrorAlert(response.msg);
+                    }
+                } catch (error) {
+                    ErrorAlert(`${error.message}`);
+                }
+            }
+
+            return { success: true, status: 200, msg: "Account verified", };
+
+        } catch (error) {
+            const message = error.response?.data?.message || error.response?.data || error.message;
+            ErrorAlert(message)
+            return { success: false, msg: "Account verification failed", error: message };
+        } finally {
+            setLoading({ sub1: false });
+        }
+    };
 
     const UpdateUtils = async () => {
         const formbody = {
@@ -331,6 +332,34 @@ const AdminProfile = () => {
         }
     }
 
+    const DeleteProfilePhoto = async () => {
+        if (!user.image) return ErrorAlert('Profile image not found')
+        setLoading({
+            main: true
+        })
+        try {
+            const response = await AuthPostApi(Apis.user.delete_profile_photo)
+            if (response.status === 200) {
+                setUser(response.user)
+                await new Promise((resolve) => setTimeout(resolve, 2000))
+                SuccessAlert(response.msg)
+                setProfile({
+                    img: avatar,
+                    image: null
+                })
+                setSelect(false)
+            } else {
+                ErrorAlert(response.msg)
+            }
+        } catch (error) {
+            ErrorAlert(`${error.message}`)
+        } finally {
+            setLoading({
+                main: false
+            })
+        }
+    }
+
     const optimizeImageUrl = (url) => {
         if (!url || !url.includes('cloudinary.com')) return url;
         const parts = url.split('/upload/');
@@ -364,13 +393,25 @@ const AdminProfile = () => {
                     <div className='flex md:flex-row flex-col justify-between'>
                         <div className='flex flex-col gap-4 -mt-20'>
                             <div className='relative w-fit'>
-                                <img src={optimizeImageUrl(profile.img)} className='h-44 w-44 object-cover border-8 border-[#141523] bg-primary rounded-full'></img>
-                                <label>
-                                    <div className='bg-primary rounded-full w-fit h-fit p-2 text-xl absolute bottom-4 right-0 border border-secondary cursor-pointer text-lightgreen'>
-                                        <BiSolidEditAlt />
+                                <img src={optimizeImageUrl(profile.img)} className='h-44 w-44 object-cover object-center border-8 border-[#141523] rounded-full bg-primary'></img>
+                                <div className='bg-primary rounded-full w-fit h-fit p-2 text-xl absolute bottom-4 right-0 border border-secondary cursor-pointer text-lightgreen' onClick={() => setSelect(!select)}>
+                                    <BiSolidEditAlt />
+                                </div>
+                                {select &&
+                                    <div className='h-fit w-36 absolute -bottom-11 right-0 bg-white border border-[lightgrey] rounded-md z-10 text-sm font-bold overflow-hidden capitalize'>
+                                        <label>
+                                            <div className='px-2 py-1 cursor-pointer hover:bg-[#ececec] border-b border-[#ebeaea] text-black flex justify-between items-center'>
+                                                <span>choose photo</span>
+                                                <MdOutlinePhotoSizeSelectActual />
+                                            </div>
+                                            <input ref={imgref} type="file" onChange={handleProfileUpload} hidden></input>
+                                        </label>
+                                        <div className='px-2 py-1 cursor-pointer hover:bg-[#ececec] border-b border-[#ebeaea] text-red-600 flex justify-between items-center' onClick={DeleteProfilePhoto}>
+                                            <div>delete photo</div>
+                                            <RiDeleteBin2Line />
+                                        </div>
                                     </div>
-                                    <input ref={imgref} type="file" onChange={handleProfileUpload} hidden />
-                                </label>
+                                }
                             </div>
                             <div className='text-2xl font-bold capitalize'>{user?.first_name}  {user?.surname}</div>
                             <div className='flex gap-1 items-center text-sm'>

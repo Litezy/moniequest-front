@@ -13,6 +13,8 @@ const AdminAllProducts = () => {
     const [dataLoading, setDataLoading] = useState(true)
     const [staticData, setStaticData] = useState([])
     const [allProducts, setAllProducts] = useState([])
+    const [visibleCount, setVisibleCount] = useState(10)
+    const [length, setLength] = useState(0)
 
     useEffect(() => {
         const FetchAllProducts = async () => {
@@ -21,6 +23,7 @@ const AdminAllProducts = () => {
                 if (response.status === 200) {
                     setStaticData(response.msg)
                     setAllProducts(response.msg)
+                    setLength(response.msg.length)
                 }
             } catch (error) {
                 //
@@ -51,6 +54,12 @@ const AdminAllProducts = () => {
             setAllProducts(mainData)
         }
     }
+
+    useEffect(() => {
+        setVisibleCount(10)
+        const filtered = allProducts.filter((item) => active === tags[1] ? item.status === 'pending' : active === tags[2] ? item.status === 'approved' : active === tags[3] ? item.status === 'declined' : item)
+        setLength(filtered.length)
+    }, [active, allProducts])
 
     return (
         <AdminProductsLayout>
@@ -87,7 +96,7 @@ const AdminAllProducts = () => {
                                     <div className='flex flex-col gap-4'>
                                         {active === 'all' &&
                                             <>
-                                                {allProducts.map((item, i) => (
+                                                {allProducts.slice(0, visibleCount).map((item, i) => (
                                                     <AdminProductComp key={i} item={item} />
                                                 ))}
                                             </>
@@ -96,7 +105,7 @@ const AdminAllProducts = () => {
                                             <>
                                                 {pendingProducts.length > 0 ?
                                                     <>
-                                                        {pendingProducts.map((item, i) => (
+                                                        {pendingProducts.slice(0, visibleCount).map((item, i) => (
                                                             <AdminProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -109,7 +118,7 @@ const AdminAllProducts = () => {
                                             <>
                                                 {approvedProducts.length > 0 ?
                                                     <>
-                                                        {approvedProducts.map((item, i) => (
+                                                        {approvedProducts.slice(0, visibleCount).map((item, i) => (
                                                             <AdminProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -122,7 +131,7 @@ const AdminAllProducts = () => {
                                             <>
                                                 {declinedProducts.length > 0 ?
                                                     <>
-                                                        {declinedProducts.map((item, i) => (
+                                                        {declinedProducts.slice(0, visibleCount).map((item, i) => (
                                                             <AdminProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -135,6 +144,9 @@ const AdminAllProducts = () => {
                                 </>
                                 :
                                 <div className="text-gray-400 text-center">No record found...</div>
+                            }
+                            {visibleCount < length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older products</button>
                             }
                         </>
                     }

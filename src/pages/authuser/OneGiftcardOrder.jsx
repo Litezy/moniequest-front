@@ -5,14 +5,11 @@ import { ErrorAlert } from '../../utils/pageUtils'
 import { Apis, AuthGetApi } from '../../services/API'
 import FormInput from '../../utils/FormInput'
 import { currencies } from '../../AuthComponents/AuthUtils'
-import { useAtom } from 'jotai'
-import { UTILS } from '../../services/store'
 
 const OneGiftcardOrder = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState(null) // Set to null initially
     const { id } = useParams()
-    const [utils] = useAtom(UTILS)
 
     // Fetch Giftcard Order Data
     const fetchSingleOrder = useCallback(async () => {

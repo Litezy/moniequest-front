@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AdminPageLayout from '../../AdminComponents/AdminPageLayout'
 import { Link } from 'react-router-dom'
 import { useAtom } from 'jotai'
@@ -6,9 +6,10 @@ import { SUBS } from '../../services/store'
 import moment from 'moment'
 
 const AdminSubscribers = () => {
-    const TableHeaders = ['Email','Phone Number', 'Date']
+    const TableHeaders = ['Email', 'Phone Number', 'Date']
     const [subs] = useAtom(SUBS)
-    
+    const [visibleCount, setVisibleCount] = useState(10)
+
     return (
         <AdminPageLayout>
             <div className="w-full">
@@ -32,29 +33,32 @@ const AdminSubscribers = () => {
 
                                 </thead>
                                 <tbody>
-                                    {subs.length > 0 ? subs.map((item, i) => (
-                                        <tr className=" border-b " key={i}>
-                                            <td className="px-3 truncate py-3">
-                                                {item.email}
-                                            </td>
+                                    {subs.length > 0 ?
+                                        subs.slice(0, visibleCount).map((item, i) => (
+                                            <tr className=" border-b " key={i}>
+                                                <td className="px-3 truncate py-3">
+                                                    {item.email}
+                                                </td>
 
-                                            <td className="px-3  py-3 truncate">
-                                                {item.phone_number}
-                                            </td>
-                                            <td className="px-3  py-3 truncate">
-                                                {moment(item.createdAt).format(`DD-MM-YYYY a`)}
-                                            </td>
+                                                <td className="px-3  py-3 truncate">
+                                                    {item.phone_number}
+                                                </td>
+                                                <td className="px-3  py-3 truncate">
+                                                    {moment(item.createdAt).format(`DD-MM-YYYY a`)}
+                                                </td>
 
-                                        </tr>
-                                    )) :
+                                            </tr>
+                                        )) :
                                         <tr className=" w-full truncate text-lg font-semibold">
                                             <td colSpan="5" className='text-center py-2'>No subscribers found</td>
                                         </tr>
                                     }
-
                                 </tbody>
                             </table>
                         </div>
+                        {visibleCount < subs.length &&
+                            <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older subscribers</button>
+                        }
                     </div>
                 </div>
             </div>

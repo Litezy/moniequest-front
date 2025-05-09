@@ -13,6 +13,9 @@ const AllProducts = () => {
     const [staticData, setStaticData] = useState([])
     const [userProducts, setUserProducts] = useState([])
     const [dataLoading, setDataLoading] = useState(true)
+    const [visibleCount, setVisibleCount] = useState(10)
+    const [length, setLength] = useState(0)
+
 
     useEffect(() => {
         const FetchUserProducts = async () => {
@@ -21,8 +24,8 @@ const AllProducts = () => {
                 if (response.status === 200) {
                     setStaticData(response.msg)
                     setUserProducts(response.msg)
+                    setLength(response.msg.length)
                 }
-
             } catch (error) {
                 //
             } finally {
@@ -51,6 +54,12 @@ const AllProducts = () => {
             setUserProducts(mainData)
         }
     }
+
+    useEffect(() => {
+        setVisibleCount(10)
+        const filtered = userProducts.filter((item) => active === tags[1] ? item.status === 'pending' : active === tags[2] ? item.status === 'approved' : active === tags[3] ? item.status === 'declined' : item)
+        setLength(filtered.length)
+    }, [active, userProducts])
 
     return (
         <ProductsLayout>
@@ -87,7 +96,7 @@ const AllProducts = () => {
                                     <div className='flex flex-col gap-4'>
                                         {active === 'all' &&
                                             <>
-                                                {userProducts.map((item, i) => (
+                                                {userProducts.slice(0, visibleCount).map((item, i) => (
                                                     <ProductComp key={i} item={item} />
                                                 ))}
                                             </>
@@ -96,7 +105,7 @@ const AllProducts = () => {
                                             <>
                                                 {pendingProducts.length > 0 ?
                                                     <>
-                                                        {pendingProducts.map((item, i) => (
+                                                        {pendingProducts.slice(0, visibleCount).map((item, i) => (
                                                             <ProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -109,7 +118,7 @@ const AllProducts = () => {
                                             <>
                                                 {approvedProducts.length > 0 ?
                                                     <>
-                                                        {approvedProducts.map((item, i) => (
+                                                        {approvedProducts.slice(0, visibleCount).map((item, i) => (
                                                             <ProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -122,7 +131,7 @@ const AllProducts = () => {
                                             <>
                                                 {declinedProducts.length > 0 ?
                                                     <>
-                                                        {declinedProducts.map((item, i) => (
+                                                        {declinedProducts.slice(0, visibleCount).map((item, i) => (
                                                             <ProductComp key={i} item={item} />
                                                         ))}
                                                     </>
@@ -135,6 +144,9 @@ const AllProducts = () => {
                                 </>
                                 :
                                 <div className="w-full text-gray-400 text-center">No record found...</div>
+                            }
+                            {visibleCount < length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older products</button>
                             }
                         </>
                     }

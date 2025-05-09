@@ -32,7 +32,7 @@ const FeatureBlogs = () => {
             <div className="bg-dark py-1 w-full text-white">
                 <div className="w-11/12 mx-auto my-10 poppins">
                     {dataLoading ?
-                        <div className='flex flex-col gap-4 animate-pulse'>
+                        <div className='flex flex-col gap-6 animate-pulse'>
                             <div className='flex gap-3 items-center'>
                                 <div className='w-5 h-5 rounded-full bg-slate-400'></div>
                                 <div className='w-56 h-4 rounded-full bg-slate-400'></div>
@@ -57,7 +57,7 @@ const FeatureBlogs = () => {
                             </div>
                         </div>
                         :
-                        <div className='flex flex-col gap-4'>
+                        <div className='flex flex-col gap-6'>
                             <div className="flex items-center gap-5 w-11/12 lg:w-1/2 ">
                                 <div className="text-xl"><GiArrowScope /></div>
                                 <div className="text-lg capitalize">Latest articles on {feature === 'personal_finance' ? "Personal Finance" : feature}</div>

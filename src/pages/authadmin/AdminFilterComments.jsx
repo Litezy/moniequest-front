@@ -12,6 +12,7 @@ const AdminFilterComments = () => {
     const [dataLoading, setDataLoading] = useState({ status: false, msg: '' })
     const [modal, setModal] = useState(false)
     const [commentId, setCommentId] = useState('')
+    const [visibleCount, setVisibleCount] = useState(10)
 
     const FetchBlogComments = useCallback(async () => {
         setDataLoading({ status: true, msg: 'loading comments' })
@@ -51,18 +52,15 @@ const AdminFilterComments = () => {
     return (
         <AdminPageLayout>
             {dataLoading.status &&
-                <ModalLayout setModal={setDataLoading}>
-                    <Loader title={dataLoading.msg} />
-                </ModalLayout>
+                <Loader title={dataLoading.msg} />
             }
             {modal &&
                 <ModalLayout setModal={setModal} clas={`lg:w-[50%] w-10/12 mx-auto`}>
                     <div className="p-5  bg-white text-dark shadow-xl rounded-md">
                         <div className="text-base text-center mb-3">Are you sure you want to delete this comment?</div>
-
                         <div className="flex items-center justify-between">
-                            <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-500 text-white rounded-md'>Cancel</button>
-                            <button onClick={deleteComment} className='px-4 py-2 bg-green-500 text-white rounded-md'>Confirm Decline</button>
+                            <button onClick={() => setModal(false)} className='px-4 py-2 bg-red-600 text-white rounded-md'>Cancel</button>
+                            <button onClick={deleteComment} className='px-4 py-2 bg-green-600 text-white rounded-md'>Confirm</button>
                         </div>
 
                     </div>
@@ -76,7 +74,7 @@ const AdminFilterComments = () => {
                     <div className="mt-5">
                         <h1 className="text-2xl font-bold">Comments</h1>
                         <div className="mt-5">
-                            {comments.map((comment, index) => (
+                            {comments.slice(0, visibleCount).map((comment, index) => (
                                 <div key={index} className="bg-white text-dark shadow-md rounded-md p-5 mt-3">
                                     <div className="flex items-start flex-col md:flex-row gap-4 justify-between">
                                         <div className="flex flex-col gap-4">
@@ -87,11 +85,14 @@ const AdminFilterComments = () => {
                                             </div>
                                             <div className="border p-1">{comment?.content}</div>
                                         </div>
-                                        <button onClick={() => { setModal(true); setCommentId(comment.id) }} className='w-fit px-4 py-1.5 bg-red-600 text-white rounded-md'>Delete</button>
+                                        <button onClick={() => { setModal(true); setCommentId(comment.id) }} className='w-fit px-4 py-1.5 bg-red-700 text-white rounded-md'>Delete</button>
                                     </div>
                                 </div>
                             ))}
                         </div>
+                        {visibleCount < comments.length &&
+                            <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older comments</button>
+                        }
                     </div>
                     :
                     <div className="mt-5">

@@ -6,6 +6,7 @@ import GiftcardLayout from '../../AuthComponents/GiftcardLayout'
 const CompletedGiftcardOrders = () => {
     const [data, setData] = useState([])
     const [dataLoading, setDataLoading] = useState(true)
+    const [visibleCount, setVisibleCount] = useState(10)
 
     useEffect(() => {
         const FetchCompletedOrders = async () => {
@@ -51,12 +52,15 @@ const CompletedGiftcardOrders = () => {
                         :
                         <>
                             {data.length > 0 ?
-                                data.map((trans, i) => {
+                                data.slice(0, visibleCount).map((trans, i) => {
                                     return (
                                         <GiftComp key={i} trans={trans} />
                                     )
                                 }) :
                                 <div className="">No orders found</div>
+                            }
+                            {visibleCount < data.length &&
+                                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older transactions</button>
                             }
                         </>
                     }

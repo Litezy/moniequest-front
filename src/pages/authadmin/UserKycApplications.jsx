@@ -12,7 +12,8 @@ import { USER_SUB_KYCS } from '../../services/store'
 const UserKycApplications = () => {
     const [modal, setModal] = useState(false)
     const [selected, setSelected] = useState({})
-    const [users,] = useAtom(USER_SUB_KYCS)
+    const [users] = useAtom(USER_SUB_KYCS)
+    const [visibleCount, setVisibleCount] = useState(10)
 
     const TableHeaders = [
         "User ID",
@@ -56,31 +57,34 @@ const UserKycApplications = () => {
 
                         </thead>
                         <tbody>
-                            {users.length > 0 ? users.map((item, i) => (
-                                <tr className=" border-b " key={i}>
-                                    <th scope="row" className="px-6 py-4 font-medium text-white whitespace-nowrap ">
-                                        {item?.user}
-                                    </th>
-                                    <td className="px-3 text-lightgreen truncate py-3">
-                                        {item?.user_kyc?.first_name} {item?.user_kyc?.surname}
-                                    </td>
-                                    <td className="px-3 truncate py-3">
-                                        {moment(item?.createdAt).format(`DD-MM-YYYY hh:mm a `)}
-                                    </td>
-                                    <td className="px-3 py-3">
-                                        <button onClick={() => filterSelect(item)}
-                                            className="bg-gradient-to-tr from-primary to-sec text-white px-5 rounded-lg py-2">view details</button>
-                                    </td>
-                                </tr>
-                            )) :
+                            {users.length > 0 ?
+                                users.slice(0, visibleCount).map((item, i) => (
+                                    <tr className=" border-b " key={i}>
+                                        <th scope="row" className="px-6 py-4 font-medium text-white whitespace-nowrap ">
+                                            {item?.user}
+                                        </th>
+                                        <td className="px-3 text-lightgreen truncate py-3">
+                                            {item?.user_kyc?.first_name} {item?.user_kyc?.surname}
+                                        </td>
+                                        <td className="px-3 truncate py-3">
+                                            {moment(item?.createdAt).format(`DD-MM-YYYY hh:mm a `)}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                            <button onClick={() => filterSelect(item)}
+                                                className="bg-gradient-to-tr from-primary to-sec text-white px-5 rounded-lg py-2">view details</button>
+                                        </td>
+                                    </tr>
+                                )) :
                                 <tr className=" w-full truncate text-lg font-semibold">
                                     <td colSpan="4" className='text-center py-2'>No pending Kyc's found</td>
                                 </tr>
                             }
-
                         </tbody>
                     </table>
                 </div>
+                {visibleCount < users.length &&
+                    <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto mt-6'>show older applications</button>
+                }
             </div>
         </AdminPageLayout>
 

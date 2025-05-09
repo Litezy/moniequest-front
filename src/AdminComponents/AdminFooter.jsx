@@ -15,6 +15,8 @@ import { MdReviews } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import ModalLayout from '../utils/ModalLayout';
 import Cookies from 'js-cookie';
+import { useAtom } from 'jotai';
+import { UNREADNOTIS } from '../services/store';
 
 const mainIcons = [
     {
@@ -98,6 +100,7 @@ const extraIcons = [
 ]
 
 const AdminFooter = () => {
+    const [unreadNotis] = useAtom(UNREADNOTIS)
     const [view, setView] = useState(false)
     const location = useLocation()
     const pathName = location.pathname
@@ -166,7 +169,7 @@ const AdminFooter = () => {
                                 <Link to={item.url} onClick={MoveToTop}
                                     className={`px-2  ${pathName === item.url || pathName.includes(item.main) ? active : nonactive} cursor-pointer flex flex-col gap-1 items-center`}>
                                     <div className='relative'>
-                                        {item.name === 'notifications' && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
+                                        {item.name === 'notifications' && unreadNotis.length > 0 && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
                                         <div className="text-[1.5rem]">{<item.symbol />}</div>
                                     </div>
                                 </Link>

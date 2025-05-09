@@ -7,7 +7,7 @@ import avatar from '../assets/images/avatar.svg'
 import { CookieName, ErrorAlert, MoveToTop, SuccessAlert } from '../utils/pageUtils'
 import { Apis, AuthGetApi, AuthPostApi, imageurl } from '../services/API'
 import { useAtom } from 'jotai'
-import { BANK, CRYPTOS, GIFTCARDS, PROFILE, TOOLS, UTILS, WALLET } from '../services/store'
+import { BANK, CRYPTOS, GIFTCARDS, PROFILE, TOOLS, UNREADNOTIS, UTILS, WALLET } from '../services/store'
 import Cookies from 'js-cookie';
 import ModalLayout from '../utils/ModalLayout'
 import { MdVerified } from "react-icons/md";
@@ -22,6 +22,7 @@ const AuthPageLayout = ({ children }) => {
   const [, setCryptos] = useAtom(CRYPTOS)
   const [, setTools] = useAtom(TOOLS)
   const [, setGiftcards] = useAtom(GIFTCARDS)
+  const [unreadNotis, setUnreadNotis] = useAtom(UNREADNOTIS)
   const navigate = useNavigate()
   const location = useLocation()
   const pathName = location.pathname
@@ -72,6 +73,17 @@ const AuthPageLayout = ({ children }) => {
         console.log(`error in fetching giftcards`, error)
       }
     }
+    const FetchUnreadNotis = async () => {
+      try {
+        const response = await AuthGetApi(Apis.notification.unread_notis)
+        if (response.status === 200) {
+          setUnreadNotis(response.msg)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    FetchUnreadNotis()
     fetchTools()
     fetchCryptos()
     FetchWalletBankAndUtils()
@@ -128,7 +140,7 @@ const AuthPageLayout = ({ children }) => {
             <img src={logo} alt='moniequest-logo' className='h-14 w-auto mx-auto'></img>
           </div>
           <div onClick={() => navigate(`/user/profile`)} className='flex cursor-pointer gap-2 items-center justify-start mt-6 bg-primary px-4 py-4 rounded-lg w-11/12 h-fit mx-auto  relative'>
-            {user?.email_verified === 'true' && <div className="absolute top-2 right-2 "><MdVerified className='text-lightgreen font-bold text-lg'/></div>}
+            {user?.email_verified === 'true' && <div className="absolute top-2 right-2 "><MdVerified className='text-lightgreen font-bold text-lg' /></div>}
             <img src={user.image ? user?.image : avatar} alt='user_profile' className='size-14 object-cover rounded-full border-2 border-ash'></img>
             <div className='text-sm text-center  capitalize text-gray-200'> {user?.first_name} {user?.surname}</div>
           </div>
@@ -138,7 +150,7 @@ const AuthPageLayout = ({ children }) => {
                 <Link onClick={MoveToTop} to={link.url}
                   className={` py-2 group text-base flex items-center gap-2 px-5 w-full capitalize ${pathName === link.url || pathName.includes(link.main) ? active : nonactive} `} key={i}>
                   <div className="relative">
-                    {link.label === 'notifications' && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
+                    {link.label === 'notifications' && unreadNotis.length > 0 && <div className="absolute left-0 top-0 w-2 h-2 rounded-full bg-red-600 z-40"></div>}
                     <link.icon className="transform group-hover:rotate-180 text-xl duration-300" />
                   </div>
                   <div>{link.label}</div>

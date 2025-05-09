@@ -11,6 +11,8 @@ const TransHistory = () => {
   const [transData, setTransData] = useState([])
   const [transactions, setTransactions] = useState([])
   const [dataLoading, setDataLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(10)
+  const [length, setLength] = useState(0)
 
   const fetchTrans = async () => {
     try {
@@ -19,6 +21,7 @@ const TransHistory = () => {
       const data = res.data
       setTransData(data)
       setTransactions(data)
+      setLength(data.length)
     } catch (error) {
       //
     } finally {
@@ -32,7 +35,7 @@ const TransHistory = () => {
 
   const filterTrans = () => {
     const mainData = transData;
-  
+
     if (searchValue.length > 1) {
       const filtered = mainData.filter(trans => {
         const lowerSearch = searchValue.toLowerCase();
@@ -47,8 +50,8 @@ const TransHistory = () => {
             trans.tag === 'bank'
               ? String(trans.amount).includes(searchValue)
               : trans.type === 'buy'
-              ? String((trans.amount + trans.gas_fee) * trans.rate).includes(searchValue)
-              : String(trans.amount * trans.rate).includes(searchValue)
+                ? String((trans.amount + trans.gas_fee) * trans.rate).includes(searchValue)
+                : String(trans.amount * trans.rate).includes(searchValue)
           )
         );
       });
@@ -57,7 +60,12 @@ const TransHistory = () => {
       setTransactions(mainData);
     }
   };
-  
+
+  useEffect(() => {
+    setVisibleCount(10)
+    const filtered = transactions.filter((trx) => active === tags[1] ? trx.tag === 'crypto' : active === tags[2] ? trx.tag === 'giftcard' : active === tags[3] ? trx.tag === 'bank' : trx)
+    setLength(filtered.length)
+  }, [active, transactions])
 
 
   return (
@@ -114,11 +122,11 @@ const TransHistory = () => {
             </div>
             :
             <>
-              {transData.length > 0 ?
+              {transactions.length > 0 ?
                 <>
                   {active === tags[0] &&
                     <>
-                      {transactions.length > 0 && transactions.map((trans, i) => {
+                      {transactions.slice(0, visibleCount).map((trans, i) => {
                         return (
                           <TransComp key={i} trans={trans} />
                         )
@@ -127,7 +135,7 @@ const TransHistory = () => {
                   }
                   {active === tags[1] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'crypto').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'crypto').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <TransComp key={i} trans={trans} />
                         )
@@ -136,7 +144,7 @@ const TransHistory = () => {
                   }
                   {active === tags[2] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'giftcard').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'giftcard').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <TransComp key={i} trans={trans} />
                         )
@@ -145,7 +153,7 @@ const TransHistory = () => {
                   }
                   {active === tags[3] &&
                     <>
-                      {transactions.filter((trx) => trx.tag === 'bank').map((trans, i) => {
+                      {transactions.filter((trx) => trx.tag === 'bank').slice(0, visibleCount).map((trans, i) => {
                         return (
                           <TransComp key={i} trans={trans} />
                         )
@@ -155,6 +163,9 @@ const TransHistory = () => {
                 </>
                 :
                 <div className="w-full text-gray-400 text-center">No record found...</div>
+              }
+              {visibleCount < length &&
+                <button onClick={() => setVisibleCount(visibleCount + 10)} className='md:w-1/2 w-full h-fit py-2 px-14 text-sm md:text-base flex items-center justify-center text-center capitalize rounded-md bg-ash hover:bg-primary cursor-pointer mx-auto'>show older transactions</button>
               }
             </>
           }
